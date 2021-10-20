@@ -1,0 +1,139 @@
+ext {
+    dependencies = [
+            androidxAppcompat                : "androidx.appcompat:appcompat:1.2.0",
+            androidxConstraintlayout         : "androidx.constraintlayout:constraintlayout:2.0.4",
+            androidxLifecycleProcess         : "androidx.lifecycle:lifecycle-process:2.2.0",
+            androidxLifecycleService         : "androidx.lifecycle:lifecycle-service:2.2.0",
+            androidxLifecycleCompiler        : "androidx.lifecycle:lifecycle-compiler:2.2.0",
+            lifecycleCommonJava8             : 'androidx.lifecycle:lifecycle-common-java8:2.2.0',
+            androidxViewPager2               : "androidx.viewpager2:viewpager2:1.0.0",
+            androidxRecyclerView             : "androidx.recyclerview:recyclerview:1.1.0",
+            androidxNavigationUI             : "androidx.navigation:navigation-ui:2.3.0",
+            androidxNavigationFragment       : "androidx.navigation:navigation-fragment:2.3.0",
+            startup                          : "androidx.startup:startup-runtime:1.0.0",
+
+            androidxCoreKTX                  : "androidx.core:core-ktx:1.3.2",
+            androidxCollectionKTX            : "androidx.collection:collection-ktx:1.1.0",
+            androidxFragmentKTX              : "androidx.fragment:fragment-ktx:1.3.6",
+            androidxPaletteKTX               : 'androidx.palette:palette-ktx:1.0.0',
+            lifecycleRuntimeKTX              : "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0",
+            lifecycleLivedataKTX             : "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0",
+            lifecycleViewModelKTX            : "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0",
+            androidxRoomKTX                  : "androidx.room:room-ktx:2.3.0",
+            androidxSqliteKTX                : "androidx.sqlite:sqlite-ktx:2.1.0",
+            navigationFragmentKTX            : "androidx.navigation:navigation-fragment-ktx:2.3.5",
+            navigationRuntimeKTX             : "androidx.navigation:navigation-runtime-ktx:2.3.5",
+            navigationUiKTX                  : "androidx.navigation:navigation-ui-ktx:2.3.5",
+            kotlinxCoroutinesCore            : "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1",
+            kotlinxCoroutinesAndroid         : "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1",
+
+            googleMaterial                   : "com.google.android.material:material:1.2.0",
+            googleFlexbox                    : "com.google.android:flexbox:2.0.1",
+            googleZxing                      : "com.google.zxing:core:3.3.3",
+
+            blankjUtilcode                   : "com.blankj:utilcode:1.29.0",
+
+            tencentMmkv                      : "com.tencent:mmkv-static:1.2.7",
+            wechat                           : 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+',
+            tencentX5                        : 'com.tencent.tbs.tbssdk:sdk:43939',
+
+            glide                            : "com.github.bumptech.glide:glide:4.10.0",
+            glideCompiler                    : "com.github.bumptech.glide:compiler:4.10.0",
+
+            smartRefreshKernel               : "com.scwang.smart:refresh-layout-kernel:2.0.1",
+            smartRefreshHeaderClassics       : "com.scwang.smart:refresh-header-classics:2.0.1",
+
+            alibabaArouterCompiler           : "com.alibaba:arouter-compiler:1.2.2",
+            alibabaArouterApi                : "com.alibaba:arouter-api:1.5.0",
+            alibabaArouteCompiler            : "com.alibaba:arouter-compiler:1.2.2",
+            alibabaFastjson                  : "com.alibaba:fastjson:1.2.72",
+            alibabaUltraViewpager            : "com.alibaba.android:ultraviewpager:1.0.7.8@aar",
+            alibabaVirtualview               : "com.alibaba.android:virtualview:1.4.6@aar",
+
+            rreactivexRxjava2                : "io.reactivex.rxjava2:rxjava:2.2.9",
+            reactivexRxandroid               : "io.reactivex.rxjava2:rxandroid:2.1.1",
+
+            facebookReact                    : "com.facebook.react:react-native:0.62.0",
+
+            okhttp3                          : 'com.squareup.okhttp3:okhttp-bom:4.9.1',
+            squareupOkhttp3                  : "com.squareup.okhttp3:okhttp:4.9.1",
+            squareupOkhttp3LoggingInterceptor: "com.squareup.okhttp3:logging-interceptor:4.9.1",
+
+            liulishuoFiledownloader          : "com.liulishuo.filedownloader:library:1.7.7",
+            jessyanAutosize                  : "me.jessyan:autosize:1.2.1",
+            guava                            : 'com.google.guava:guava:27.1-jre',
+
+            retrofit                         : 'com.squareup.retrofit2:retrofit:2.8.1',
+            'retrofit-converter-gson'        : 'com.squareup.retrofit2:converter-gson:2.8.1',
+            'retrofit-converter-scalars'     : 'com.squareup.retrofit2:converter-scalars:2.8.1',
+            retrofitAdapterRx                : 'com.squareup.retrofit2:adapter-rxjava2:2.8.1',
+            annotation                       : 'androidx.annotation:annotation:1.2.0',
+            collection                       : 'androidx.collection:collection:1.0.0',
+            'rxjava-debug'                   : 'com.akaita.java:rxjava2-debug:1.4.0',
+            loadsir                          : 'com.kingja.loadsir:loadsir:1.3.8',
+            autodispose                      : 'com.uber.autodispose:autodispose-android-archcomponents:1.4.0',
+
+            BaseQuickAdapter                 : 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4',
+            biometric                        : 'com.huawei.hms:fido-bioauthn-androidx:5.0.1.301',
+            agconnect                        : 'com.huawei.agconnect:agconnect-core:1.3.1.300',
+
+            'room-runtime'                   : 'androidx.room:room-runtime:2.2.5',
+            'room-compiler'                  : 'androidx.room:room-compiler:2.2.5',
+            'room-rxjava2'                   : 'androidx.room:room-rxjava2:2.2.5',
+
+            pickerview                       : 'com.github.wenjiangit.Android-PickerView:pickerview:1.0.2',
+            lottie                           : 'com.airbnb.android:lottie:4.0.0',
+            countdownview                    : 'com.github.iwgang:countdownview:2.1.6',
+
+            'glide-transformations'          : 'jp.wasabeef:glide-transformations:4.3.0',     //高斯模糊
+
+            yqritc                           : 'com.yqritc:android-scalablevideoview:1.0.4',
+
+            //不要升级jjwt库(0.9.1)，高版本要求publicKey大于2048位，tcl的publicKey目前是1024位, -- 升级会抛异常
+            jjwt                             : 'io.jsonwebtoken:jjwt:0.9.1',
+
+            SensorsAnalyticsSDK              : 'com.sensorsdata.analytics.android:SensorsAnalyticsSDK:5.2.8',
+
+            banner                           : 'com.youth.banner:banner:2.1.0',                 // banner
+            meituan                          : 'com.meituan.android.walle:library:1.1.7',
+
+            'cwac-saferoom'                  : 'com.commonsware.cwac:saferoom.x:1.3.0',
+
+            'videocache'                     : 'com.danikula:videocache:2.7.1',
+            fragment                         : 'androidx.fragment:fragment:1.2.5',
+            androidXCore                     : 'androidx.core:core:1.3.1',
+            androidXCustomView               : 'androidx.customview:customview:1.1.0',
+            androidXDrawerLayout             : 'androidx.drawerlayout:drawerlayout:1.1.0',
+            androidXExif                     : 'androidx.exifinterface:exifinterface:1.2.0',
+            androidXLifecycleComm            : 'androidx.lifecycle:lifecycle-common:2.2.0',
+            androidXLifecycleData            : 'androidx.lifecycle:lifecycle-livedata:2.2.0',
+            androidXCoordLayout              : 'androidx.coordinatorlayout:coordinatorlayout:1.1.0',
+            androidXEspresso                 : 'androidx.test.espresso:espresso-core:3.3.0',
+            androidXEspressoIdl              : 'androidx.test.espresso:espresso-idling-resource:3.3.0',
+            androidXJunit                    : 'androidx.test.ext:junit:1.1.2',
+            androidXTestCore                 : 'androidx.test.core:junit:1.3.0',
+            androidXTestMonitor              : 'androidx.test:monitor:1.3.0',
+            androidXTestRunner               : 'androidx.test:runner:1.3.0',
+            androidXTrasition                : 'androidx.transition:transition:1.3.0',
+            androidXVectordrawable           : 'androidx.vectordrawable:vectordrawable:1.1.0',
+            androidXVectorAnimated           : 'androidx.vectordrawable:vectordrawable-animated:1.1.0',
+            androidXMedia                    : 'androidx.media:media:1.0.1',
+            exoplayerCore                    : 'com.google.android.exoplayer:exoplayer-core:2.12.3',
+            exoplayerUI                      : 'com.google.android.exoplayer:exoplayAder-ui:2.12.3',
+            gson                             : 'com.google.code.gson:gson:2.8.5',
+            junit                            : 'junit:junit:4.13.2',
+            reactiveStreams                  : 'org.reactivestreams:reactive-streams:1.0.3',
+            finbugs                          : 'com.google.code.findbugs:jsr305:3.0.2',
+            easyPopup                        : 'com.github.zyyoona7:EasyPopup:1.1.2',
+            exoplayerUi                      : 'com.google.android.exoplayer:exoplayer-ui:2.12.3',
+            exoplayerCore                    : 'com.google.android.exoplayer:exoplayer-core:2.12.3',
+            exoplayerHls                     : 'com.google.android.exoplayer:exoplayer-hls:2.12.3',
+            exoplayerOkhttp                  : 'com.google.android.exoplayer:extension-okhttp:2.12.3',
+            quicklogin                       : 'io.github.yidun:quicklogin:3.0.9',
+            sahasbhop                        : 'com.github.sahasbhop:apng-view:1.3',
+            soulpermission                   : 'com.qw:soulpermission:1.2.1',   //申请权限，含申请结果回调，无需activity回调
+            FreeReflection                   : 'com.github.tiann:FreeReflection:3.1.0',
+            youzan                   : 'com.youzanyun.open.mobile:x5sdk:7.1.15'
+    ]
+
+}
