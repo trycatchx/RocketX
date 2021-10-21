@@ -40,6 +40,4 @@ dependencies {
 
     implementation project(':projectA')
     implementation project(':projectB')
-
-
 }
