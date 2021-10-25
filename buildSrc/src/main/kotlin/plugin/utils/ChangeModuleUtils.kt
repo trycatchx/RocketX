@@ -1,4 +1,4 @@
-package plugin
+package plugin.utils
 
 import com.google.gson.Gson
 import groovy.io.FileType
