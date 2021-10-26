@@ -2,11 +2,10 @@ package plugin
 
 import com.android.build.gradle.AppExtension
 import org.gradle.api.Project
-import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.DependencyResolutionListener
 import org.gradle.api.artifacts.ResolvableDependencies
-import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
 import plugin.utils.DependenciesHelper
+import plugin.utils.getChangeModuleMap
 
 /**
  * description:
@@ -19,6 +18,10 @@ open class AppProjectDependencies(var project: Project, var android: AppExtensio
     var mProjectDependenciesList = arrayListOf<ChildProjectDependencies>()
     var mAllProject = mutableMapOf<String, Project>()
     lateinit var mDependenciesHelper: DependenciesHelper
+    val mAllChangedProject  by lazy{
+        getChangeModuleMap(project.rootProject)
+    }
+
 
     init {
         project.gradle.addListener(this)
@@ -32,7 +35,7 @@ open class AppProjectDependencies(var project: Project, var android: AppExtensio
                 //保存所有的 project
                 mAllProject.put(it.name, it)
                 //每一个 project 的依赖，都在 ProjectDependencies 里面解决
-                val project = ChildProjectDependencies(it, android)
+                val project = ChildProjectDependencies(it, android,mAllChangedProject)
                 mProjectDependenciesList.add(project)
             }
 

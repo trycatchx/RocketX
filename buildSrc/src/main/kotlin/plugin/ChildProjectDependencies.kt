@@ -11,7 +11,10 @@ import plugin.utils.DependenciesHelper
  * data: 2021/10/24
  * copyright TCL+
  */
-open class ChildProjectDependencies(var project: Project, var android: AppExtension) {
+open class ChildProjectDependencies(
+    var project: Project,
+    var android: AppExtension,
+    var mAllChangedProject: MutableMap<String, Project>?) {
 
     var ALL_SUFFIX = arrayOf("implementation", "api", "compileOnly")
     var allConfigList = arrayListOf<Configuration>()
@@ -52,17 +55,27 @@ open class ChildProjectDependencies(var project: Project, var android: AppExtens
     // 开始处理依赖关系
     open fun doDependencies(dependenciesHelper: DependenciesHelper) {
         println("-------------Testt project:" + project.name + "----------")
-        allConfigList.onEach {
-            println("Testt config:" + it.name)
-            it.dependencies.onEach { dependencies ->
-                println("Testt:" + dependencies.toString())
-            }
+
+        //当前的 project 是否为改变的
+        var isCurProjectChanged: Boolean = if(mAllChangedProject?.get(project.name) != null) true else false
+
+        if(isCurProjectChanged) {
+           // todo
+        } else {
+
         }
-        var parentProject = dependenciesHelper.getFirstLevelParentDependencies(project)
-        parentProject.forEach {
-            println("parent :" + it.key)
-            println("parent :" + it.value.toString())
-        }
+
+//        allConfigList.onEach {
+//            println("Testt config:" + it.name)
+//            it.dependencies.onEach { dependencies ->
+//                println("Testt:" + dependencies.toString())
+//            }
+//        }
+//        var parentProject = dependenciesHelper.getFirstLevelParentDependencies(project)
+//        parentProject.forEach {
+//            println("parent :" + it.key)
+//            println("parent :" + it.value.toString())
+//        }
     }
 
 
