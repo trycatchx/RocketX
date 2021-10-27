@@ -13,12 +13,13 @@ import plugin.utils.getChangeModuleMap
  * data: 2021/10/24
  * copyright TCL+
  */
-open class AppProjectDependencies(var project: Project, var android: AppExtension) :
-    DependencyResolutionListener {
-    var mProjectDependenciesList = arrayListOf<ChildProjectDependencies>()
-    var mAllProject = mutableMapOf<String, Project>()
+open class AppProjectDependencies(
+    var project: Project,
+    var android: AppExtension,
+    var listener: ((finish: Boolean) -> Unit)? = null) : DependencyResolutionListener {
+    var mAllChildProjectDependenciesList = arrayListOf<ChildProjectDependencies>()
     lateinit var mDependenciesHelper: DependenciesHelper
-    val mAllChangedProject  by lazy{
+    val mAllChangedProject by lazy {
         getChangeModuleMap(project.rootProject)
     }
 
@@ -32,22 +33,21 @@ open class AppProjectDependencies(var project: Project, var android: AppExtensio
         project.rootProject.allprojects.onEach {
             //剔除 app 和 rootProject
             if (hasAndroidPlugin(it)) {
-                //保存所有的 project
-                mAllProject.put(it.name, it)
                 //每一个 project 的依赖，都在 ProjectDependencies 里面解决
-                val project = ChildProjectDependencies(it, android,mAllChangedProject)
-                mProjectDependenciesList.add(project)
+                val project = ChildProjectDependencies(it, android, mAllChangedProject)
+                mAllChildProjectDependenciesList.add(project)
             }
-
         }
         //生成拥有整个依赖图的工具类（只能在此处才能生成）
-        mDependenciesHelper = DependenciesHelper(mProjectDependenciesList)
-        mProjectDependenciesList.onEach {
+        mDependenciesHelper = DependenciesHelper(mAllChildProjectDependenciesList)
+        mAllChildProjectDependenciesList.onEach {
             it.doDependencies(mDependenciesHelper)
         }
+        listener?.invoke(true)
     }
 
     override fun afterResolve(p0: ResolvableDependencies) {
+
     }
 
 

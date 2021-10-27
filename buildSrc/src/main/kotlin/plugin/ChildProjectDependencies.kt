@@ -54,28 +54,13 @@ open class ChildProjectDependencies(
 
     // 开始处理依赖关系
     open fun doDependencies(dependenciesHelper: DependenciesHelper) {
-        println("-------------Testt project:" + project.name + "----------")
-
         //当前的 project 是否为改变的
-        var isCurProjectChanged: Boolean = if(mAllChangedProject?.get(project.name) != null) true else false
-
-        if(isCurProjectChanged) {
-           // todo
-        } else {
-
+        var isCurProjectChanged: Boolean =
+            if (mAllChangedProject?.get(project.name) != null) true else false
+        //如果当前project 没有做改动，需要把自身变成 aar 给到 parent project
+        if (!isCurProjectChanged) {
+            dependenciesHelper.modifyDependencies(this)
         }
-
-//        allConfigList.onEach {
-//            println("Testt config:" + it.name)
-//            it.dependencies.onEach { dependencies ->
-//                println("Testt:" + dependencies.toString())
-//            }
-//        }
-//        var parentProject = dependenciesHelper.getFirstLevelParentDependencies(project)
-//        parentProject.forEach {
-//            println("parent :" + it.key)
-//            println("parent :" + it.value.toString())
-//        }
     }
 
 

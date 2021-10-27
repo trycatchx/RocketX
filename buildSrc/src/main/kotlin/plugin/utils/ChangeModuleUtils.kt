@@ -20,7 +20,6 @@ internal fun getChangeModuleMap(rootProject: Project): MutableMap<String, Projec
         child.projectDir.eachFileRecurse { file ->
             // 过滤掉build目录及该目录下的所有文件
             if (!(file.isDirectory && "build" == file.name) && !file.absolutePath.contains("build/")) {
-                println("file name====>>>>$child.name==>> $file.name")
                 countTime += file.lastModified()
                 sum++
             }
@@ -32,13 +31,19 @@ internal fun getChangeModuleMap(rootProject: Project): MutableMap<String, Projec
     println("moduleCount====>>>> $moduleCount")
     println("sum====>>>> $sum")
 
-    val jsonFile = File(rootProject.projectDir.absolutePath + "/moduleChangeTime.json")
+
+
+    val dir = File(rootProject.projectDir.absolutePath + "/.rocketxcache")
+    if(!dir.exists()) {
+        dir.mkdirs()
+    }
+    val jsonFile = File(dir,"moduleChangeTime.json")
     if (jsonFile.exists()) {
         println("File exists.")
         try {
             val oldModuleChangeTimeList =
                 Gson().fromJson(jsonFile.readText(), ModuleChangeTimeList::class.java)
-            hasChangeMap = HashMap<String, Project>()
+            hasChangeMap = mutableMapOf<String, Project>()
             if (oldModuleChangeTimeList?.list.isNullOrEmpty()) {
                 // 返回null, 代表之前没有编译过，要重新编译
                 return null
@@ -52,11 +57,11 @@ internal fun getChangeModuleMap(rootProject: Project): MutableMap<String, Projec
                             rootProject.allprojects.firstOrNull { pt ->
                                 pt?.name == newModule.moduleName
                             }?.let { pro ->
-                                hasChangeMap[newModule.moduleName] = pro
+                                hasChangeMap!![newModule.moduleName] = pro
                             }
                         } else if (moduleChange.changeTag != newModule.changeTag) {
                             // 已有的module 文件发生改变
-                            hasChangeMap[newModule.moduleName] =
+                            hasChangeMap!![newModule.moduleName] =
                                 rootProject.allprojects.first { pt ->
                                     pt?.name == newModule.moduleName
                                 }
@@ -73,6 +78,11 @@ internal fun getChangeModuleMap(rootProject: Project): MutableMap<String, Projec
         println("File not exists.")
         jsonFile.createNewFile()
         jsonFile.writeFileToModuleJson(newModuleList)
+        //如果没有这个文件的话，认为整个模块都做了改动
+        hasChangeMap = mutableMapOf<String, Project>()
+        rootProject.allprojects.onEach {
+            hasChangeMap.put(it.name,it)
+        }
     }
     println("count time====>>>> ${System.currentTimeMillis() - startTime}")
     return hasChangeMap
