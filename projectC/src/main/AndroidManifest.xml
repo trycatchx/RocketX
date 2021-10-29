@@ -13,6 +13,7 @@
             android:name=".MainActivityC"
             android:exported="true">
         </activity>
+
     </application>
 
 </manifest>

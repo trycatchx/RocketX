@@ -16,13 +16,12 @@ import plugin.utils.getChangeModuleMap
 open class AppProjectDependencies(
     var project: Project,
     var android: AppExtension,
+    val mAllChangedProject: MutableMap<String, Project>?= null,
     var listener: ((finish: Boolean) -> Unit)? = null) : DependencyResolutionListener {
+
+
     var mAllChildProjectDependenciesList = arrayListOf<ChildProjectDependencies>()
     lateinit var mDependenciesHelper: DependenciesHelper
-    val mAllChangedProject by lazy {
-        getChangeModuleMap(project.rootProject)
-    }
-
 
     init {
         project.gradle.addListener(this)
@@ -30,7 +29,7 @@ open class AppProjectDependencies(
 
     override fun beforeResolve(p0: ResolvableDependencies) {
         project.gradle.removeListener(this)
-        project.rootProject.allprojects.onEach {
+        project.rootProject.allprojects.forEach {
             //剔除 app 和 rootProject
             if (hasAndroidPlugin(it)) {
                 //每一个 project 的依赖，都在 ProjectDependencies 里面解决
@@ -40,7 +39,7 @@ open class AppProjectDependencies(
         }
         //生成拥有整个依赖图的工具类（只能在此处才能生成）
         mDependenciesHelper = DependenciesHelper(mAllChildProjectDependenciesList)
-        mAllChildProjectDependenciesList.onEach {
+        mAllChildProjectDependenciesList.forEach {
             it.doDependencies(mDependenciesHelper)
         }
         listener?.invoke(true)

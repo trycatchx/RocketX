@@ -44,3 +44,14 @@ dependencies {
     implementation project(':projectA')
     implementation project(':projectB')
 }
+
+task assdfsdfsf1 {
+
+
+
+
+
+
+
+
+}

@@ -12,8 +12,9 @@
 
         <activity
             android:name=".MainActivityB"
-            android:exported="true">
+            android:exported="false">
         </activity>
+
 
     </application>
 

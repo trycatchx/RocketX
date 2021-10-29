@@ -1,8 +1,9 @@
 package plugin
 
 import com.android.build.gradle.AppExtension
-import org.gradle.api.Plugin
-import org.gradle.api.Project
+import com.android.build.gradle.LibraryExtension
+import org.gradle.api.*
+import org.gradle.api.tasks.TaskProvider
 import plugin.utils.getChangeModuleMap
 
 /**
@@ -19,29 +20,109 @@ open class RocketXPlugin : Plugin<Project> {
 
     companion object {
         const val TAG = "RocketXPlugin:"
+        const val ASSEMBLE = "assemble"
     }
 
-    lateinit var project: Project
+    lateinit var appProject: Project
     lateinit var android: AppExtension
     lateinit var mAppProjectDependencies: AppProjectDependencies
+    lateinit var mCopyTask: Task
+    val mAllChangedProject by lazy {
+        getChangeModuleMap(appProject.rootProject)
+    }
 
     override fun apply(project: Project) {
-        this.project = project
+        this.appProject = project
         //应用在 主 project 上，也就是 app module
-        if (checkAndroidPlugin()) return
-        val android = project.extensions.getByType(AppExtension::class.java)
-        mAppProjectDependencies = AppProjectDependencies(project, android) {
+        if (hasAndroidPlugin(project)) return
+        android = project.extensions.getByType(AppExtension::class.java)
+        mAppProjectDependencies = AppProjectDependencies(project, android, mAllChangedProject) {
             pritlnDependencyGraph()
         }
 
-        pritlnProjectChanged()
+//        pritlnProjectChanged()
+
+        appProject.gradle.projectsEvaluated {
+            doAfterTaskGraph()
+        }
+    }
+
+
+    fun doAfterTaskGraph() {
+        //需要构建 local maven
+        mCopyTask = appProject.task("rocketxDoCopy") {
+            doCopy(it)
+        }
+//
+//        com.android.build.gradle.tasks.BundleAar
+        appProject.rootProject.allprojects.forEach {
+            //剔除 app 和 rootProject
+            if (it.name.equals("app") || it == appProject.rootProject) return@forEach
+
+            val childProject = it.project
+            val childAndroid = it.project.extensions.getByType(LibraryExtension::class.java)
+            childAndroid.buildTypes.all { buildType ->
+                appProject.tasks.named(ASSEMBLE + buildType.name.capitalize())?.let { task ->
+                    //如果当前模块是改动模块，需要打 aar
+                    if (mAllChangedProject?.contains(childProject.name) ?: false) {
+                        var bundleTask =
+                            getBundleTask(childProject, buildType.name.capitalize())?.apply {
+                                task.configure{
+                                    it.finalizedBy(this)
+                                }
+                            }
+                        task.configure{
+                            it.finalizedBy(mCopyTask)
+                        }
+                    }
+                }
+            }
+
+            childAndroid.productFlavors.all { flavor ->
+                childAndroid.buildTypes.all { buildType ->
+                    appProject.tasks.findByPath(ASSEMBLE + flavor.name.capitalize() + buildType.name.capitalize())
+                        ?.let { task ->
+                            //如果当前模块是改动模块，需要打 aar
+                            if (mAllChangedProject?.contains(appProject.name) ?: false) {
+                                var bundleTask = getBundleTask(childProject,
+                                    flavor.name.capitalize() + buildType.name.capitalize())?.apply {
+                                    task.finalizedBy(this)
+                                }
+                                task.finalizedBy(mCopyTask)
+                            }
+                        }
+                }
+            }
+        }
+
+    }
+
+
+    //获取 gradle 里的 bundleXXXAar task , 为了就是打包每一个模块的 aar
+    fun getBundleTask(project: Project, variantName: String): Task? {
+        var taskPath = "bundle" + variantName + "Aar"
+        var bundleTask: TaskProvider<Task>? = null
+        try {
+            bundleTask = project.tasks.named(taskPath)
+        } catch (ignored: Exception) {
+        }
+
+
+        return bundleTask?.get()
+    }
+
+
+    fun doCopy(task: Task) {
+        task.doLast {
+            println("Tsetsetst :")
+        }
     }
 
 
     //打印所有改动的模块
 
     fun pritlnProjectChanged() {
-        val changeMap = getChangeModuleMap(project.rootProject)
+        val changeMap = getChangeModuleMap(appProject.rootProject)
         changeMap?.forEach {
             println(TAG + "check changed project: " + it.key)
         }
@@ -53,7 +134,7 @@ open class RocketXPlugin : Plugin<Project> {
             println(TAG + "project name:" + it.project.name)
             it.allConfigList.forEach {
                 it.dependencies.forEach {
-                    println(TAG + "dependency:"+it.toString())
+                    println(TAG + "dependency:" + it.toString())
                 }
             }
         }
@@ -61,8 +142,8 @@ open class RocketXPlugin : Plugin<Project> {
 
 
     //判断是否子 project 的
-    fun checkAndroidPlugin(): Boolean {
-        return project.plugins.hasPlugin("com.android.library")
+    fun hasAndroidPlugin(curProject: Project): Boolean {
+        return curProject.plugins.hasPlugin("com.android.library")
     }
 }
 

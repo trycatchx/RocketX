@@ -54,13 +54,17 @@ class DependenciesHelper(var mProjectDependenciesList: MutableList<ChildProjectD
             //父依赖的 configuration 添加 当前的 project 对应的aar
             parentProject.value.forEach { parentConfig ->
                 // 剔除原有的依赖
-                parentConfig.dependencies.removeAll{ dependency->
-                    dependency is DefaultProjectDependency && dependency.name.equals(projectWapper.project.name)
-                }
+//                parentConfig.dependencies.removeAll{ dependency->
+//                    dependency is DefaultProjectDependency && dependency.name.equals(projectWapper.project.name)
+//                }
                 //添加 aar 依赖
-                parentProject.key.dependencies.add(parentConfig.name,
-                    projectWapper.project.rootProject.files("/.rocketxcache/lib-aar-local.aar"))
-                println("Testst:"+ projectWapper.project.rootProject.files("/.rocketxcache/lib-aar-local.aar"))
+//                parentProject.key.dependencies.add(parentConfig.name,
+//                   )
+//
+//                parentProject.key.configurations.maybeCreate("default")
+//                parentProject.key.artifacts.add(parentConfig.name, projectWapper.project.file("../.rocketxcache/lib-aar-local.aar"))
+//
+//                println("Testst:"+ projectWapper.project.rootProject.file("/.rocketxcache/lib-aar-local.aar"))
 
 
                 // 把子 project 自身的依赖全部 给到 父 project
