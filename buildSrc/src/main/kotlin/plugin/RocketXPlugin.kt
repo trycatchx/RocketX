@@ -6,7 +6,6 @@ import org.gradle.api.*
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
 import plugin.utils.getChangeModuleMap
-import java.io.File
 
 /**
  * description:
@@ -41,15 +40,15 @@ open class RocketXPlugin : Plugin<Project> {
             pritlnDependencyGraph()
         }
 
-//        pritlnProjectChanged()
-
         appProject.gradle.projectsEvaluated {
-            doAfterTaskGraph()
+            doAfterEvaluated()
         }
     }
 
-
-    fun doAfterTaskGraph() {
+    /**
+     * hook projectsEvaluated 加入 bundleaar task 和 localMaven task
+     */
+    fun doAfterEvaluated() {
         appProject.rootProject.allprojects.forEach {
             //剔除 app 和 rootProject
             if (it.name.equals("app") || it == appProject.rootProject) return@forEach
