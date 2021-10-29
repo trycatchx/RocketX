@@ -3,8 +3,10 @@ package plugin
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.*
+import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
 import plugin.utils.getChangeModuleMap
+import java.io.File
 
 /**
  * description:
@@ -26,7 +28,6 @@ open class RocketXPlugin : Plugin<Project> {
     lateinit var appProject: Project
     lateinit var android: AppExtension
     lateinit var mAppProjectDependencies: AppProjectDependencies
-    lateinit var mCopyTask: Task
     val mAllChangedProject by lazy {
         getChangeModuleMap(appProject.rootProject)
     }
@@ -49,12 +50,6 @@ open class RocketXPlugin : Plugin<Project> {
 
 
     fun doAfterTaskGraph() {
-        //需要构建 local maven
-        mCopyTask = appProject.task("rocketxDoCopy") {
-            doCopy(it)
-        }
-//
-//        com.android.build.gradle.tasks.BundleAar
         appProject.rootProject.allprojects.forEach {
             //剔除 app 和 rootProject
             if (it.name.equals("app") || it == appProject.rootProject) return@forEach
@@ -67,12 +62,17 @@ open class RocketXPlugin : Plugin<Project> {
                     if (mAllChangedProject?.contains(childProject.name) ?: false) {
                         var bundleTask =
                             getBundleTask(childProject, buildType.name.capitalize())?.apply {
-                                task.configure{
+                                task.configure {
                                     it.finalizedBy(this)
                                 }
                             }
-                        task.configure{
-                            it.finalizedBy(mCopyTask)
+
+                        var localMavenTask =
+                            appProject.tasks.create("uploadLocalMaven" + buildType.name.capitalize(),
+                                LocalMavenTask::class.java)
+                        localMavenTask.setPath("","")
+                        task.configure {
+                            it.finalizedBy(localMavenTask)
                         }
                     }
                 }
@@ -88,7 +88,11 @@ open class RocketXPlugin : Plugin<Project> {
                                     flavor.name.capitalize() + buildType.name.capitalize())?.apply {
                                     task.finalizedBy(this)
                                 }
-                                task.finalizedBy(mCopyTask)
+                                var localMavenTask =
+                                    appProject.tasks.create("uploadLocalMaven" + flavor.name.capitalize() + buildType.name,
+                                        LocalMavenTask::class.java)
+                                localMavenTask.setPath("","")
+                                task.finalizedBy(localMavenTask)
                             }
                         }
                 }
@@ -106,27 +110,23 @@ open class RocketXPlugin : Plugin<Project> {
             bundleTask = project.tasks.named(taskPath)
         } catch (ignored: Exception) {
         }
-
-
         return bundleTask?.get()
     }
 
+    //需要构建 local maven
+    class LocalMavenTask : DefaultTask() {
+        lateinit var inputDir: String
+        lateinit var outputDir: String
 
-    fun doCopy(task: Task) {
-        task.doLast {
-            println("Tsetsetst :")
+        fun setPath(inputDir: String, outputDir: String) {
+
+        }
+        @TaskAction
+        fun uploadLocalMaven() {
+            //todo  upload
         }
     }
 
-
-    //打印所有改动的模块
-
-    fun pritlnProjectChanged() {
-        val changeMap = getChangeModuleMap(appProject.rootProject)
-        changeMap?.forEach {
-            println(TAG + "check changed project: " + it.key)
-        }
-    }
 
     //打印处理完的整个依赖图
     fun pritlnDependencyGraph() {
