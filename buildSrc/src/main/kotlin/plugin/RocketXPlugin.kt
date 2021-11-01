@@ -5,7 +5,9 @@ import com.android.build.gradle.LibraryExtension
 import org.gradle.api.*
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
+import plugin.utils.findFirstAarPath
 import plugin.utils.getChangeModuleMap
+import java.io.File
 
 /**
  * description:
@@ -58,21 +60,26 @@ open class RocketXPlugin : Plugin<Project> {
             childAndroid.buildTypes.all { buildType ->
                 appProject.tasks.named(ASSEMBLE + buildType.name.capitalize())?.let { task ->
                     //如果当前模块是改动模块，需要打 aar
-                    if (mAllChangedProject?.contains(childProject.name) ?: false) {
-                        var bundleTask =
-                            getBundleTask(childProject, buildType.name.capitalize())?.apply {
-                                task.configure {
-                                    it.finalizedBy(this)
-                                }
+//                    if (mAllChangedProject?.contains(childProject.name) ?: false) {
+                    if (true) {
+                        getBundleTask(childProject, buildType.name.capitalize())?.apply {
+                            task.configure {
+                                it.finalizedBy(this)
                             }
-
-                        var localMavenTask =
-                            appProject.tasks.create("uploadLocalMaven" + buildType.name.capitalize(),
-                                LocalMavenTask::class.java)
-                        localMavenTask.setPath("","")
-                        task.configure {
-                            it.finalizedBy(localMavenTask)
                         }
+                        var localMavenTask =
+                            childProject.tasks.create("uploadLocalMaven"  + buildType.name.capitalize(),
+                                LocalMavenTask::class.java)
+
+                        //找到 aar
+                        findFirstAarPath(childProject)?.let { inputPath ->
+                            localMavenTask.setPath(inputPath,
+                                childProject.rootProject.rootDir.absolutePath + "/.rocketxcache/")
+                            task.configure {
+                                it.finalizedBy(localMavenTask)
+                            }
+                        }
+
                     }
                 }
             }
@@ -83,21 +90,23 @@ open class RocketXPlugin : Plugin<Project> {
                         ?.let { task ->
                             //如果当前模块是改动模块，需要打 aar
                             if (mAllChangedProject?.contains(appProject.name) ?: false) {
-                                var bundleTask = getBundleTask(childProject,
+                                getBundleTask(childProject,
                                     flavor.name.capitalize() + buildType.name.capitalize())?.apply {
                                     task.finalizedBy(this)
                                 }
                                 var localMavenTask =
-                                    appProject.tasks.create("uploadLocalMaven" + flavor.name.capitalize() + buildType.name,
+                                    childProject.tasks.create("uploadLocalMaven" + flavor.name.capitalize() + buildType.name,
                                         LocalMavenTask::class.java)
-                                localMavenTask.setPath("","")
-                                task.finalizedBy(localMavenTask)
+                                findFirstAarPath(childProject)?.let { inputPath ->
+                                    localMavenTask.setPath(inputPath,
+                                        childProject.rootProject.rootDir.absolutePath + "/.rocketxcache/")
+                                    task.finalizedBy(localMavenTask)
+                                }
                             }
                         }
                 }
             }
         }
-
     }
 
 
@@ -113,16 +122,35 @@ open class RocketXPlugin : Plugin<Project> {
     }
 
     //需要构建 local maven
-    class LocalMavenTask : DefaultTask() {
-        lateinit var inputDir: String
+    open class LocalMavenTask : DefaultTask() {
+        lateinit var inputPath: String
         lateinit var outputDir: String
+        lateinit var inputFile: File
+        lateinit var outputFile: File
 
-        fun setPath(inputDir: String, outputDir: String) {
-
+        fun setPath(inputPath: String, outputDir: String) {
+            this.inputPath = inputPath
+            this.outputDir = outputDir
+            inputFile = File(this.inputPath)
+            outputFile = File(this.outputDir)
         }
+
         @TaskAction
         fun uploadLocalMaven() {
             //todo  upload
+            File(outputFile, getProject().name+".aar").also { file->
+                if(file.exists()) {
+                    file.delete()
+                }
+            }
+
+            getProject().copy {
+                it.from(inputPath)
+                it.into(outputDir)
+                it.rename {
+                    it.replace(inputFile.name, getProject().name+".aar")
+                }
+            }
         }
     }
 
