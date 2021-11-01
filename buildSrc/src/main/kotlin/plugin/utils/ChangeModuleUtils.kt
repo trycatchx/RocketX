@@ -57,11 +57,11 @@ internal fun getChangeModuleMap(rootProject: Project): MutableMap<String, Projec
                             rootProject.allprojects.firstOrNull { pt ->
                                 pt?.name == newModule.moduleName
                             }?.let { pro ->
-                                hasChangeMap[newModule.moduleName] = pro
+                                hasChangeMap!![newModule.moduleName] = pro
                             }
                         } else if (moduleChange.changeTag != newModule.changeTag) {
                             // 已有的module 文件发生改变
-                            hasChangeMap[newModule.moduleName] =
+                            hasChangeMap!![newModule.moduleName] =
                                 rootProject.allprojects.first { pt ->
                                     pt?.name == newModule.moduleName
                                 }
