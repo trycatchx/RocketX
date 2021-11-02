@@ -99,13 +99,20 @@ configuration.dependencies.each { dependency -> xx} 可以获取当前 module �
 1. 依赖替换技术方案实现：
 - 获取整个依赖图（完成）
 - 获取当前 project 父依赖 （完成）
-- 根据解决方案写入依赖替换规则
+- 根据解决方案写入依赖替换规则 （完成）
 2. local maven
-- 上传接口
-- 获取依赖接口，通过传入project，输出Denpency对象。可直接使用（生成 Denpency对象，可阅读 DefaultDependencyHandler 源码）
+- 上传接口 -- [智勇/刘祥祥]()
+- ~~获取依赖接口，通过传入project，输出Denpency对象。可直接使用（生成 Denpency对象，可阅读 DefaultDependencyHandler 源码)~~
+- 获取依赖接口，通过传入project,输出 "com.rocketx:modulename:1.0.0@aar" 即可 --  [智勇/刘祥祥]()
+
 3. AS上的按钮如何制作需要预研
-- 按钮点击跑 clean Task
-- 按钮点击跑 run task
+- 按钮点击跑 clean Task -- [照田]()
+- 按钮点击跑 run task --  [照田]()
+
+## 第三阶段
+1. 迁移到 tcl + 项目运行 -- [张超炯]()
+2. 继续完成未完成的任务 --  [智勇]() [刘祥祥]()  [照田]()
+
 
 
 
