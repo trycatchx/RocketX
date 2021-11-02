@@ -63,5 +63,4 @@ open class ChildProjectDependencies(
         }
     }
 
-
 }

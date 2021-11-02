@@ -1,10 +1,12 @@
 package plugin.utils
 
+import org.apache.commons.io.FilenameUtils
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
-import org.gradle.internal.impldep.bsh.commands.dir
+import org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact
 import plugin.ChildProjectDependencies
+import java.io.File
 
 /**
  * description:
@@ -49,23 +51,23 @@ class DependenciesHelper(var mProjectDependenciesList: MutableList<ChildProjectD
     fun modifyDependencies(projectWapper: ChildProjectDependencies) {
         //找到所有的父依赖
         val map = getFirstLevelParentDependencies(projectWapper.project)
+        //找到当前所有通过 artifacts.add("default", file('xxx.aar')) 依赖进来的 aar,并构建local mave
+        val artifactAarList = getAarByArtifacts(projectWapper.project)
         //可能有多个父依赖，所以需要遍历
         map.forEach { parentProject ->
+
+            artifactAarList.forEach {
+                addAarDependencyToProject(it,parentProject.key.configurations.maybeCreate("api").name,parentProject.key)
+            }
+
             //父依赖的 configuration 添加 当前的 project 对应的aar
             parentProject.value.forEach { parentConfig ->
                 // 剔除原有的依赖
-//                parentConfig.dependencies.removeAll{ dependency->
-//                    dependency is DefaultProjectDependency && dependency.name.equals(projectWapper.project.name)
-//                }
-                //添加 aar 依赖
-//                parentProject.key.dependencies.add(parentConfig.name,
-//                   )
-//
-//                parentProject.key.configurations.maybeCreate("default")
-//                parentProject.key.artifacts.add(parentConfig.name, projectWapper.project.file("../.rocketxcache/lib-aar-local.aar"))
-//
-//                println("Testst:"+ projectWapper.project.rootProject.file("/.rocketxcache/lib-aar-local.aar"))
+                parentConfig.dependencies.removeAll { dependency ->
+                    dependency is DefaultProjectDependency && dependency.name.equals(projectWapper.project.name)
+                }
 
+                addAarDependencyToProject(projectWapper.project.name,parentConfig.name,parentProject.key)
 
                 // 把子 project 自身的依赖全部 给到 父 project
                 projectWapper.allConfigList.forEach { childConfig ->
@@ -87,6 +89,37 @@ class DependenciesHelper(var mProjectDependenciesList: MutableList<ChildProjectD
             }
         }
     }
+
+
+    fun addAarDependencyToProject(aarName:String, configName:String,project:Project) {
+        //添加 aar 依赖 以下代码等同于 api/implementation/xxx (name: 'libaccount-2.0.0', ext: 'aar'),源码使用 linkedMap
+        val map = linkedMapOf<String, String>()
+        map.put("name", aarName)
+        map.put("ext", "aar")
+        project.dependencies.add(configName, map)
+    }
+
+
+    fun getAarByArtifacts(childProject: Project):MutableList<String> {
+        //找到当前所有通过 artifacts.add("default", file('xxx.aar')) 依赖进来的 aar
+        var listArtifact = mutableListOf<DefaultPublishArtifact>()
+        var aarList = mutableListOf<String>()
+        childProject.configurations.maybeCreate("default").artifacts?.forEach {
+            if(it is DefaultPublishArtifact && "aar".equals(it.type)) {
+                listArtifact.add(it)
+            }
+        }
+
+        //拷贝一份到 localMaven
+        listArtifact.forEach {
+            it.file.copyTo(File(FileUtil.getLocalMavenCacheDir(),  it.file.name), true)
+            //剔除后缀 （.aar）
+            aarList.add(FilenameUtils.removeExtension(it.file.name))
+        }
+
+        return aarList
+    }
+
 
     /**
      * 解决各个 project 变动之后需要打成 aar 包,算法 V2

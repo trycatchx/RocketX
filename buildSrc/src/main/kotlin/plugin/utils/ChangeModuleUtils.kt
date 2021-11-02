@@ -6,16 +6,16 @@ import org.gradle.api.Project
 import java.io.File
 
 //获取发生变动的module信息
-internal fun getChangeModuleMap(rootProject: Project): MutableMap<String, Project>? {
+internal fun getChangeModuleMap(appProject: Project): MutableMap<String, Project>? {
     var hasChangeMap: MutableMap<String, Project>? = null
     val startTime = System.currentTimeMillis()
     var sum = 0
     var moduleCount = 0
     val newModuleList = ArrayList<ModuleChangeTime>()
+    val rootProject = appProject.rootProject
     rootProject.allprojects.onEach { child ->
-        if (child.name == rootProject.name) return@onEach
+        if (child == rootProject) return@onEach
         moduleCount++
-        println("module name==>$child.name")
         var countTime = 0L
         child.projectDir.eachFileRecurse { file ->
             // 过滤掉build目录及该目录下的所有文件
@@ -28,18 +28,12 @@ internal fun getChangeModuleMap(rootProject: Project): MutableMap<String, Projec
         println("module name==>$child.name; countTime=$countTime")
     }
 
-    println("moduleCount====>>>> $moduleCount")
-    println("sum====>>>> $sum")
-
-
-
     val dir = File(rootProject.projectDir.absolutePath + "/.rocketxcache")
     if(!dir.exists()) {
         dir.mkdirs()
     }
     val jsonFile = File(dir,"moduleChangeTime.json")
     if (jsonFile.exists()) {
-        println("File exists.")
         try {
             val oldModuleChangeTimeList =
                 Gson().fromJson(jsonFile.readText(), ModuleChangeTimeList::class.java)
@@ -75,7 +69,6 @@ internal fun getChangeModuleMap(rootProject: Project): MutableMap<String, Projec
             e.printStackTrace()
         }
     } else {
-        println("File not exists.")
         jsonFile.createNewFile()
         jsonFile.writeFileToModuleJson(newModuleList)
         //如果没有这个文件的话，认为整个模块都做了改动
@@ -84,6 +77,9 @@ internal fun getChangeModuleMap(rootProject: Project): MutableMap<String, Projec
             hasChangeMap.put(it.name,it)
         }
     }
+
+    //最后补一个 app 的 module，app 是认为做了改变，不打成 aar
+    hasChangeMap?.put(appProject.name,appProject)
     println("count time====>>>> ${System.currentTimeMillis() - startTime}")
     return hasChangeMap
 }
@@ -119,3 +115,6 @@ private fun File.writeFileToModuleJson(moduleChangeList: MutableList<ModuleChang
     val newJsonTxt = Gson().toJson(ModuleChangeTimeList(moduleChangeList))
     this.writeText(newJsonTxt)
 }
+
+
+

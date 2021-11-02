@@ -31,7 +31,7 @@ open class AppProjectDependencies(
         project.gradle.removeListener(this)
         project.rootProject.allprojects.forEach {
             //剔除 app 和 rootProject
-            if (hasAndroidPlugin(it)) {
+            if (it != project.rootProject) {
                 //每一个 project 的依赖，都在 ProjectDependencies 里面解决
                 val project = ChildProjectDependencies(it, android, mAllChangedProject)
                 mAllChildProjectDependenciesList.add(project)
@@ -47,12 +47,6 @@ open class AppProjectDependencies(
 
     override fun afterResolve(p0: ResolvableDependencies) {
 
-    }
-
-
-    //判断是否子 project 的
-    fun hasAndroidPlugin(curProject: Project): Boolean {
-        return curProject.plugins.hasPlugin("com.android.library")
     }
 
 }

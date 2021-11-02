@@ -1,5 +1,8 @@
 package com.projecta
 
+import com.tcl.libaccount.openapi.AccountBuilder
+import kotlin.contracts.ReturnsNotNull
+
 /**
  * description:
  * author chaojiong.zhang
@@ -11,6 +14,16 @@ open class MainActivityA {
         @JvmStatic
         fun test() {
             println("MainActivityA")
+        }
+    }
+
+
+    fun test1(): Boolean {
+        return if (AccountBuilder.getInstance() != null) {
+            true
+
+        } else {
+            false
         }
     }
 
