@@ -31,6 +31,19 @@ object FileUtil {
         return null
     }
 
+    internal fun findFirstLevelJarPath(project: Project): String? {
+        val dir = File(project.buildDir.absolutePath + "/libs/")
+        if (dir.exists()) {
+            val files = dir.listFiles(object : FilenameFilter {
+                override fun accept(dir: File?, name: String?): Boolean {
+                    return name?.endsWith(".jar") ?: false
+                }
+            })
+            return if (files.size > 0) files[0].absolutePath else null
+        }
+        return null
+    }
+
 
     internal fun getLocalMavenCacheDir(): String {
         return sProject.rootProject.rootDir.absolutePath + "/.rocketxcache/"

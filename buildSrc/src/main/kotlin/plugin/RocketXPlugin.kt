@@ -3,13 +3,14 @@ package plugin
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.*
-import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.TaskProvider
+import plugin.localmaven.AarFlatLocalMaven
+import plugin.localmaven.JarFlatLocalMaven
+import plugin.localmaven.LocalMaven
+import plugin.utils.ChangeModuleUtils
 import plugin.utils.FileUtil
-import plugin.utils.getChangeModuleMap
 import plugin.utils.hasAndroidPlugin
+import plugin.utils.hasJavaPlugin
 import java.io.File
-import java.nio.file.Files
 
 /**
  * description:
@@ -32,7 +33,7 @@ open class RocketXPlugin : Plugin<Project> {
     lateinit var android: AppExtension
     lateinit var mAppProjectDependencies: AppProjectDependencies
     val mAllChangedProject by lazy {
-        getChangeModuleMap(appProject)
+        ChangeModuleUtils.getChangeModuleMap(appProject)
     }
 
     override fun apply(project: Project) {
@@ -54,6 +55,10 @@ open class RocketXPlugin : Plugin<Project> {
 
         appProject.gradle.projectsEvaluated {
             doAfterEvaluated()
+        }
+
+        appProject.gradle.buildFinished {
+            ChangeModuleUtils.flushJsonFile()
         }
     }
 
@@ -82,103 +87,27 @@ open class RocketXPlugin : Plugin<Project> {
     fun doAfterEvaluated() {
         appProject.rootProject.allprojects.forEach {
             //剔除 app 和 rootProject
-            if (it.name.equals("app") || it == appProject.rootProject) return@forEach
-
+            if (it.name.equals("app") || it == appProject.rootProject || it.childProjects.size > 0) return@forEach
+            var mLocalMaven: LocalMaven? = null
             val childProject = it.project
-            val childAndroid = it.project.extensions.getByType(LibraryExtension::class.java)
-            childAndroid.buildTypes.all { buildType ->
-                appProject.tasks.named(ASSEMBLE + buildType.name.capitalize())?.let { task ->
-                    //如果当前模块是改动模块，需要打 aar
-                    if (mAllChangedProject?.contains(childProject.name) ?: false) {
-                        val bundleTask = getBundleTask(childProject, buildType.name.capitalize())?.apply {
-                            task.configure {
-                                it.finalizedBy(this)
-                            }
-                        }
-
-                        /**
-                         * 上传 aar
-                         */
-                        var localMavenTask =
-                            childProject.tasks.create("uploadLocalMaven" + buildType.name.capitalize(),
-                                LocalMavenTask::class.java)
-                        //找到 aar
-                        FileUtil.findFirstLevelAarPath(childProject)?.let { inputPath ->
-                            localMavenTask.setPath(inputPath,
-                                FileUtil.getLocalMavenCacheDir())
-                            bundleTask?.finalizedBy(localMavenTask)
-                        }
-
-                    }
-                }
+            var childAndroid: LibraryExtension? = null
+            try {
+                childAndroid = it.project.extensions.getByType(LibraryExtension::class.java)
+            } catch (ignore : Exception) {
             }
-
-            childAndroid.productFlavors.all { flavor ->
-                childAndroid.buildTypes.all { buildType ->
-                    appProject.tasks.findByPath(ASSEMBLE + flavor.name.capitalize() + buildType.name.capitalize())
-                        ?.let { task ->
-                            //如果当前模块是改动模块，需要打 aar
-                            if (mAllChangedProject?.contains(appProject.name) ?: false) {
-                                val bundleTask = getBundleTask(childProject,
-                                    flavor.name.capitalize() + buildType.name.capitalize())?.apply {
-                                    task.finalizedBy(this)
-                                }
-
-                                var localMavenTask =
-                                    childProject.tasks.create("uploadLocalMaven" + flavor.name.capitalize() + buildType.name,
-                                        LocalMavenTask::class.java)
-                                FileUtil.findFirstLevelAarPath(childProject)?.let { inputPath ->
-                                    localMavenTask.setPath(inputPath,
-                                        FileUtil.getLocalMavenCacheDir())
-                                    bundleTask?.finalizedBy(localMavenTask)
-                                }
-                            }
-                        }
-                }
+            //android 子 module
+            if(childAndroid != null) {
+                mLocalMaven =  AarFlatLocalMaven(childProject,childAndroid,appProject,mAllChangedProject)
+            } else if (hasJavaPlugin(childProject)) {
+                //java 子 module
+                mLocalMaven =  JarFlatLocalMaven(childProject,appProject,mAllChangedProject)
             }
+            //需要上传到 localMaven
+            mLocalMaven?.uploadLocalMaven()
         }
+
     }
 
-
-    //获取 gradle 里的 bundleXXXAar task , 为了就是打包每一个模块的 aar
-    fun getBundleTask(project: Project, variantName: String): Task? {
-        var taskPath = "bundle" + variantName + "Aar"
-        var bundleTask: TaskProvider<Task>? = null
-        try {
-            bundleTask = project.tasks.named(taskPath)
-        } catch (ignored: Exception) {
-        }
-        return bundleTask?.get()
-    }
-
-    //需要构建 local maven
-    open class LocalMavenTask : DefaultTask() {
-        lateinit var inputPath: String
-        lateinit var outputDir: String
-        lateinit var inputFile: File
-        lateinit var outputFile: File
-
-        fun setPath(inputPath: String, outputDir: String) {
-            this.inputPath = inputPath
-            this.outputDir = outputDir
-            inputFile = File(this.inputPath)
-            outputFile = File(this.outputDir)
-        }
-
-        @TaskAction
-        fun uploadLocalMaven() {
-            //todo  upload
-            println(TAG + "uploadLocalMaven inputPath:" + inputPath)
-            println(TAG + "uploadLocalMaven outputDir:" + outputDir)
-            File(outputFile, getProject().name + ".aar").let { file ->
-                if (file.exists()) {
-                    println(TAG + "uploadLocalMaven delete")
-                    file.delete()
-                }
-            }
-            inputFile.copyTo(File(outputFile, getProject().name + ".aar"), true)
-        }
-    }
 
 
     //打印处理完的整个依赖图

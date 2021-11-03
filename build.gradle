@@ -20,6 +20,7 @@ allprojects {
     repositories {
         flatDir {
             dirs project(':projectA').file('libs')
+            dirs getRootProject().file('.rocketxcache')
         }
 
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
