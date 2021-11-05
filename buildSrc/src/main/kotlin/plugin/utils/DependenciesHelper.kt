@@ -4,7 +4,11 @@ import org.apache.commons.io.FilenameUtils
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
+import org.gradle.api.internal.artifacts.dependencies.DefaultSelfResolvingDependency
 import org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact
+import org.gradle.api.internal.file.collections.DefaultConfigurableFileCollection
+import org.gradle.api.internal.file.collections.DefaultConfigurableFileTree
+import org.gradle.internal.nativeintegration.console.FallbackConsoleMetaData
 import plugin.ChildProjectDependencies
 import java.io.File
 
@@ -57,7 +61,9 @@ class DependenciesHelper(var mProjectDependenciesList: MutableList<ChildProjectD
         map.forEach { parentProject ->
 
             artifactAarList.forEach {
-                addAarDependencyToProject(it,parentProject.key.configurations.maybeCreate("api").name,parentProject.key)
+                addAarDependencyToProject(it,
+                    parentProject.key.configurations.maybeCreate("api").name,
+                    parentProject.key)
             }
 
             //父依赖的 configuration 添加 当前的 project 对应的aar
@@ -67,7 +73,17 @@ class DependenciesHelper(var mProjectDependenciesList: MutableList<ChildProjectD
                     dependency is DefaultProjectDependency && dependency.name.equals(projectWapper.project.name)
                 }
 
-                addAarDependencyToProject(projectWapper.project.name,parentConfig.name,parentProject.key)
+                //android  module or artifacts module
+                if (hasAndroidPlugin(projectWapper.project) || artifactAarList.size > 0) {
+                    addAarDependencyToProject(projectWapper.project.name,
+                        parentConfig.name,
+                        parentProject.key)
+                } else {
+                    //java module
+                    addJarDependencyToProject(projectWapper.project.name,
+                        parentConfig.name,
+                        parentProject.key)
+                }
 
                 // 把子 project 自身的依赖全部 给到 父 project
                 projectWapper.allConfigList.forEach { childConfig ->
@@ -82,7 +98,16 @@ class DependenciesHelper(var mProjectDependenciesList: MutableList<ChildProjectD
                             // parent 铁定有 childConfig.name 的 config
                             parentProject.key.dependencies.add(childConfig.name, dependencyClone)
                         } else {
-                            parentProject.key.dependencies.add(childConfig.name, childDepency)
+                            if (childDepency is DefaultSelfResolvingDependency &&
+                                (childDepency.files is DefaultConfigurableFileCollection || childDepency.files is DefaultConfigurableFileTree)) {
+                                // 这里的依赖是以下两种： 无需添加在 parent ，因为 jar 包直接进入 自身的 aar 中的libs 文件夹
+                                //    implementation rootProject.files("libs/tingyun-ea-agent-android-2.15.4.jar")
+                                //    implementation fileTree(dir: "libs", include: ["*.jar"])
+
+
+                            } else {
+                                parentProject.key.dependencies.add(childConfig.name, childDepency)
+                            }
                         }
                     }
                 }
@@ -91,28 +116,38 @@ class DependenciesHelper(var mProjectDependenciesList: MutableList<ChildProjectD
     }
 
 
-    fun addAarDependencyToProject(aarName:String, configName:String,project:Project) {
+    fun addAarDependencyToProject(aarName: String, configName: String, project: Project) {
         //添加 aar 依赖 以下代码等同于 api/implementation/xxx (name: 'libaccount-2.0.0', ext: 'aar'),源码使用 linkedMap
+        if (!File(FileUtil.getLocalMavenCacheDir() + aarName + ".aar").exists()) return
         val map = linkedMapOf<String, String>()
         map.put("name", aarName)
         map.put("ext", "aar")
         project.dependencies.add(configName, map)
     }
 
+    fun addJarDependencyToProject(aarName: String, configName: String, project: Project) {
+        //添加 aar 依赖 以下代码等同于 api/implementation/xxx (name: 'libaccount-2.0.0', ext: 'jar'),源码使用 linkedMap
+        if (!File(FileUtil.getLocalMavenCacheDir() + aarName + ".jar").exists()) return
+        val map = linkedMapOf<String, String>()
+        map.put("name", aarName)
+        map.put("ext", "jar")
+        project.dependencies.add(configName, map)
+    }
 
-    fun getAarByArtifacts(childProject: Project):MutableList<String> {
+
+    fun getAarByArtifacts(childProject: Project): MutableList<String> {
         //找到当前所有通过 artifacts.add("default", file('xxx.aar')) 依赖进来的 aar
         var listArtifact = mutableListOf<DefaultPublishArtifact>()
         var aarList = mutableListOf<String>()
         childProject.configurations.maybeCreate("default").artifacts?.forEach {
-            if(it is DefaultPublishArtifact && "aar".equals(it.type)) {
+            if (it is DefaultPublishArtifact && "aar".equals(it.type)) {
                 listArtifact.add(it)
             }
         }
 
         //拷贝一份到 localMaven
         listArtifact.forEach {
-            it.file.copyTo(File(FileUtil.getLocalMavenCacheDir(),  it.file.name), true)
+            it.file.copyTo(File(FileUtil.getLocalMavenCacheDir(), it.file.name), true)
             //剔除后缀 （.aar）
             aarList.add(FilenameUtils.removeExtension(it.file.name))
         }

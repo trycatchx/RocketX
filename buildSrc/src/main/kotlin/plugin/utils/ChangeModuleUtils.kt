@@ -101,7 +101,7 @@ object ChangeModuleUtils {
         if (!dir.exists()) {
             dir.mkdirs()
         }
-        val jsonFile = File(rootProject.rootDir, "moduleChangeTime.json")
+        val jsonFile = File(dir, "moduleChangeTime.json")
         if (!jsonFile.exists()) {
             jsonFile.createNewFile()
         }

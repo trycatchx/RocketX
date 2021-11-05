@@ -6,10 +6,7 @@ import org.gradle.api.*
 import plugin.localmaven.AarFlatLocalMaven
 import plugin.localmaven.JarFlatLocalMaven
 import plugin.localmaven.LocalMaven
-import plugin.utils.ChangeModuleUtils
-import plugin.utils.FileUtil
-import plugin.utils.hasAndroidPlugin
-import plugin.utils.hasJavaPlugin
+import plugin.utils.*
 import java.io.File
 
 /**
@@ -58,6 +55,7 @@ open class RocketXPlugin : Plugin<Project> {
         }
 
         appProject.gradle.buildFinished {
+            println("Testset buildFinished")
             ChangeModuleUtils.flushJsonFile()
         }
     }
@@ -85,6 +83,9 @@ open class RocketXPlugin : Plugin<Project> {
      * hook projectsEvaluated 加入 bundleaar task 和 localMaven task
      */
     fun doAfterEvaluated() {
+
+        CleanDuplicateJarJob(appProject,mAllChangedProject).runCleanAction()
+
         appProject.rootProject.allprojects.forEach {
             //剔除 app 和 rootProject
             if (it.name.equals("app") || it == appProject.rootProject || it.childProjects.size > 0) return@forEach
@@ -113,12 +114,18 @@ open class RocketXPlugin : Plugin<Project> {
     //打印处理完的整个依赖图
     fun pritlnDependencyGraph() {
         mAppProjectDependencies.mAllChildProjectDependenciesList.forEach {
-            println(TAG + "project name:" + it.project.name)
+            println(TAG + "======project name: ${it.project.name}==========" )
             it.allConfigList.forEach {
-                it.dependencies.forEach {
-                    println(TAG + "dependency:" + it.toString())
+                if( it.dependencies.size >0) {
+                    println(TAG + "=====Config name:${it.name} ===== ")
+                    it.dependencies.forEach {
+                        println(TAG + "dependency:" + it.hashCode())
+                        println(TAG + "dependency:" + it)
+                    }
                 }
             }
+
+            println(TAG + "======project name: ========== end")
         }
     }
 

@@ -59,6 +59,7 @@ open class ChildProjectDependencies(
             if (mAllChangedProject?.get(project.name) != null) true else false
         //如果当前project 没有做改动，需要把自身变成 aar 给到 parent project
         if (!isCurProjectChanged) {
+            println("teststst gaidong"+project.name)
             dependenciesHelper.modifyDependencies(this)
         }
     }
