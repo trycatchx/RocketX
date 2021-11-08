@@ -122,6 +122,8 @@ class DependenciesHelper(var mProjectDependenciesList: MutableList<ChildProjectD
         val map = linkedMapOf<String, String>()
         map.put("name", aarName)
         map.put("ext", "aar")
+        // TODO: 2021/11/5 改变依赖 这里后面需要修改成
+        //project.dependencies.add(configName, "com.${project.name}:${project.name}:1.0")
         project.dependencies.add(configName, map)
     }
 

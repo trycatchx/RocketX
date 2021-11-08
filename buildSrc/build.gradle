@@ -7,7 +7,6 @@ dependencies {
     implementation gradleApi()
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.4.20"
     implementation 'com.android.tools.build:gradle:4.0.2'
-
 }
 
 repositories {
@@ -15,5 +14,6 @@ repositories {
     maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
     google()
     mavenCentral()
+    gradlePluginPortal()
 }
 

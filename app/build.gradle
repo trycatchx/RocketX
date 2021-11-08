@@ -58,15 +58,8 @@ dependencies {
      implementation "com.alibaba:arouter-api:1.5.0"
 
     implementation project(':projectA')
+//    implementation 'com.projecta:projecta:1.0'
     implementation project(':libbz:projectB')
     implementation project(':projectC')
     implementation project(':libAnnotations')
-}
-
-
-
-task assdfsdfsf1 {
-
-
-
 }

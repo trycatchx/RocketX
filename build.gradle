@@ -8,6 +8,7 @@ buildscript {
         mavenCentral()
         google()
         maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "${rootDir}/repo" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.0.2'
@@ -28,6 +29,7 @@ allprojects {
         mavenCentral()
         google()
         maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "${rootDir}/repo" }
     }
 
 }
