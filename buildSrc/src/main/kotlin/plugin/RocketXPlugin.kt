@@ -70,12 +70,12 @@ open class RocketXPlugin : Plugin<Project> {
             }
 
             override fun afterExecute(task: Task, state: TaskState) {
-                if (task.name.endsWith("PublicationToLocalRepository") && state.failure == null) {
+                println("task==>${task.name}, state=${state.failure}")
+                if (task.name.startsWith(ASSEMBLE) && state.failure == null) {
                     println("task==>${task.name}, state=${state.failure}")
                     ChangeModuleUtils.flushJsonFile()
                 }
             }
-
         })
 
         appProject.gradle.buildFinished {
