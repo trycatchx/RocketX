@@ -82,18 +82,19 @@ open class CleanDuplicateJarJob(
         fun clean() {
             val destDir = File(job.appProject.buildDir.absolutePath, TRANSFORMS)
             if (destDir.exists()) {
-                val allThirdPg = destDir.listFiles()
-                allThirdPg.forEach {
-                    val jarDir = File(it.absolutePath,
-                        if (flavor != null) flavor + File.separator + buildType else buildType)
-                    if (jarDir.exists()) {
-                        val contentFile = File(jarDir.absolutePath, SubStream.FN_FOLDER_CONTENT)
-                        if (contentFile.exists()) {
-                            //开始清理
-                            cleanJarByContentJson(jarDir)
-                        }
-                    }
-                }
+                destDir.deleteRecursively()
+//                val allThirdPg = destDir.listFiles()
+//                allThirdPg.forEach {
+//                    val jarDir = File(it.absolutePath,
+//                        if (flavor != null) flavor + File.separator + buildType else buildType)
+//                    if (jarDir.exists()) {
+//                        val contentFile = File(jarDir.absolutePath, SubStream.FN_FOLDER_CONTENT)
+//                        if (contentFile.exists()) {
+//                            //开始清理
+//                            cleanJarByContentJson(jarDir)
+//                        }
+//                    }
+//                }
             }
         }
 
