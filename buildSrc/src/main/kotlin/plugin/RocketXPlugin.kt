@@ -3,13 +3,13 @@ package plugin
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.*
+import org.gradle.api.execution.TaskExecutionListener
+import org.gradle.api.tasks.TaskState
 import plugin.localmaven.AarFlatLocalMaven
 import plugin.localmaven.JarFlatLocalMaven
 import plugin.localmaven.LocalMaven
-import plugin.utils.ChangeModuleUtils
-import plugin.utils.FileUtil
-import plugin.utils.hasAndroidPlugin
-import plugin.utils.hasJavaPlugin
+import plugin.localmaven.mavenPublish
+import plugin.utils.*
 import java.io.File
 
 /**
@@ -49,6 +49,14 @@ open class RocketXPlugin : Plugin<Project> {
         }
         println(TAG + " =============changed project================= end")
 
+        appProject.rootProject.allprojects.forEach {
+            if (it.name.equals("app") || it == appProject.rootProject || it.childProjects.isNotEmpty()) {
+                return@forEach
+            }
+            // 配置maven publish
+            it.mavenPublish()
+        }
+
         mAppProjectDependencies = AppProjectDependencies(project, android, mAllChangedProject) {
             pritlnDependencyGraph()
         }
@@ -57,9 +65,26 @@ open class RocketXPlugin : Plugin<Project> {
             doAfterEvaluated()
         }
 
+        appProject.gradle.taskGraph.addTaskExecutionListener(object : TaskExecutionListener {
+            override fun beforeExecute(p0: Task) {
+            }
+
+            override fun afterExecute(task: Task, state: TaskState) {
+                println("task==>${task.name}, state=${state.failure}")
+                if (task.name.startsWith(ASSEMBLE) && state.failure == null) {
+                    println("task==>${task.name}, state=${state.failure}")
+                    ChangeModuleUtils.flushJsonFile()
+                }
+            }
+        })
+
         appProject.gradle.buildFinished {
-            ChangeModuleUtils.flushJsonFile()
+//            if (it.gradle.startParameter.is) {
+//                ChangeModuleUtils.flushJsonFile()
+//            }
+            println("Testset buildFinished")
         }
+
     }
 
     /**
@@ -85,6 +110,9 @@ open class RocketXPlugin : Plugin<Project> {
      * hook projectsEvaluated 加入 bundleaar task 和 localMaven task
      */
     fun doAfterEvaluated() {
+
+        CleanDuplicateJarJob(appProject,mAllChangedProject).runCleanAction()
+
         appProject.rootProject.allprojects.forEach {
             //剔除 app 和 rootProject
             if (it.name.equals("app") || it == appProject.rootProject || it.childProjects.size > 0) return@forEach
@@ -109,16 +137,21 @@ open class RocketXPlugin : Plugin<Project> {
     }
 
 
-
     //打印处理完的整个依赖图
     fun pritlnDependencyGraph() {
         mAppProjectDependencies.mAllChildProjectDependenciesList.forEach {
-            println(TAG + "project name:" + it.project.name)
+            println(TAG + "======project name: ${it.project.name}==========" )
             it.allConfigList.forEach {
-                it.dependencies.forEach {
-                    println(TAG + "dependency:" + it.toString())
+                if( it.dependencies.size >0) {
+                    println(TAG + "=====Config name:${it.name} ===== ")
+                    it.dependencies.forEach {
+                        println(TAG + "dependency:" + it.hashCode())
+                        println(TAG + "dependency:" + it)
+                    }
                 }
             }
+
+            println(TAG + "======project name: ========== end")
         }
     }
 

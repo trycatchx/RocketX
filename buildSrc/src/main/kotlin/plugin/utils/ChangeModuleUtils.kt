@@ -10,7 +10,10 @@ object ChangeModuleUtils {
     var newModuleList: ArrayList<ModuleChangeTime>? = null
     lateinit var rootProject: Project
 
-    //获取发生变动的module信息
+    /**
+     * 获取发生变动的module信息
+     *
+     */
     fun getChangeModuleMap(appProject: Project): MutableMap<String, Project>? {
         var hasChangeMap: MutableMap<String, Project>? = null
         val startTime = System.currentTimeMillis()
@@ -29,8 +32,8 @@ object ChangeModuleUtils {
                     sum++
                 }
             }
-            newModuleList?.add(ModuleChangeTime(child.name, countTime))
-            println("module name==>$child.name; countTime=$countTime")
+            newModuleList?.add(ModuleChangeTime(child.path, countTime))
+            println("module name==>${child.path}; countTime=$countTime")
         }
 
         val dir = File(rootProject.projectDir.absolutePath + "/.rocketxcache")
@@ -54,7 +57,7 @@ object ChangeModuleUtils {
                             if (moduleChange == null) {
                                 // 为null, 代表这个module是新创建的
                                 rootProject.allprojects.firstOrNull { pt ->
-                                    pt?.name == newModule.moduleName
+                                    pt?.path == newModule.moduleName
                                 }?.let { pro ->
                                     hasChangeMap!![newModule.moduleName] = pro
                                 }
@@ -62,7 +65,7 @@ object ChangeModuleUtils {
                                 // 已有的module 文件发生改变
                                 hasChangeMap!![newModule.moduleName] =
                                     rootProject.allprojects.first { pt ->
-                                        pt?.name == newModule.moduleName
+                                        pt?.path == newModule.moduleName
                                     }
                             }
                         }
@@ -84,13 +87,13 @@ object ChangeModuleUtils {
             hasChangeMap = mutableMapOf<String, Project>()
             rootProject.allprojects.onEach { it ->
                 if (it != rootProject && it.childProjects.size <= 0) {
-                    hasChangeMap.put(it.name, it)
+                    hasChangeMap.put(it.path, it)
                 }
             }
         }
 
         //最后补一个 app 的 module，app 是认为做了改变，不打成 aar
-        hasChangeMap?.put(appProject.name, appProject)
+        hasChangeMap?.put(appProject.path, appProject)
         println("count time====>>>> ${System.currentTimeMillis() - startTime}")
         return hasChangeMap
     }
@@ -101,7 +104,7 @@ object ChangeModuleUtils {
         if (!dir.exists()) {
             dir.mkdirs()
         }
-        val jsonFile = File(rootProject.rootDir, "moduleChangeTime.json")
+        val jsonFile = File(dir, "moduleChangeTime.json")
         if (!jsonFile.exists()) {
             jsonFile.createNewFile()
         }
@@ -112,7 +115,7 @@ object ChangeModuleUtils {
 
 
     /**
-     * 文件便利
+     * 文件遍历
      */
     private fun File.eachFileRecurse(
         fileType: FileType = FileType.ANY,
@@ -141,6 +144,7 @@ object ChangeModuleUtils {
     private fun File.writeFileToModuleJson(moduleChangeList: MutableList<ModuleChangeTime>) {
         val newJsonTxt = Gson().toJson(ModuleChangeTimeList(moduleChangeList))
         this.writeText(newJsonTxt)
+        println("writeFileToModuleJson success!")
     }
 
 }

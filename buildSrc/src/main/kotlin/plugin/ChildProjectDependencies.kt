@@ -56,7 +56,7 @@ open class ChildProjectDependencies(
     open fun doDependencies(dependenciesHelper: DependenciesHelper) {
         //当前的 project 是否为改变的
         var isCurProjectChanged: Boolean =
-            if (mAllChangedProject?.get(project.name) != null) true else false
+            if (mAllChangedProject?.get(project.path) != null) true else false
         //如果当前project 没有做改动，需要把自身变成 aar 给到 parent project
         if (!isCurProjectChanged) {
             dependenciesHelper.modifyDependencies(this)
