@@ -35,10 +35,19 @@ class JarFlatLocalMaven(
             }
         }
 
-        childProject.tasks.findByPath(JAR)?.let { task ->
-            task.finalizedBy(localMavenTask)
+        // publish local maven
+        try {
+            val publishTask = childProject.project.tasks.named("publishMavenJavaPublicationToLocalRepository").orNull
+            childProject.tasks.findByPath(JAR)?.let { task ->
+                if (publishTask != null) {
+                    task.finalizedBy(localMavenTask, publishTask)
+                } else {
+                    task.finalizedBy(localMavenTask)
+                }
+            }
+        } catch (e: Throwable) {
+            e.printStackTrace()
         }
-
     }
 
 

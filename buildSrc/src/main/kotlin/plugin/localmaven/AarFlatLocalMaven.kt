@@ -23,7 +23,8 @@ class AarFlatLocalMaven(
     var childProject: Project,
     var childAndroid: LibraryExtension,
     var appProject: Project,
-    var mAllChangedProject: MutableMap<String, Project>? = null) : LocalMaven() {
+    var mAllChangedProject: MutableMap<String, Project>? = null
+) : LocalMaven() {
 
     companion object {
         const val ASSEMBLE = "assemble"
@@ -64,10 +65,27 @@ class AarFlatLocalMaven(
             }
 
             //上传 aar
-            var localMavenTask = childProject.tasks.maybeCreate("uploadLocalMaven" + buildType.capitalize(), LocalMavenTask::class.java)
+            var localMavenTask = childProject.tasks.maybeCreate(
+                "uploadLocalMaven" + buildType.capitalize(),
+                LocalMavenTask::class.java
+            )
             localMavenTask.localMaven = this@AarFlatLocalMaven
             bundleTask?.finalizedBy(localMavenTask)
 
+            // publish local maven
+            bundleTask?.let { bTask ->
+                println("bTask=$bTask")
+                val buildType = if (bTask.name.contains("release")) {
+                    "Release"
+                } else {
+                    "Debug"
+                }
+                val publishTask =
+                    childProject.project.tasks.named("publishMaven${buildType}PublicationToLocalRepository").orNull
+                publishTask?.let {
+                    bTask.finalizedBy(it)
+                }
+            }
         }
     }
 

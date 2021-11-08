@@ -10,7 +10,10 @@ object ChangeModuleUtils {
     var newModuleList: ArrayList<ModuleChangeTime>? = null
     lateinit var rootProject: Project
 
-    //获取发生变动的module信息
+    /**
+     * 获取发生变动的module信息
+     *
+     */
     fun getChangeModuleMap(appProject: Project): MutableMap<String, Project>? {
         var hasChangeMap: MutableMap<String, Project>? = null
         val startTime = System.currentTimeMillis()
@@ -112,7 +115,7 @@ object ChangeModuleUtils {
 
 
     /**
-     * 文件便利
+     * 文件遍历
      */
     private fun File.eachFileRecurse(
         fileType: FileType = FileType.ANY,
@@ -141,6 +144,7 @@ object ChangeModuleUtils {
     private fun File.writeFileToModuleJson(moduleChangeList: MutableList<ModuleChangeTime>) {
         val newJsonTxt = Gson().toJson(ModuleChangeTimeList(moduleChangeList))
         this.writeText(newJsonTxt)
+        println("writeFileToModuleJson success!")
     }
 
 }

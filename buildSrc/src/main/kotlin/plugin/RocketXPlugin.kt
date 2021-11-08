@@ -3,9 +3,12 @@ package plugin
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.*
+import org.gradle.api.execution.TaskExecutionListener
+import org.gradle.api.tasks.TaskState
 import plugin.localmaven.AarFlatLocalMaven
 import plugin.localmaven.JarFlatLocalMaven
 import plugin.localmaven.LocalMaven
+import plugin.localmaven.mavenPublish
 import plugin.utils.*
 import java.io.File
 
@@ -46,6 +49,14 @@ open class RocketXPlugin : Plugin<Project> {
         }
         println(TAG + " =============changed project================= end")
 
+        appProject.rootProject.allprojects.forEach {
+            if (it.name.equals("app") || it == appProject.rootProject || it.childProjects.isNotEmpty()) {
+                return@forEach
+            }
+            // 配置maven publish
+            it.mavenPublish()
+        }
+
         mAppProjectDependencies = AppProjectDependencies(project, android, mAllChangedProject) {
             pritlnDependencyGraph()
         }
@@ -54,9 +65,24 @@ open class RocketXPlugin : Plugin<Project> {
             doAfterEvaluated()
         }
 
+        appProject.gradle.taskGraph.addTaskExecutionListener(object : TaskExecutionListener {
+            override fun beforeExecute(p0: Task) {
+            }
+
+            override fun afterExecute(task: Task, state: TaskState) {
+                if (task.name.endsWith("PublicationToLocalRepository") && state.failure == null) {
+                    println("task==>${task.name}, state=${state.failure}")
+                    ChangeModuleUtils.flushJsonFile()
+                }
+            }
+
+        })
+
         appProject.gradle.buildFinished {
+//            if (it.gradle.startParameter.is) {
+//                ChangeModuleUtils.flushJsonFile()
+//            }
             println("Testset buildFinished")
-            ChangeModuleUtils.flushJsonFile()
         }
     }
 
@@ -108,7 +134,6 @@ open class RocketXPlugin : Plugin<Project> {
         }
 
     }
-
 
 
     //打印处理完的整个依赖图
