@@ -1,0 +1,37 @@
+<idea-plugin>
+  <id>com.github.zhangchaojiong.RocketXPlugin.ide</id>
+  <name>RocketX</name>
+  <version>1.0.0</version>
+  <vendor email="zhaotian.liu@tcl.com" url="https://github.com/zhangchaojiong/RocketXPlugin">TCL</vendor>
+
+  <description><![CDATA[
+      IntelliJ of AndroidStudio plugin for RocketX<br>
+      https://github.com/zhangchaojiong/RocketXPlugin
+    ]]></description>
+
+  <change-notes><![CDATA[]]>
+  </change-notes>
+
+  <!-- please see https://plugins.jetbrains.com/docs/intellij/build-number-ranges.html for description -->
+  <idea-version since-build="173.0"/>
+
+  <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
+       on how to target different products -->
+  <depends>com.intellij.modules.platform</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Add your extensions here -->
+  </extensions>
+
+  <actions>
+    <group id = "Plugin_RocketX_Tools" text = " RocketX" popup="true">
+      <action id="RocketXRun" class="RocketXEnable" text="RocketXRun" icon="/res/icon.png">
+        <add-to-group group-id="MainMenu" anchor="last"/>
+        <add-to-group group-id="ToolbarRunGroup" anchor="after" relative-to-action="RunnerActions"/>
+      </action>
+      <action id="RocketXStop" class="RocketXUnable" text="RocketXStop" icon="/res/run.png">
+      </action>
+    </group>
+  </actions>
+
+</idea-plugin>
