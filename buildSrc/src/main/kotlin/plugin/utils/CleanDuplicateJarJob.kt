@@ -1,5 +1,6 @@
 package plugin.utils
 
+import com.android.build.api.transform.QualifiedContent
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.internal.pipeline.SubStream
 import org.gradle.api.Project
@@ -13,12 +14,12 @@ import java.io.File
  * data: 2021/11/5
  * copyright TCL+
  *
- * 清除一些第三方使用的 tranform ，导致jar 重复问题
+ * 清除一些第三方使用的 tranform ，导致jar 重复问题,譬如 alibaba
  */
 open class CleanDuplicateJarJob(
-        var appProject: Project,
-        val mAllChangedProject: MutableMap<String, Project>? = null
-) {
+    var appProject: Project,
+    val mAllChangedProject: MutableMap<String, Project>? = null,
+    val mLastChangeProject: MutableSet<String>? = null) {
 
     companion object {
         const val TRANSFORMS = "/intermediates/transforms/"
@@ -26,12 +27,11 @@ open class CleanDuplicateJarJob(
         const val Build = "Build"
     }
 
-
     fun runCleanAction() {
         val android = appProject.extensions.getByType(AppExtension::class.java)
 
         android.buildTypes.all { buildType ->
-            getTaskProvider(PRE + buildType.name.capitalize()+Build)?.let { task ->
+            getTaskProvider(PRE + buildType.name.capitalize() + Build)?.let { task ->
                 innerRunCleanAction(task, buildType.name)
             }
         }
@@ -39,10 +39,9 @@ open class CleanDuplicateJarJob(
 
         android.productFlavors.all { flavor ->
             android.buildTypes.all { buildType ->
-                getTaskProvider(PRE + flavor.name.capitalize() + buildType.name.capitalize()+Build)
-                        ?.let { task ->
-                            innerRunCleanAction(task, buildType.name, flavor.name)
-                        }
+                getTaskProvider(PRE + flavor.name.capitalize() + buildType.name.capitalize() + Build)?.let { task ->
+                    innerRunCleanAction(task, buildType.name, flavor.name)
+                }
             }
         }
     }
@@ -59,22 +58,23 @@ open class CleanDuplicateJarJob(
     }
 
 
-    private fun innerRunCleanAction(task: TaskProvider<Task>, buildType: String, flavor: String? = null) {
+    private fun innerRunCleanAction(
+        task: TaskProvider<Task>, buildType: String, flavor: String? = null) {
         //清理 jar
         task.configure {
-           it.doFirst {
-               CleanDuplicateAction().let {
-                   it.job = this@CleanDuplicateJarJob
-                   it.flavor = flavor
-                   it.buildType = buildType
-                   it.clean()
-               }
-           }
+            it.doFirst {
+                CleanDuplicateAction().let {
+                    it.job = this@CleanDuplicateJarJob
+                    it.flavor = flavor
+                    it.buildType = buildType
+                    it.clean()
+                }
+            }
         }
     }
 
 
-    open class CleanDuplicateAction  {
+    open class CleanDuplicateAction {
         lateinit var job: CleanDuplicateJarJob
         var flavor: String? = null
         lateinit var buildType: String
@@ -85,7 +85,7 @@ open class CleanDuplicateJarJob(
                 val allThirdPg = destDir.listFiles()
                 allThirdPg.forEach {
                     val jarDir = File(it.absolutePath,
-                            if (flavor != null) flavor + File.separator + buildType else buildType)
+                        if (flavor != null) flavor + File.separator + buildType else buildType)
                     if (jarDir.exists()) {
                         val contentFile = File(jarDir.absolutePath, SubStream.FN_FOLDER_CONTENT)
                         if (contentFile.exists()) {
@@ -100,30 +100,75 @@ open class CleanDuplicateJarJob(
 
         fun cleanJarByContentJson(jarDir: File) {
             val subStreams = SubStream.loadSubStreams(jarDir)
+            if (subStreams == null) return
             val iterator = subStreams.iterator()
+            //记录所有的jar
+            val duplicateMap = mutableMapOf<String, String>()
+            //记录需要移除的 jar，N 个相同，移除前面的 n-1 个，保留最后一个
+            val needToRemoveSet = mutableSetOf<String>()
+            //移除变成 aar的 project
+            val needToRemoveProject = hasChangetoAar()
             while (iterator.hasNext()) {
                 val subStream = iterator.next()
+                val scope = subStream.scopes?.toList()?.get(0) as? QualifiedContent.Scope
+                val index = subStream.name.indexOf("_")
+                var moduleName: String? = null
+                if (index > 0) {
+                    moduleName = subStream.name.substring(0, index)
+                    if (moduleName.endsWith(":")) {
+                        moduleName = moduleName.substring(0, moduleName.length - 1)
+                    }
+                    if (duplicateMap.contains(moduleName)) {
+                        //记录重复，缓存剔除
+                        duplicateMap.get(moduleName)?.run {
+                            needToRemoveSet.add(this)
+                        }
+                    }
+                    duplicateMap.put(moduleName, subStream.name)
 
-                val moduleNameArray = subStream.name.split(":")
-                var moduleName :String? = null
-                if(moduleNameArray.size > 1){
-                    moduleName = moduleNameArray[1]
-                }
-                moduleName?.let {
-                    if(moduleIsChange(it)) {
-                        File(jarDir.absolutePath,subStream.filename).delete()
-                        iterator.remove()
+                    // project 变成 aar，project 的缓存剔除
+                    if (needToRemoveProject.contains(moduleName)
+                        && (scope == QualifiedContent.Scope.SUB_PROJECTS || scope == QualifiedContent.Scope.PROJECT)) {
+                        needToRemoveSet.add(subStream.name)
+                    }
+                    moduleName?.let {
+                        // aar 变成 project，aar 的缓存剔除
+                        if (moduleIsChange(it) && scope == QualifiedContent.Scope.EXTERNAL_LIBRARIES) {
+                            needToRemoveSet.add(subStream.name)
+                        }
                     }
                 }
             }
-            SubStream.save(subStreams,jarDir)
+
+            subStreams.removeAll {
+                if (needToRemoveSet.contains(it.name)) {
+                    File(jarDir.absolutePath, it.filename).delete()
+                    true
+                } else {
+                    false
+                }
+            }
+
+
+            SubStream.save(subStreams, jarDir)
         }
 
 
-        //模块是否改动
-        fun moduleIsChange(name: String):Boolean {
+        //模块是否改动,从aar 变成 project
+        fun moduleIsChange(name: String): Boolean {
             var ret = job.mAllChangedProject?.get(name) != null
             return ret
+        }
+
+        //从 project 变成aar
+        fun hasChangetoAar(): MutableSet<String> {
+            val hasChangeList = mutableSetOf<String>()
+            job.mLastChangeProject?.forEach { last ->
+                if (job.mAllChangedProject?.keys?.contains(last)?.not() ?: false) {
+                    hasChangeList.add(last)
+                }
+            }
+            return hasChangeList
         }
     }
 

@@ -84,7 +84,7 @@ open class RocketXPlugin : Plugin<Project> {
      */
     fun doAfterEvaluated() {
 
-        CleanDuplicateJarJob(appProject,mAllChangedProject).runCleanAction()
+//        CleanDuplicateJarJob(appProject,mAllChangedProject).runCleanAction()
 
         appProject.rootProject.allprojects.forEach {
             //剔除 app 和 rootProject

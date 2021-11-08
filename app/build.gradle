@@ -58,7 +58,7 @@ dependencies {
      implementation "com.alibaba:arouter-api:1.5.0"
 
     implementation project(':projectA')
-    implementation project(':projectB')
+    implementation project(':libbz:projectB')
     implementation project(':projectC')
     implementation project(':libAnnotations')
 }

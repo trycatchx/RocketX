@@ -55,7 +55,7 @@ class AarFlatLocalMaven(
 
     fun hookBundleAarTask(task: TaskProvider<Task>, buildType: String) {
         //如果当前模块是改动模块，需要打 aar
-        if (mAllChangedProject?.contains(childProject.name) ?: false) {
+        if (mAllChangedProject?.contains(childProject.path) ?: false) {
             //打包aar
             val bundleTask = getBundleTask(childProject, buildType.capitalize())?.apply {
                 task.configure {

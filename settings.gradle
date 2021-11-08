@@ -1,5 +1,5 @@
 include ':app'
 include ':projectA'
-include ':projectB'
+include 'libbz:projectB'
 include ':projectC'
 include ':libAnnotations'
