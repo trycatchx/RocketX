@@ -46,7 +46,7 @@ object FileUtil {
 
 
     internal fun getLocalMavenCacheDir(): String {
-        return sProject.rootProject.rootDir.absolutePath + "/.rocketxcache/"
+        return sProject.rootProject.rootDir.absolutePath + File.separator + ".gradle" + File.separator + ".rocketxcache" + File.separator
     }
 }
 

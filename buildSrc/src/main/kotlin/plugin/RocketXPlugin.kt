@@ -11,6 +11,7 @@ import plugin.localmaven.JarFlatLocalMaven
 import plugin.localmaven.LocalMaven
 import plugin.localmaven.mavenPublish
 import plugin.utils.*
+import plugin.utils.FileUtil.getLocalMavenCacheDir
 import java.io.File
 
 /**
@@ -40,12 +41,13 @@ open class RocketXPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
         //应用在 主 project 上，也就是 app module
-        if (hasAndroidPlugin(project)) return
-        this.appProject = project
         mRocketXBean = project.extensions.create("RocketX", RocketXBean::class.java)
+        if (!isEnable(project) || hasAndroidPlugin(project)) return
+        this.appProject = project
         FileUtil.attach(project)
         flatDirs()
         android = project.extensions.getByType(AppExtension::class.java)
+
         println(TAG + " =============changed project=================")
         mAllChangedProject?.forEach {
             println(TAG + "name: " + it.key)
@@ -53,7 +55,7 @@ open class RocketXPlugin : Plugin<Project> {
         println(TAG + " =============changed project================= end")
 
 
-        if(mRocketXBean?.localMaven ?: false) {
+        if (mRocketXBean?.localMaven ?: false) {
             appProject.rootProject.allprojects.forEach {
                 if (it.name.equals("app") || it == appProject.rootProject || it.childProjects.isNotEmpty()) {
                     return@forEach
@@ -105,7 +107,7 @@ open class RocketXPlugin : Plugin<Project> {
      */
     fun flatDirs() {
         val map = mutableMapOf<String, File>()
-        map.put("dirs", appProject.rootProject.file(".rocketxcache"))
+        map.put("dirs", File(getLocalMavenCacheDir()))
         appProject.rootProject.allprojects {
             it.repositories.flatDir(map)
         }
@@ -131,11 +133,14 @@ open class RocketXPlugin : Plugin<Project> {
             }
             //android 子 module
             if (childAndroid != null) {
-                mLocalMaven =
-                    AarFlatLocalMaven(childProject, this@RocketXPlugin, appProject, mAllChangedProject)
+                mLocalMaven = AarFlatLocalMaven(childProject,
+                    this@RocketXPlugin,
+                    appProject,
+                    mAllChangedProject)
             } else if (hasJavaPlugin(childProject)) {
                 //java 子 module
-                mLocalMaven = JarFlatLocalMaven(childProject, this@RocketXPlugin, mAllChangedProject)
+                mLocalMaven =
+                    JarFlatLocalMaven(childProject, this@RocketXPlugin, mAllChangedProject)
             }
             //需要上传到 localMaven
             mLocalMaven?.uploadLocalMaven()

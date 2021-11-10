@@ -3,6 +3,7 @@ package plugin.utils
 import com.google.gson.Gson
 import groovy.io.FileType
 import org.gradle.api.Project
+import org.gradle.internal.impldep.bsh.commands.dir
 import plugin.bean.ModuleChangeTime
 import plugin.bean.ModuleChangeTimeList
 import java.io.File
@@ -38,7 +39,7 @@ object ChangeModuleUtils {
             println("module name==>${child.path}; countTime=$countTime")
         }
 
-        val dir = File(rootProject.projectDir.absolutePath + "/.rocketxcache")
+        val dir = File(FileUtil.getLocalMavenCacheDir())
         if (!dir.exists()) {
             dir.mkdirs()
         }
@@ -102,7 +103,7 @@ object ChangeModuleUtils {
 
 
     fun flushJsonFile() {
-        val dir = File(rootProject.projectDir.absolutePath + "/.rocketxcache")
+        val dir = File(FileUtil.getLocalMavenCacheDir())
         if (!dir.exists()) {
             dir.mkdirs()
         }
