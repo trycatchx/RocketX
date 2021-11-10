@@ -1,7 +1,10 @@
 <idea-plugin>
+  <!-- 插件唯一id，不能和其他插件项目重复，所以推荐使用com.xxx.xxx的格式 ，插件不同版本之间不能更改，若没有指定，则与插件名称相同 -->
   <id>com.github.zhangchaojiong.RocketXPlugin.ide</id>
+  <!-- 插件名称，别人在官方插件库搜索你的插件时使用的名称 -->
   <name>RocketX</name>
   <version>1.0.0</version>
+  <!-- 供应商主页和email-->
   <vendor email="zhaotian.liu@tcl.com" url="https://github.com/zhangchaojiong/RocketXPlugin">TCL</vendor>
 
   <description><![CDATA[
@@ -24,14 +27,10 @@
   </extensions>
 
   <actions>
-    <group id = "Plugin_RocketX_Tools" text = " RocketX" popup="true">
-      <action id="RocketXRun" class="RocketXEnable" text="RocketXRun" icon="/res/icon.png">
+      <action id="TRocket" class="TRocketAction" text="RocketXRun" icon="/res/enable.png">
         <add-to-group group-id="MainMenu" anchor="last"/>
         <add-to-group group-id="ToolbarRunGroup" anchor="after" relative-to-action="RunnerActions"/>
       </action>
-      <action id="RocketXStop" class="RocketXUnable" text="RocketXStop" icon="/res/run.png">
-      </action>
-    </group>
   </actions>
 
 </idea-plugin>

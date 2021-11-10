@@ -8,14 +8,11 @@ import javax.swing.Icon
  */
 object PluginIcons {
 
-    private val RocketXIcon = load("/icons/icon.png")
-    private val RocketXRun = load("/icons/run.png")
-
     /* Run action icon */
-    val ICON_ACTION_RUN: Icon = RocketXIcon
+    val ICON_ACTION_ENABLE: Icon = load("/res/unable.png")
 
     /* Stop action icon */
-    val ICON_ACTION_STOP: Icon = RocketXRun
+    val ICON_ACTION_UNABLE: Icon =  load("/res/enable.png")
 
     private fun load(path:String): Icon {
         return IconLoader.getIcon(path, PluginIcons::class.java)
