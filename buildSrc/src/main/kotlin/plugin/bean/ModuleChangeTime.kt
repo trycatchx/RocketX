@@ -1,4 +1,4 @@
-package plugin.utils
+package plugin.bean
 
 data class ModuleChangeTime(
     val moduleName: String,

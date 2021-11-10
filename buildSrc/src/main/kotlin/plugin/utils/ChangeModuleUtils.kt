@@ -3,6 +3,8 @@ package plugin.utils
 import com.google.gson.Gson
 import groovy.io.FileType
 import org.gradle.api.Project
+import plugin.bean.ModuleChangeTime
+import plugin.bean.ModuleChangeTimeList
 import java.io.File
 
 object ChangeModuleUtils {
