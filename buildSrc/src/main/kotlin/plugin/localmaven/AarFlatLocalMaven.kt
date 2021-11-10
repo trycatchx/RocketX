@@ -21,15 +21,17 @@ import java.io.File
  */
 class AarFlatLocalMaven(
     var childProject: Project,
-    var childAndroid: LibraryExtension,
+    var rocketXPlugin: RocketXPlugin,
     var appProject: Project,
-    var mAllChangedProject: MutableMap<String, Project>? = null
-) : LocalMaven() {
+    var mAllChangedProject: MutableMap<String, Project>? = null) : LocalMaven() {
 
     companion object {
         const val ASSEMBLE = "assemble"
     }
 
+    val enableLocalMaven by lazy {
+        rocketXPlugin.mRocketXBean?.localMaven ?: false
+    }
 
     override fun uploadLocalMaven() {
         //先 hook bundleXXaar task 打出包
@@ -64,27 +66,28 @@ class AarFlatLocalMaven(
                 }
             }
 
-            //上传 aar
-            var localMavenTask = childProject.tasks.maybeCreate(
-                "uploadLocalMaven" + buildType.capitalize(),
-                LocalMavenTask::class.java
-            )
-            localMavenTask.localMaven = this@AarFlatLocalMaven
-            bundleTask?.finalizedBy(localMavenTask)
-
-            // publish local maven
-            bundleTask?.let { bTask ->
-                println("bTask=$bTask")
-                val buildType = if (bTask.name.contains("release")) {
-                    "Release"
-                } else {
-                    "Debug"
+            if (enableLocalMaven) {
+                // publish local maven
+                bundleTask?.let { bTask ->
+                    println("bTask=$bTask")
+                    val buildType = if (bTask.name.contains("release")) {
+                        "Release"
+                    } else {
+                        "Debug"
+                    }
+                    val publishTask =
+                        childProject.project.tasks.named("publishMaven${buildType}PublicationToLocalRepository").orNull
+                    publishTask?.let {
+                        bTask.finalizedBy(it)
+                    }
                 }
-                val publishTask =
-                    childProject.project.tasks.named("publishMaven${buildType}PublicationToLocalRepository").orNull
-                publishTask?.let {
-                    bTask.finalizedBy(it)
-                }
+            } else {
+                //copy aar
+                var localMavenTask =
+                    childProject.tasks.maybeCreate("uploadLocalMaven" + buildType.capitalize(),
+                        LocalMavenTask::class.java)
+                localMavenTask.localMaven = this@AarFlatLocalMaven
+                bundleTask?.finalizedBy(localMavenTask)
             }
         }
     }
@@ -115,12 +118,9 @@ class AarFlatLocalMaven(
             inputFile = inputPath?.let { File(it) }
             outputDir = File(this.outputPath)
 
-            println(RocketXPlugin.TAG + "uploadLocalMaven inputPath:" + inputPath)
-            println(RocketXPlugin.TAG + "uploadLocalMaven outputDir:" + outputPath)
             inputFile?.let {
                 File(outputDir, getProject().name + ".aar").let { file ->
                     if (file.exists()) {
-                        println(RocketXPlugin.TAG + "uploadLocalMaven delete")
                         file.delete()
                     }
                 }

@@ -5,6 +5,7 @@ import com.android.build.gradle.LibraryExtension
 import org.gradle.api.*
 import org.gradle.api.execution.TaskExecutionListener
 import org.gradle.api.tasks.TaskState
+import plugin.bean.RocketXBean
 import plugin.localmaven.AarFlatLocalMaven
 import plugin.localmaven.JarFlatLocalMaven
 import plugin.localmaven.LocalMaven
@@ -31,6 +32,7 @@ open class RocketXPlugin : Plugin<Project> {
 
     lateinit var appProject: Project
     lateinit var android: AppExtension
+    var mRocketXBean: RocketXBean? = null
     lateinit var mAppProjectDependencies: AppProjectDependencies
     val mAllChangedProject by lazy {
         ChangeModuleUtils.getChangeModuleMap(appProject)
@@ -40,6 +42,7 @@ open class RocketXPlugin : Plugin<Project> {
         //应用在 主 project 上，也就是 app module
         if (hasAndroidPlugin(project)) return
         this.appProject = project
+        mRocketXBean = project.extensions.create("RocketX", RocketXBean::class.java)
         FileUtil.attach(project)
         flatDirs()
         android = project.extensions.getByType(AppExtension::class.java)
@@ -49,12 +52,15 @@ open class RocketXPlugin : Plugin<Project> {
         }
         println(TAG + " =============changed project================= end")
 
-        appProject.rootProject.allprojects.forEach {
-            if (it.name.equals("app") || it == appProject.rootProject || it.childProjects.isNotEmpty()) {
-                return@forEach
+
+        if(mRocketXBean?.localMaven ?: false) {
+            appProject.rootProject.allprojects.forEach {
+                if (it.name.equals("app") || it == appProject.rootProject || it.childProjects.isNotEmpty()) {
+                    return@forEach
+                }
+                // 配置maven publish
+                it.mavenPublish()
             }
-            // 配置maven publish
-            it.mavenPublish()
         }
 
         mAppProjectDependencies = AppProjectDependencies(project, android, mAllChangedProject) {
@@ -111,7 +117,7 @@ open class RocketXPlugin : Plugin<Project> {
      */
     fun doAfterEvaluated() {
 
-        CleanDuplicateJarJob(appProject,mAllChangedProject).runCleanAction()
+        CleanDuplicateJarJob(appProject, mAllChangedProject).runCleanAction()
 
         appProject.rootProject.allprojects.forEach {
             //剔除 app 和 rootProject
@@ -121,14 +127,15 @@ open class RocketXPlugin : Plugin<Project> {
             var childAndroid: LibraryExtension? = null
             try {
                 childAndroid = it.project.extensions.getByType(LibraryExtension::class.java)
-            } catch (ignore : Exception) {
+            } catch (ignore: Exception) {
             }
             //android 子 module
-            if(childAndroid != null) {
-                mLocalMaven =  AarFlatLocalMaven(childProject,childAndroid,appProject,mAllChangedProject)
+            if (childAndroid != null) {
+                mLocalMaven =
+                    AarFlatLocalMaven(childProject, this@RocketXPlugin, appProject, mAllChangedProject)
             } else if (hasJavaPlugin(childProject)) {
                 //java 子 module
-                mLocalMaven =  JarFlatLocalMaven(childProject,appProject,mAllChangedProject)
+                mLocalMaven = JarFlatLocalMaven(childProject, this@RocketXPlugin, mAllChangedProject)
             }
             //需要上传到 localMaven
             mLocalMaven?.uploadLocalMaven()
@@ -140,9 +147,9 @@ open class RocketXPlugin : Plugin<Project> {
     //打印处理完的整个依赖图
     fun pritlnDependencyGraph() {
         mAppProjectDependencies.mAllChildProjectDependenciesList.forEach {
-            println(TAG + "======project name: ${it.project.name}==========" )
+            println(TAG + "======project name: ${it.project.name}==========")
             it.allConfigList.forEach {
-                if( it.dependencies.size >0) {
+                if (it.dependencies.size > 0) {
                     println(TAG + "=====Config name:${it.name} ===== ")
                     it.dependencies.forEach {
                         println(TAG + "dependency:" + it.hashCode())

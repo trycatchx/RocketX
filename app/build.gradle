@@ -46,6 +46,10 @@ android {
             manifestPlaceholders = [channel: "test", build_type: "formal"]
         }
     }
+
+    RocketX {
+        localMaven = false
+    }
 }
 
 dependencies {
