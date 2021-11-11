@@ -12,7 +12,7 @@ abstract class BaseAction(val icon: Icon) : AnAction(icon){
 
     override fun actionPerformed(event: AnActionEvent) {
         this.mProject = event.getData(PlatformDataKeys.PROJECT)!!
-        this.mParentPath = mProject.baseDir?.path.toString()
+        this.mParentPath = mProject.baseDir?.path+"/.gradle/"
         this.mEvent = event
         doAction()
     }

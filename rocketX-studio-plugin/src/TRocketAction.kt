@@ -10,7 +10,7 @@ import java.io.File
 class TRocketAction : BaseAction(ICON_ACTION_UNABLE) {
 
     override fun doAction() {
-        val parentDir = File("$mParentPath/.gradle/")
+        val parentDir = File(mParentPath)
         if(!parentDir.exists()) {
             parentDir.mkdirs()
         }
