@@ -1,6 +1,5 @@
 package plugin.utils
 
-import org.apache.commons.io.FilenameUtils
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
@@ -8,7 +7,6 @@ import org.gradle.api.internal.artifacts.dependencies.DefaultSelfResolvingDepend
 import org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact
 import org.gradle.api.internal.file.collections.DefaultConfigurableFileCollection
 import org.gradle.api.internal.file.collections.DefaultConfigurableFileTree
-import org.gradle.internal.nativeintegration.console.FallbackConsoleMetaData
 import plugin.ChildProjectDependencies
 import java.io.File
 
@@ -98,8 +96,7 @@ class DependenciesHelper(var mProjectDependenciesList: MutableList<ChildProjectD
                             // parent 铁定有 childConfig.name 的 config
                             parentProject.key.dependencies.add(childConfig.name, dependencyClone)
                         } else {
-                            if (childDepency is DefaultSelfResolvingDependency &&
-                                (childDepency.files is DefaultConfigurableFileCollection || childDepency.files is DefaultConfigurableFileTree)) {
+                            if (childDepency is DefaultSelfResolvingDependency && (childDepency.files is DefaultConfigurableFileCollection || childDepency.files is DefaultConfigurableFileTree)) {
                                 // 这里的依赖是以下两种： 无需添加在 parent ，因为 jar 包直接进入 自身的 aar 中的libs 文件夹
                                 //    implementation rootProject.files("libs/tingyun-ea-agent-android-2.15.4.jar")
                                 //    implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -151,10 +148,20 @@ class DependenciesHelper(var mProjectDependenciesList: MutableList<ChildProjectD
         listArtifact.forEach {
             it.file.copyTo(File(FileUtil.getLocalMavenCacheDir(), it.file.name), true)
             //剔除后缀 （.aar）
-            aarList.add(FilenameUtils.removeExtension(it.file.name))
+            aarList.add(removeExtension(it.file.name))
         }
 
         return aarList
+    }
+
+
+    fun removeExtension(filename: String): String {
+        val index = filename.lastIndexOf(".")
+        return if (index == -1) {
+            filename
+        } else {
+            filename.substring(0, index)
+        }
     }
 
 

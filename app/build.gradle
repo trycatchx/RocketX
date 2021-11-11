@@ -47,9 +47,6 @@ android {
         }
     }
 
-    RocketX {
-        localMaven = false
-    }
 }
 
 dependencies {
