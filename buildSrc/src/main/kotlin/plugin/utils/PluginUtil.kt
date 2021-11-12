@@ -1,6 +1,5 @@
 package plugin.utils
 
-import com.sun.org.apache.xpath.internal.operations.Bool
 import org.gradle.api.Project
 import java.io.File
 

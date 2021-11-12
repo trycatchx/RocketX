@@ -58,7 +58,7 @@ class AarFlatLocalMaven(
 
     fun hookBundleAarTask(task: TaskProvider<Task>, buildType: String) {
         //如果当前模块是改动模块，需要打 aar
-        if (mAllChangedProject?.contains(childProject.path) ?: false) {
+        if (mAllChangedProject?.contains(childProject.path) == true) {
             //打包aar
             val bundleTask = getBundleTask(childProject, buildType.capitalize())?.apply {
                 task.configure {
@@ -75,15 +75,20 @@ class AarFlatLocalMaven(
                     } else {
                         "Debug"
                     }
-                    val publishTask =
-                        childProject.project.tasks.named("publishMaven${buildType}PublicationToLocalRepository").orNull
-                    publishTask?.let {
-                        bTask.finalizedBy(it)
+                    try {
+                        val publishMavenTask =
+                            childProject.project.tasks.named("publishMaven${buildType}PublicationToLocalRepository").orNull
+                        publishMavenTask?.let {
+                            bTask.finalizedBy(it)
+                        }
+                    }catch (e: Throwable) {
+                        e.printStackTrace()
                     }
+
                 }
             } else {
                 //copy aar
-                var localMavenTask =
+                val localMavenTask =
                     childProject.tasks.maybeCreate("uploadLocalMaven" + buildType.capitalize(),
                         LocalMavenTask::class.java)
                 localMavenTask.localMaven = this@AarFlatLocalMaven

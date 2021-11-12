@@ -14,6 +14,7 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.bundling.Jar
 import org.gradle.api.tasks.javadoc.Javadoc
 import org.gradle.external.javadoc.StandardJavadocDocletOptions
+import plugin.bean.RocketXBean
 import plugin.utils.FileUtil
 import plugin.utils.hasAndroidPlugin
 import plugin.utils.hasAppPlugin
@@ -33,13 +34,13 @@ const val MAVEN_AAR = "aar"
  * 便捷的发布到 maven 仓库
  *
  */
-fun Project.mavenPublish() {
+fun Project.mavenPublish(mRocketXBean: RocketXBean?) {
     // 获取 module 中定义的发布信息
     val pomDesc = "library is ${this.name}"
     val pomGroupId = "com.${this.name}"
     val pomAftId = this.name as String
     val pomVersion = "1.0"
-    mavenPublish(pomGroupId, pomAftId, pomVersion, pomDesc) {
+    mavenPublish(mRocketXBean, pomGroupId, pomAftId, pomVersion, pomDesc) {
         it.maven { artifactRepository ->
             artifactRepository.name = "local"
             artifactRepository.url = MAVEN_LOCAL
@@ -61,12 +62,14 @@ fun Project.mavenPublish() {
  * @param repository 配置 maven 仓库
  */
 fun Project.mavenPublish(
+    mRocketXBean: RocketXBean?,
     groupId: String,
     artifactId: String,
     version: String,
     desc: String,
     repository: Action<RepositoryHandler>
 ) = gradle.projectsEvaluated {
+    if (mRocketXBean?.localMaven != true) return@projectsEvaluated
     // 判断 module 类型
     val isJava = hasJavaPlugin(project)
     val isAndroidApp = hasAppPlugin(project)

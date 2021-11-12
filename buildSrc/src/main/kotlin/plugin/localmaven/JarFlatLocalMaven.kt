@@ -28,10 +28,10 @@ class JarFlatLocalMaven(
         if(enableLocalMaven) {
             // publish local maven
             try {
-                val publishTask = childProject.project.tasks.named("publishMavenJavaPublicationToLocalRepository").orNull
+                val publishMavenTask = childProject.project.tasks.named("publishMavenJavaPublicationToLocalRepository").orNull
                 childProject.tasks.findByPath(JAR)?.let { task ->
-                    if (publishTask != null) {
-                        task.finalizedBy(publishTask)
+                    if (publishMavenTask != null) {
+                        task.finalizedBy(publishMavenTask)
                     }
                 }
             } catch (e: Throwable) {
@@ -39,10 +39,10 @@ class JarFlatLocalMaven(
             }
         } else {
             //通过 flat copy 到cache 目录
-            var localMavenTask = childProject.task("uploadLocalMaven") {
+            val localMavenTask = childProject.task("uploadLocalMaven") {
                 it.doLast {
-                    var inputPath = FileUtil.findFirstLevelJarPath(childProject)
-                    var outputFile = File(FileUtil.getLocalMavenCacheDir(), childProject.name + ".jar")
+                    val inputPath = FileUtil.findFirstLevelJarPath(childProject)
+                    val outputFile = File(FileUtil.getLocalMavenCacheDir(), childProject.name + ".jar")
 
                     inputPath?.let {
                         if (outputFile.exists()) {
@@ -53,15 +53,7 @@ class JarFlatLocalMaven(
                     }
                 }
             }
-
-            childProject.tasks.findByPath(JAR)?.let { task ->
-                 task.finalizedBy(localMavenTask)
-            }
+            childProject.tasks.findByPath(JAR)?.finalizedBy(localMavenTask)
         }
-
-
-
     }
-
-
 }
