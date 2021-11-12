@@ -8,8 +8,8 @@ import org.gradle.api.internal.artifacts.dependencies.DefaultSelfResolvingDepend
 import org.gradle.api.internal.artifacts.publish.DefaultPublishArtifact
 import org.gradle.api.internal.file.collections.DefaultConfigurableFileCollection
 import org.gradle.api.internal.file.collections.DefaultConfigurableFileTree
-import org.gradle.internal.nativeintegration.console.FallbackConsoleMetaData
 import plugin.ChildProjectDependencies
+import plugin.bean.RocketXBean
 import java.io.File
 
 /**
@@ -18,7 +18,11 @@ import java.io.File
  * data: 2021/10/25
  * copyright TCL+
  */
-class DependenciesHelper(var mProjectDependenciesList: MutableList<ChildProjectDependencies>) {
+class DependenciesHelper(val rocketXBean: RocketXBean?, var mProjectDependenciesList: MutableList<ChildProjectDependencies>) {
+
+    val enableLocalMaven by lazy {
+        rocketXBean?.localMaven ?:false
+    }
 
     //获取第一层 parent 依赖当前 project
     fun getFirstLevelParentDependencies(project: Project): MutableMap<Project, MutableList<Configuration>> {
@@ -61,9 +65,14 @@ class DependenciesHelper(var mProjectDependenciesList: MutableList<ChildProjectD
         map.forEach { parentProject ->
 
             artifactAarList.forEach {
-                addAarDependencyToProject(it,
-                    parentProject.key.configurations.maybeCreate("api").name,
-                    parentProject.key)
+                // 根据RocketXBean配置，区分使用本地aar还是maven的依赖方式
+//                if (enableLocalMaven) {
+//                    addMavenDependencyToProject(it, parentProject.key.configurations.maybeCreate("api").name,
+//                        parentProject.key)
+//                } else {
+                    addAarDependencyToProject(it, parentProject.key.configurations.maybeCreate("api").name,
+                        parentProject.key)
+//                }
             }
 
             //父依赖的 configuration 添加 当前的 project 对应的aar
@@ -73,16 +82,23 @@ class DependenciesHelper(var mProjectDependenciesList: MutableList<ChildProjectD
                     dependency is DefaultProjectDependency && dependency.name.equals(projectWapper.project.name)
                 }
 
-                //android  module or artifacts module
-                if (hasAndroidPlugin(projectWapper.project) || artifactAarList.size > 0) {
-                    addAarDependencyToProject(projectWapper.project.name,
-                        parentConfig.name,
-                        parentProject.key)
+                // 需要根据RocketXBean配置，区分使用本地aar还是maven的依赖方式
+                if (enableLocalMaven) {
+                    if (hasAndroidPlugin(projectWapper.project) || hasJavaPlugin(projectWapper.project)) {
+                        addMavenDependencyToProject(projectWapper.project.name, parentConfig.name, parentProject.key)
+                    }
                 } else {
-                    //java module
-                    addJarDependencyToProject(projectWapper.project.name,
-                        parentConfig.name,
-                        parentProject.key)
+                    //android  module or artifacts module
+                    if (hasAndroidPlugin(projectWapper.project) || artifactAarList.size > 0) {
+                        addAarDependencyToProject(projectWapper.project.name,
+                            parentConfig.name,
+                            parentProject.key)
+                    } else {
+                        //java module
+                        addJarDependencyToProject(projectWapper.project.name,
+                            parentConfig.name,
+                            parentProject.key)
+                    }
                 }
 
                 // 把子 project 自身的依赖全部 给到 父 project
@@ -122,8 +138,6 @@ class DependenciesHelper(var mProjectDependenciesList: MutableList<ChildProjectD
         val map = linkedMapOf<String, String>()
         map.put("name", aarName)
         map.put("ext", "aar")
-        // TODO: 2021/11/5 改变依赖 这里后面需要修改成
-        //project.dependencies.add(configName, "com.${project.name}:${project.name}:1.0")
         project.dependencies.add(configName, map)
     }
 
@@ -136,6 +150,11 @@ class DependenciesHelper(var mProjectDependenciesList: MutableList<ChildProjectD
         project.dependencies.add(configName, map)
     }
 
+    fun addMavenDependencyToProject(aarName: String, configName: String, project: Project) {
+        // 改变依赖 这里后面需要修改成maven依赖
+        println("lzy addMavenDependencyToProject==>>com.${aarName}:${aarName}:1.0")
+        project.dependencies.add(configName, "com.${aarName}:${aarName}:1.0")
+    }
 
     fun getAarByArtifacts(childProject: Project): MutableList<String> {
         //找到当前所有通过 artifacts.add("default", file('xxx.aar')) 依赖进来的 aar

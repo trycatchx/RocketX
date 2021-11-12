@@ -4,6 +4,7 @@ import com.android.build.gradle.AppExtension
 import org.gradle.api.Project
 import org.gradle.api.artifacts.DependencyResolutionListener
 import org.gradle.api.artifacts.ResolvableDependencies
+import plugin.bean.RocketXBean
 import plugin.utils.DependenciesHelper
 
 /**
@@ -15,6 +16,7 @@ import plugin.utils.DependenciesHelper
 open class AppProjectDependencies(
     var project: Project,
     var android: AppExtension,
+    val rocketXBean: RocketXBean?,
     val mAllChangedProject: MutableMap<String, Project>?= null,
     var listener: ((finish: Boolean) -> Unit)? = null) : DependencyResolutionListener {
 
@@ -37,7 +39,7 @@ open class AppProjectDependencies(
             }
         }
         //生成拥有整个依赖图的工具类（只能在此处才能生成）
-        mDependenciesHelper = DependenciesHelper(mAllChildProjectDependenciesList)
+        mDependenciesHelper = DependenciesHelper(rocketXBean, mAllChildProjectDependenciesList)
         mAllChildProjectDependenciesList.forEach {
             it.doDependencies(mDependenciesHelper)
         }
