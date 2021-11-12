@@ -27,7 +27,11 @@
   </extensions>
 
   <actions>
-      <action id="TRocket" class="TRocketAction" text="RocketXRun" icon="/res/enable.png">
+    <action id="TClean" class="TCleanAction" text="RocketXClean" icon="/res/clean.png">
+      <add-to-group group-id="MainMenu" anchor="last"/>
+      <add-to-group group-id="ToolbarRunGroup" anchor="after" relative-to-action="RunnerActions"/>
+    </action>
+      <action id="TRocket" class="TRocketAction" text="RocketXRun" icon="/res/unable.png">
         <add-to-group group-id="MainMenu" anchor="last"/>
         <add-to-group group-id="ToolbarRunGroup" anchor="after" relative-to-action="RunnerActions"/>
       </action>

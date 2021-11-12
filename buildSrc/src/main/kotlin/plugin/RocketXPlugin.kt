@@ -42,6 +42,7 @@ open class RocketXPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         //应用在 主 project 上，也就是 app module
         mRocketXBean = project.extensions.create("RocketX", RocketXBean::class.java)
+        println("mRocketXBean mavenEnable=${mRocketXBean?.localMaven}")
         if (!isEnable(project) || hasAndroidPlugin(project)) return
         this.appProject = project
         FileUtil.attach(project)
@@ -55,22 +56,24 @@ open class RocketXPlugin : Plugin<Project> {
         println(TAG + " =============changed project================= end")
 
 
-        if (mRocketXBean?.localMaven ?: false) {
-            appProject.rootProject.allprojects.forEach {
-                if (it.name.equals("app") || it == appProject.rootProject || it.childProjects.isNotEmpty()) {
-                    return@forEach
+        appProject.afterEvaluate {
+            println("mRocketXBean mavenEnable=${mRocketXBean?.localMaven}")
+            if (mRocketXBean?.localMaven == true) {
+                appProject.rootProject.allprojects.forEach {
+                    if (it.name.equals("app") || it == appProject.rootProject || it.childProjects.isNotEmpty()) {
+                        return@forEach
+                    }
+                    // 配置maven publish
+                    it.mavenPublish(mRocketXBean)
                 }
-                // 配置maven publish
-                it.mavenPublish()
+            }
+            appProject.gradle.projectsEvaluated {
+                doAfterEvaluated()
             }
         }
 
-        mAppProjectDependencies = AppProjectDependencies(project, android, mAllChangedProject) {
+        mAppProjectDependencies = AppProjectDependencies(project, android, mRocketXBean, mAllChangedProject) {
             pritlnDependencyGraph()
-        }
-
-        appProject.gradle.projectsEvaluated {
-            doAfterEvaluated()
         }
 
         appProject.gradle.taskGraph.addTaskExecutionListener(object : TaskExecutionListener {
@@ -124,6 +127,7 @@ open class RocketXPlugin : Plugin<Project> {
         appProject.rootProject.allprojects.forEach {
             //剔除 app 和 rootProject
             if (it.name.equals("app") || it == appProject.rootProject || it.childProjects.size > 0) return@forEach
+            if (mAllChangedProject?.contains(it.path)?.not() != false) return@forEach
             var mLocalMaven: LocalMaven? = null
             val childProject = it.project
             var childAndroid: LibraryExtension? = null
@@ -133,10 +137,12 @@ open class RocketXPlugin : Plugin<Project> {
             }
             //android 子 module
             if (childAndroid != null) {
-                mLocalMaven = AarFlatLocalMaven(childProject,
+                mLocalMaven = AarFlatLocalMaven(
+                    childProject,
                     this@RocketXPlugin,
                     appProject,
-                    mAllChangedProject)
+                    mAllChangedProject
+                )
             } else if (hasJavaPlugin(childProject)) {
                 //java 子 module
                 mLocalMaven =

@@ -14,6 +14,9 @@ object PluginIcons {
     /* Stop action icon */
     val ICON_ACTION_UNABLE: Icon =  load("/res/enable.png")
 
+    /* Stop action icon */
+    val ICON_ACTION_CLEAN: Icon =  load("/res/clean.png")
+
     private fun load(path:String): Icon {
         return IconLoader.getIcon(path, PluginIcons::class.java)
     }
