@@ -90,9 +90,6 @@ open class RocketXPlugin : Plugin<Project> {
         })
 
         appProject.gradle.buildFinished {
-//            if (it.gradle.startParameter.is) {
-//                ChangeModuleUtils.flushJsonFile()
-//            }
             println("Testset buildFinished")
         }
 

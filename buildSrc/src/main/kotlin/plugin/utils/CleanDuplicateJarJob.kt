@@ -3,6 +3,7 @@ package plugin.utils
 import com.android.build.api.transform.QualifiedContent
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.internal.pipeline.SubStream
+import groovy.io.FileType
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskProvider
@@ -41,6 +42,53 @@ open class CleanDuplicateJarJob(
             android.buildTypes.all { buildType ->
                 getTaskProvider(PRE + flavor.name.capitalize() + buildType.name.capitalize() + Build)?.let { task ->
                     innerRunCleanAction(task, buildType.name, flavor.name)
+                }
+            }
+        }
+
+        // 修改build 目录下的文件的读写属性为可读可写
+        appProject.rootProject.allprojects {
+            val startTime = System.currentTimeMillis()
+            println("startTime===>>>$startTime")
+            var fileCount = 0
+            var readCount = 0
+            var writeCount = 0
+            it.buildDir.eachFilesRecurse { file ->
+                try {
+                    fileCount++
+                    val canRead = file.setReadable(true, true)
+                    if (canRead) readCount++
+                    val canWrite = file.setWritable(true)
+                    if (canWrite) writeCount++
+                } catch (e: Throwable) {
+                    e.printStackTrace()
+                }
+            }
+            val endTime = System.currentTimeMillis()
+            println("endTime=$endTime")
+            println("Time consumed=${endTime - startTime}, fileCount=$fileCount, readCount=$readCount, writeCount=$writeCount")
+        }
+    }
+
+    /**
+     * 遍历文件
+     */
+    private fun File.eachFilesRecurse(
+        fileType: FileType = FileType.ANY,
+        closure: ((File) -> Unit)?
+    ) {
+        val files = this.listFiles()
+        if (files != null) {
+            val fileSize = files.size
+            for (i in 0 until fileSize) {
+                val file = files[i]
+                if (file.isDirectory) {
+                    if (fileType != FileType.FILES) {
+                        closure?.invoke(file)
+                    }
+                    file.eachFilesRecurse(fileType, closure)
+                } else if (fileType != FileType.DIRECTORIES) {
+                    closure?.invoke(file)
                 }
             }
         }
