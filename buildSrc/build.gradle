@@ -2,7 +2,6 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version "1.4.20"
 }
 
-
 dependencies {
     implementation gradleApi()
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.4.20"
@@ -15,5 +14,6 @@ repositories {
     google()
     mavenCentral()
     gradlePluginPortal()
+
 }
 

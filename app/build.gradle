@@ -1,9 +1,10 @@
-import plugin.bean.RocketXBean
-
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
-apply plugin: 'com.rocketx'
+if(!uploadMaven) {
+    apply plugin: 'com.rocketx'
+}
+
 
 android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
@@ -55,9 +56,6 @@ android {
         viewBinding = true
     }
 
-    RocketX {
-        localMaven = true
-    }
 }
 
 dependencies {

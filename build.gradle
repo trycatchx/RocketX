@@ -1,6 +1,7 @@
 apply from: "common.gradle"
 apply from: "config.gradle"
 
+
 buildscript {
     repositories {
 //        mavenLocal {url "${rootDir.absolutePath}/repos"}
@@ -29,6 +30,7 @@ allprojects {
         mavenCentral()
         google()
         maven { url "https://plugins.gradle.org/m2/" }
+
     }
 
 }
