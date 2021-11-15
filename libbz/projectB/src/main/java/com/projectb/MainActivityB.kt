@@ -7,8 +7,7 @@ import android.util.Log
 class MainActivityB : AppCompatActivity() {
     companion object {
         fun test() {
-
-            Log.e("lzy", "test MainActivityB  99")
+            Log.e("lzy", "test MainActivityB  9999")
         }
     }
 

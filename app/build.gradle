@@ -1,7 +1,11 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
-apply plugin: 'com.rocketx'
+
+if (!Boolean.parseBoolean(uploadMaven)) {
+    apply plugin: 'com.rocketx'
+}
+
 
 android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion

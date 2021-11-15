@@ -1,10 +1,9 @@
 package plugin.localmaven
 
 import MAVEN_LOCAL
+import MAVEN_LOCAL_NAME
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.Action
-import org.gradle.api.AntBuilder.AntMessagePriority.from
-import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.internal.artifacts.dsl.LazyPublishArtifact
@@ -12,10 +11,7 @@ import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.bundling.Jar
-import org.gradle.api.tasks.javadoc.Javadoc
-import org.gradle.external.javadoc.StandardJavadocDocletOptions
 import plugin.bean.RocketXBean
-import plugin.utils.FileUtil
 import plugin.utils.hasAndroidPlugin
 import plugin.utils.hasAppPlugin
 import plugin.utils.hasJavaPlugin
@@ -35,6 +31,29 @@ const val MAVEN_AAR = "aar"
  *
  */
 fun Project.mavenPublish(mRocketXBean: RocketXBean?) {
+    // 配置local maven的路径
+    rootProject.buildscript.repositories.apply{
+        // 因为没有找到MavenArtifactRepository的快捷创建方法，
+        // 这里采用内部方法先添加（会创建一个实例，添加到集合尾部），再移除，再将实例添加到集合第一个位置
+        val localMaven = this.mavenLocal {
+            it.name = MAVEN_LOCAL_NAME
+            it.url = MAVEN_LOCAL
+        }
+        removeAt(this.lastIndex)
+        addFirst(localMaven)
+    }
+    rootProject.allprojects.forEach {
+        // 因为没有找到MavenArtifactRepository的快捷创建方法，
+        // 这里采用内部方法先添加（会创建一个实例，添加到集合尾部），再移除，再将实例添加到集合第一个位置
+        it.repositories.apply {
+            val localMaven = this.mavenLocal { ml ->
+                ml.name = MAVEN_LOCAL_NAME
+                ml.url = MAVEN_LOCAL
+            }
+            removeAt(this.lastIndex)
+            addFirst(localMaven)
+        }
+    }
     // 获取 module 中定义的发布信息
     val pomDesc = "library is ${this.name}"
     val pomGroupId = "com.${this.name}"
