@@ -21,6 +21,9 @@ Plugin version | Gradle version
 * rocketx.jar 通过在项目工程根目录新建文件夹Plugin，置放进去 Plugin文件夹，在根目录的build.gradle 写入 classpath fileTree(dir: './Plugin', include: ['*.jar'])
 * 使用点击小火箭至喷火icon （enable 状态），点击编译器原有的 run 按钮进行编译
 
+## 描述
+* 第一次的加速，是最慢的因为需要全量编译后，打出 aar 上传到 LocalMaven
+* 目前如果编译出错，请重新再 run 一次，出现的问题 欢迎提 issue
 
 ## License
 
