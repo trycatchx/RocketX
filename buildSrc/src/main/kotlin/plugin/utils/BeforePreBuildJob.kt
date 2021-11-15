@@ -107,7 +107,6 @@ open class BeforePreBuildJob(
             if (destDir.exists()) {
                 val files = destDir.listFiles()
                 files?.forEach {
-                    println("Tsetst:" + it.canWrite())
                     it.setWritable(true)
                 }
             }
