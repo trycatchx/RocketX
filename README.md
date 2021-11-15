@@ -43,6 +43,10 @@ buildscript {
 * 第一次的加速，是最慢的因为需要全量编译后，打出 aar 上传到 LocalMaven
 * 目前如果编译出错，请重新再 run 一次，出现的问题 欢迎提 issue
 
+
+[Blog讲解](https://www.jianshu.com/p/59b95b5a7fab)
+
+
 ## License
 
 ```
