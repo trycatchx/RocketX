@@ -3,13 +3,15 @@
   <id>com.github.zhangchaojiong.RocketXPlugin.ide</id>
   <!-- 插件名称，别人在官方插件库搜索你的插件时使用的名称 -->
   <name>RocketX</name>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <!-- 供应商主页和email-->
-  <vendor email="zhaotian.liu@tcl.com" url="https://github.com/zhangchaojiong/RocketXPlugin">TCL</vendor>
+  <vendor email="zhaotian.liu@tcl.com" url="https://github.com/trycatchx/RocketXPlugin">TCL</vendor>
 
   <description><![CDATA[
       IntelliJ of AndroidStudio plugin for RocketX<br>
-      https://github.com/zhangchaojiong/RocketXPlugin
+      classpath 'io.github.trycatchx:rocketx:1.0.1'<br>
+      blog: https://note.youdao.com/ynoteshare/index.html?id=6a0f2c99fe803f6a0e5caccad353d9e8&type=note&_time=1636701652298<br>
+      url:  https://github.com/trycatchx/RocketXPlugin
     ]]></description>
 
   <change-notes><![CDATA[]]>
