@@ -3,7 +3,7 @@ apply from: "config.gradle"
 
 buildscript {
     repositories {
-        mavenLocal {url "${rootDir.absolutePath}/repos"}
+//        mavenLocal {url "${rootDir.absolutePath}/repos"}
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
         mavenCentral()
@@ -23,7 +23,7 @@ allprojects {
             dirs project(':projectA').file('libs')
         }
 
-        mavenLocal { url "${rootDir.absolutePath}/repos" }
+//        mavenLocal { url "${rootDir.absolutePath}/repos" }
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
         mavenCentral()
