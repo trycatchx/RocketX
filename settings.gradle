@@ -3,7 +3,9 @@ include ':projectA'
 include 'libbz:projectB'
 include ':projectC'
 include ':libAnnotations'
-if(uploadMaven) {
+
+if (Boolean.parseBoolean(uploadMaven)) {
     include ':rocketxplugin'
 }
+
 
