@@ -10,6 +10,8 @@ class MainActivityC : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
+
         Log.e("lzy", "onCreate: hhh")
+        println("sf")
     }
 }
