@@ -9,6 +9,7 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
 import plugin.RocketXPlugin
 import plugin.utils.FileUtil
+import plugin.utils.LogUtil
 import java.io.File
 
 /**
@@ -68,7 +69,7 @@ class AarFlatLocalMaven(
             if (enableLocalMaven) {
                 // publish local maven
                 bundleTask?.let { bTask ->
-                    println("bTask=$bTask")
+                    LogUtil.d("bTask=$bTask")
                     val buildType = if (bTask.name.contains("release")) {
                         "Release"
                     } else {

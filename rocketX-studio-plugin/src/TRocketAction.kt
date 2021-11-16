@@ -15,8 +15,6 @@ class TRocketAction : BaseAction(ICON_ACTION_UNABLE) {
             parentDir.mkdirs()
         }
         val targetFile =  File(parentDir,"rocketXEnable")
-        val content = File(mParentPath).readText()
-        content.replace("xxx","xxx")
         if(targetFile.exists()) {
             // 开启状态
             changeIcon(false)
