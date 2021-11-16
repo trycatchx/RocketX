@@ -3,6 +3,7 @@ package plugin
 import com.android.build.gradle.AppExtension
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
+import plugin.localmaven.AarFlatLocalMaven
 import plugin.utils.DependenciesHelper
 
 /**
@@ -26,30 +27,15 @@ open class ChildProjectDependencies(
             allConfigList.add(configuration)
         }
 
-        android.buildTypes.all { buildType ->
-            ALL_SUFFIX.forEach {
-                val configName = buildType.name + it.capitalize()
+
+        android.applicationVariants.forEach {
+            ALL_SUFFIX.forEach { suffix ->
+                val configName = it.flavorName + it.buildType.name.capitalize() + suffix.capitalize()
                 val configuration = project.configurations.maybeCreate(configName)
                 allConfigList.add(configuration)
             }
         }
 
-        android.productFlavors.all { flavor ->
-            ALL_SUFFIX.forEach {
-                val configName = flavor.name + it.capitalize()
-                val configuration = project.configurations.maybeCreate(configName)
-                allConfigList.add(configuration)
-            }
-
-            android.buildTypes.all { buildType ->
-                ALL_SUFFIX.forEach {
-                    val variantName = flavor.name + buildType.name.capitalize()
-                    val variantConfigName = variantName + it.capitalize()
-                    val variantConfiguration = project.configurations.maybeCreate(variantConfigName)
-                    allConfigList.add(variantConfiguration)
-                }
-            }
-        }
     }
 
     // 开始处理依赖关系

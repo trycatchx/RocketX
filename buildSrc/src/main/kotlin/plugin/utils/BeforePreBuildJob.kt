@@ -6,6 +6,7 @@ import com.android.build.gradle.internal.pipeline.SubStream
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskProvider
+import plugin.localmaven.AarFlatLocalMaven
 import java.io.File
 
 /**
@@ -32,20 +33,12 @@ open class BeforePreBuildJob(
     fun runCleanAction() {
         val android = appProject.extensions.getByType(AppExtension::class.java)
 
-        android.buildTypes.all { buildType ->
-            getTaskProvider(PRE + buildType.name.capitalize() + Build)?.let { task ->
-                innerRunCleanAction(task, buildType.name)
+        android.applicationVariants.forEach {
+            getTaskProvider(PRE + it.flavorName.capitalize() +  it.buildType.name.capitalize() + Build)?.let { task ->
+                innerRunCleanAction(task, it.buildType.name, it.flavorName)
             }
         }
 
-
-        android.productFlavors.all { flavor ->
-            android.buildTypes.all { buildType ->
-                getTaskProvider(PRE + flavor.name.capitalize() + buildType.name.capitalize() + Build)?.let { task ->
-                    innerRunCleanAction(task, buildType.name, flavor.name)
-                }
-            }
-        }
     }
 
 
@@ -105,10 +98,7 @@ open class BeforePreBuildJob(
             val destDir = File(job.appProject.buildDir.absolutePath,
                 DATABIND_DENPEDENCY + variant + File.separator + "out")
             if (destDir.exists()) {
-                val files = destDir.listFiles()
-                files?.forEach {
-                    it.setWritable(true)
-                }
+                destDir.deleteRecursively()
             }
         }
     }

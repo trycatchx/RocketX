@@ -36,23 +36,22 @@ class AarFlatLocalMaven(
     override fun uploadLocalMaven() {
         //先 hook bundleXXaar task 打出包
         val android = appProject.extensions.getByType(AppExtension::class.java)
-
-        android.buildTypes.all { buildType ->
-            appProject.tasks.named(ASSEMBLE + buildType.name.capitalize())?.let { task ->
-                //如果当前模块是改动模块，需要打 aar
-                hookBundleAarTask(task, buildType.name)
-            }
+        android.applicationVariants.forEach {
+            getAppAssembleTask(ASSEMBLE + it.flavorName.capitalize() + it.buildType.name.capitalize())
+                ?.let { task ->
+                    hookBundleAarTask(task, it.buildType.name)
+                }
         }
 
+    }
 
-        android.productFlavors.all { flavor ->
-            android.buildTypes.all { buildType ->
-                appProject.tasks.named(ASSEMBLE + flavor.name.capitalize() + buildType.name.capitalize())
-                    ?.let { task ->
-                        hookBundleAarTask(task, buildType.name)
-                    }
-            }
+    fun getAppAssembleTask(name: String): TaskProvider<Task>? {
+        var taskProvider: TaskProvider<Task>? = null
+        try {
+            taskProvider = appProject.tasks.named(name)
+        } catch (ignore: Exception) {
         }
+        return taskProvider
     }
 
 
@@ -81,7 +80,7 @@ class AarFlatLocalMaven(
                         publishMavenTask?.let {
                             bTask.finalizedBy(it)
                         }
-                    }catch (e: Throwable) {
+                    } catch (e: Throwable) {
                         e.printStackTrace()
                     }
 
