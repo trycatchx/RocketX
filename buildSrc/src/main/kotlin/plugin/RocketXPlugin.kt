@@ -27,7 +27,6 @@ import java.io.File
 open class RocketXPlugin : Plugin<Project> {
 
     companion object {
-        const val TAG = "RocketXPlugin:"
         const val ASSEMBLE = "assemble"
     }
 
@@ -42,22 +41,17 @@ open class RocketXPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         //应用在 主 project 上，也就是 app module
         mRocketXBean = project.extensions.create("RocketX", RocketXBean::class.java)
-        println("mRocketXBean mavenEnable=${mRocketXBean?.localMaven}")
         if (!isEnable(project) || hasAndroidPlugin(project)) return
         this.appProject = project
         FileUtil.attach(project)
         flatDirs()
         android = project.extensions.getByType(AppExtension::class.java)
 
-        println(TAG + " =============changed project=================")
-        mAllChangedProject?.forEach {
-            println(TAG + "name: " + it.key)
-        }
-        println(TAG + " =============changed project================= end")
-
 
         appProject.afterEvaluate {
-            println("mRocketXBean mavenEnable=${mRocketXBean?.localMaven}")
+            LogUtil.init("RocketXPlugin")
+            LogUtil.enableLog(mRocketXBean?.openLog ?:false)
+            LogUtil.d("mRocketXBean mavenEnable=${mRocketXBean?.localMaven}")
             if (mRocketXBean?.localMaven == true) {
                 appProject.rootProject.allprojects.forEach {
                     if (it.name.equals("app") || it == appProject.rootProject || it.childProjects.isNotEmpty()) {
@@ -81,9 +75,9 @@ open class RocketXPlugin : Plugin<Project> {
             }
 
             override fun afterExecute(task: Task, state: TaskState) {
-                println("task==>${task.name}, state=${state.failure}")
+                LogUtil.d("task==>${task.name}, state=${state.failure}")
                 if (task.name.startsWith(ASSEMBLE) && state.failure == null) {
-                    println("task==>${task.name}, state=${state.failure}")
+                    LogUtil.d("task==>${task.name}, state=${state.failure}")
                     ChangeModuleUtils.flushJsonFile()
                 }
             }
@@ -151,18 +145,18 @@ open class RocketXPlugin : Plugin<Project> {
     //打印处理完的整个依赖图
     fun pritlnDependencyGraph() {
         mAppProjectDependencies.mAllChildProjectDependenciesList.forEach {
-            println(TAG + "======project name: ${it.project.name}==========")
+            LogUtil.d("======project name: ${it.project.name}==========")
             it.allConfigList.forEach {
                 if (it.dependencies.size > 0) {
-                    println(TAG + "=====Config name:${it.name} ===== ")
+                    LogUtil.d("=====Config name:${it.name} ===== ")
                     it.dependencies.forEach {
-                        println(TAG + "dependency:" + it.hashCode())
-                        println(TAG + "dependency:" + it)
+                        LogUtil.d("dependency:" + it.hashCode())
+                        LogUtil.d("dependency:$it")
                     }
                 }
             }
 
-            println(TAG + "======project name: ========== end")
+            LogUtil.d("======project name: ========== end")
         }
     }
 

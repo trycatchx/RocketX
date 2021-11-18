@@ -35,7 +35,7 @@ object ChangeModuleUtils {
                 }
             }
             newModuleList?.add(ModuleChangeTime(child.path, countTime))
-            println("module name==>${child.path}; countTime=$countTime")
+            LogUtil.d("module name==>${child.path}; countTime=$countTime")
         }
 
         val dir = File(FileUtil.getLocalMavenCacheDir())
@@ -75,7 +75,7 @@ object ChangeModuleUtils {
                         }
                     }
                 }
-                println("hasChangeMap $hasChangeMap")
+                LogUtil.d("hasChangeMap $hasChangeMap")
 //                newModuleList?.let {
 //                    jsonFile.writeFileToModuleJson(it)
 //                }
@@ -98,7 +98,7 @@ object ChangeModuleUtils {
 
         //最后补一个 app 的 module，app 是认为做了改变，不打成 aar
         hasChangeMap?.put(appProject.path, appProject)
-        println("count time====>>>> ${System.currentTimeMillis() - startTime}")
+        LogUtil.d("count time====>>>> ${System.currentTimeMillis() - startTime}")
         return hasChangeMap
     }
 
@@ -148,7 +148,7 @@ object ChangeModuleUtils {
     private fun File.writeFileToModuleJson(moduleChangeList: MutableList<ModuleChangeTime>) {
         val newJsonTxt = Gson().toJson(ModuleChangeTimeList(moduleChangeList))
         this.writeText(newJsonTxt)
-        println("writeFileToModuleJson success!")
+        LogUtil.d("writeFileToModuleJson success!")
     }
 
 }

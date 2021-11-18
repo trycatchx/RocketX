@@ -57,6 +57,15 @@ android {
         viewBinding = true
     }
 
+
+
+    //配置插件编译项
+    RocketX {
+        localMaven = false
+        openLog = true
+    }
+
+
 }
 
 dependencies {
@@ -66,7 +75,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.3.0'
 
     implementation "com.alibaba:arouter-compiler:1.2.2"
-     implementation "com.alibaba:arouter-api:1.5.0"
+    implementation "com.alibaba:arouter-api:1.5.0"
 
     implementation project(':projectA')
 //    implementation 'com.projecta:projecta:1.0'

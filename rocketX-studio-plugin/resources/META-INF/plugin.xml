@@ -3,14 +3,9 @@
   <id>com.github.zhangchaojiong.RocketXPlugin.ide</id>
   <!-- 插件名称，别人在官方插件库搜索你的插件时使用的名称 -->
   <name>RocketX</name>
-  <version>1.0.0</version>
+  <version>1.0.3</version>
   <!-- 供应商主页和email-->
-  <vendor email="zhaotian.liu@tcl.com" url="https://github.com/zhangchaojiong/RocketXPlugin">TCL</vendor>
-
-  <description><![CDATA[
-      IntelliJ of AndroidStudio plugin for RocketX<br>
-      https://github.com/zhangchaojiong/RocketXPlugin
-    ]]></description>
+  <vendor email="zhaotian.liu@tcl.com" url="https://github.com/trycatchx/RocketXPlugin">TCL</vendor>
 
   <change-notes><![CDATA[]]>
   </change-notes>
@@ -26,6 +21,22 @@
     <!-- Add your extensions here -->
   </extensions>
 
+  <description><![CDATA[
+         IntelliJ of AndroidStudio plugin for RocketX<br>
+      <br>
+         With the increasing project volume, the compilation<br>
+       speed also increases. Sometimes a modification needs <br>
+       to wait for several minutes. <br><br>
+         Based on this general situation, rocketx is introduced to <br>
+       improve the speed of full compilation by dynamically replacing <br>
+       the module with AAR in the compilation process.<br>
+       <br>
+        Only app and modified modules are compiled, and other modules <br>
+        are AAR packages and do not participate in compilation.
+<br>
+<br>
+      url:  https://github.com/trycatchx/RocketXPlugin
+    ]]></description>
   <actions>
     <action id="TClean" class="TCleanAction" text="RocketXClean" icon="/res/clean.png">
       <add-to-group group-id="MainMenu" anchor="last"/>

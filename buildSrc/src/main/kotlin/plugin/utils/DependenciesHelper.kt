@@ -150,7 +150,7 @@ class DependenciesHelper(val rocketXBean: RocketXBean?, var mProjectDependencies
 
     fun addMavenDependencyToProject(aarName: String, configName: String, project: Project) {
         // 改变依赖 这里后面需要修改成maven依赖
-        println("lzy addMavenDependencyToProject==>>com.${aarName}:${aarName}:1.0")
+        LogUtil.d("lzy addMavenDependencyToProject==>>com.${aarName}:${aarName}:1.0")
         project.dependencies.add(configName, "com.${aarName}:${aarName}:1.0")
     }
 
