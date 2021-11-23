@@ -140,7 +140,7 @@ class DependenciesHelper(val rocketXBean: RocketXBean?, var mProjectDependencies
     }
 
     fun addJarDependencyToProject(aarName: String, configName: String, project: Project) {
-        //添加 aar 依赖 以下代码等同于 api/implementation/xxx (name: 'libaccount-2.0.0', ext: 'jar'),源码使用 linkedMap
+        //添加 jar 依赖
         if (!File(FileUtil.getLocalMavenCacheDir() + aarName + ".jar").exists()) return
         val map = linkedMapOf<String, String>()
         map.put("name", aarName)

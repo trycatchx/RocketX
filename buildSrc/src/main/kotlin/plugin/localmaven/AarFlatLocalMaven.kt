@@ -7,10 +7,15 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
+import org.gradle.internal.impldep.org.apache.maven.model.Build
 import plugin.RocketXPlugin
 import plugin.utils.FileUtil
 import plugin.utils.LogUtil
 import java.io.File
+import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
 
 /**
  * description:
@@ -34,17 +39,33 @@ class AarFlatLocalMaven(
         rocketXPlugin.mRocketXBean?.localMaven ?: false
     }
 
+
     override fun uploadLocalMaven() {
+        // 创建一个线程池
+//        initThread()
         //先 hook bundleXXaar task 打出包
         val android = appProject.extensions.getByType(AppExtension::class.java)
         android.applicationVariants.forEach {
-            getAppAssembleTask(ASSEMBLE + it.flavorName.capitalize() + it.buildType.name.capitalize())
-                ?.let { task ->
-                    hookBundleAarTask(task, it.buildType.name)
-                }
+            thread {
+                getAppAssembleTask(ASSEMBLE + it.flavorName.capitalize() + it.buildType.name.capitalize())
+                    ?.let { task ->
+                        hookBundleAarTask(task, it.buildType.name)
+                    }
+            }
         }
 
     }
+
+    private fun initThread() {
+        /** DES: DES：取CPU核心数-1 代码来自协程内部 [kotlinx.coroutines.CommonPool.createPlainPool] */
+        val corePoolSize = (Runtime.getRuntime().availableProcessors() - 1).coerceAtLeast(1)
+        val threadPoolExecutor = ThreadPoolExecutor(corePoolSize, corePoolSize,
+            5L, TimeUnit.SECONDS, LinkedBlockingQueue<Runnable>())
+        // DES：让核心线程也可以回收
+        threadPoolExecutor.allowCoreThreadTimeOut(true)
+    }
+
+
 
     fun getAppAssembleTask(name: String): TaskProvider<Task>? {
         var taskProvider: TaskProvider<Task>? = null
@@ -55,7 +76,7 @@ class AarFlatLocalMaven(
         return taskProvider
     }
 
-
+    @Synchronized
     fun hookBundleAarTask(task: TaskProvider<Task>, buildType: String) {
         //如果当前模块是改动模块，需要打 aar
         if (mAllChangedProject?.contains(childProject.path) == true) {
