@@ -42,11 +42,12 @@ class AarFlatLocalMaven(
 
     override fun uploadLocalMaven() {
         // 创建一个线程池
-//        initThread()
+        val threadPoolExecutor = initThread()
         //先 hook bundleXXaar task 打出包
         val android = appProject.extensions.getByType(AppExtension::class.java)
         android.applicationVariants.forEach {
-            thread {
+            threadPoolExecutor.execute {
+                LogUtil.d("thread_ ${it.name}  ${Thread.currentThread().id}")
                 getAppAssembleTask(ASSEMBLE + it.flavorName.capitalize() + it.buildType.name.capitalize())
                     ?.let { task ->
                         hookBundleAarTask(task, it.buildType.name)
@@ -56,13 +57,14 @@ class AarFlatLocalMaven(
 
     }
 
-    private fun initThread() {
+    private fun initThread() : ThreadPoolExecutor {
         /** DES: DES：取CPU核心数-1 代码来自协程内部 [kotlinx.coroutines.CommonPool.createPlainPool] */
         val corePoolSize = (Runtime.getRuntime().availableProcessors() - 1).coerceAtLeast(1)
         val threadPoolExecutor = ThreadPoolExecutor(corePoolSize, corePoolSize,
             5L, TimeUnit.SECONDS, LinkedBlockingQueue<Runnable>())
         // DES：让核心线程也可以回收
         threadPoolExecutor.allowCoreThreadTimeOut(true)
+        return threadPoolExecutor
     }
 
 
