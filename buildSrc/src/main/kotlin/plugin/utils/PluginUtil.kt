@@ -27,6 +27,11 @@ fun hasJavaPlugin(curProject: Project): Boolean {
 }
 
 
+fun isRunAssembleTask(curProject: Project): Boolean {
+    return curProject.projectDir.absolutePath.equals(curProject.gradle.startParameter.currentDir.absolutePath)
+}
+
+
 fun isEnable(curProject: Project): Boolean {
     val enableFile =
         File(curProject.rootProject.rootDir.absolutePath + File.separator + ".gradle" + File.separator + "rocketXEnable")

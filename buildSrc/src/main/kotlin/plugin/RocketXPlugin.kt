@@ -139,6 +139,7 @@ open class RocketXPlugin : Plugin<Project> {
             mLocalMaven?.uploadLocalMaven()
         }
 
+        InstallApkByAdb(appProject).maybeInstallApkByAdb()
     }
 
 

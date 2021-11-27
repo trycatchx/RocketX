@@ -62,7 +62,7 @@ open class BeforePreBuildJob(
                     it.job = this@BeforePreBuildJob
                     it.flavor = flavor
                     it.buildType = buildType
-                    it.clean()
+//                    it.clean()
                 }
                 FilePermissionAction().let {
                     it.job = this@BeforePreBuildJob
