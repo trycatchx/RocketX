@@ -40,10 +40,14 @@ buildscript {
 * rocketX-studio-plugin.jar 通过 android studio setting->plugins->install plugin from disk 进行安装
 * rocketx.jar 通过在项目工程根目录新建文件夹Plugin，置放进去 Plugin文件夹，在根目录的build.gradle 写入 classpath fileTree(dir: './Plugin', include: ['*.jar'])
 
-####  使用点击小火箭至喷火icon （enable 状态），点击编译器原有的 run 按钮进行编译
+####  使用点击小火箭至喷火icon （enable 状态），选择 Assemble${flavor}${buildType} task , 点击编译器原有的 run 按钮进行编译(指定 task 好处是项目中存在多个 apply plugin: 'com.android.application'  ，也只会编译当前指定的 application module ) :
+![assembleDebug](https://github.com/trycatchx/RocketXPlugin/blob/master/IMG/assembleDebug.jpeg)
+
+
 
 ## 问题
 * 第一次的加速，是最慢的因为需要全量编译后，打出 aar 上传到 LocalMaven
+* 如果使用了 arouter ，请使用 zPlugin 文件夹中的 本地 arouter 进行替换（查看demo 如何替换），速度更快（后期研究是否有更好的办法解决这个问题）
 * 目前如果编译出错，请重新再 run 一次，出现的问题 欢迎提 issue
 
 
