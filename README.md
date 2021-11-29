@@ -4,7 +4,10 @@
 
 
 ## 描述
-本插件加速 Android 项目的全量编译速度
+本插件自动识别未改动 module 并在编译流程中替换为 aar ，加速 Android 项目的全量编译速度
+
+## 编译速度对比
+![编译速度对比.png](https://upload-images.jianshu.io/upload_images/2788235-ee2c3f7b9ca7862f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ## AGP 版本兼容
 Plugin version | Gradle version

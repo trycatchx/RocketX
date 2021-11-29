@@ -1,13 +1,11 @@
 package plugin.localmaven
 
 import com.android.build.gradle.AppExtension
-import com.android.build.gradle.LibraryExtension
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
-import org.gradle.internal.impldep.org.apache.maven.model.Build
 import plugin.RocketXPlugin
 import plugin.utils.FileUtil
 import plugin.utils.LogUtil
@@ -15,7 +13,6 @@ import java.io.File
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
-import kotlin.concurrent.thread
 
 /**
  * description:
@@ -42,26 +39,28 @@ class AarFlatLocalMaven(
 
     override fun uploadLocalMaven() {
         // 创建一个线程池
-        val threadPoolExecutor = initThread()
+//        val threadPoolExecutor = initThread()
         //先 hook bundleXXaar task 打出包
         val android = appProject.extensions.getByType(AppExtension::class.java)
         android.applicationVariants.forEach {
-            threadPoolExecutor.execute {
-                LogUtil.d("thread_ ${it.name}  ${Thread.currentThread().id}")
-                getAppAssembleTask(ASSEMBLE + it.flavorName.capitalize() + it.buildType.name.capitalize())
-                    ?.let { task ->
-                        hookBundleAarTask(task, it.buildType.name)
-                    }
-            }
+//            threadPoolExecutor.execute {
+            LogUtil.d("thread_ ${it.name}  ${Thread.currentThread().id}")
+            getAppAssembleTask(ASSEMBLE + it.flavorName.capitalize() + it.buildType.name.capitalize())?.let { task ->
+                    hookBundleAarTask(task, it.buildType.name)
+                }
+//            }
         }
 
     }
 
-    private fun initThread() : ThreadPoolExecutor {
+    private fun initThread(): ThreadPoolExecutor {
         /** DES: DES：取CPU核心数-1 代码来自协程内部 [kotlinx.coroutines.CommonPool.createPlainPool] */
         val corePoolSize = (Runtime.getRuntime().availableProcessors() - 1).coerceAtLeast(1)
-        val threadPoolExecutor = ThreadPoolExecutor(corePoolSize, corePoolSize,
-            5L, TimeUnit.SECONDS, LinkedBlockingQueue<Runnable>())
+        val threadPoolExecutor = ThreadPoolExecutor(corePoolSize,
+            corePoolSize,
+            5L,
+            TimeUnit.SECONDS,
+            LinkedBlockingQueue<Runnable>())
         // DES：让核心线程也可以回收
         threadPoolExecutor.allowCoreThreadTimeOut(true)
         return threadPoolExecutor
