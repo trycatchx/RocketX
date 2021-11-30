@@ -54,6 +54,15 @@ buildscript {
 [Blog讲解](https://www.jianshu.com/p/59b95b5a7fab)
 
 
+## 开发维护者
+ 名单 | 留言
+--- | ---
+[JustAClamber](https://github.com/JustAClamber) | 知者不惑
+[louis](https://github.com/louis-lzt)| louis-lzt
+[TryCatch ](https://github.com/trycatchx)   |日落西来，月向东
+[FamilyCYZ](https://github.com/FamilyCYZ) | 什么也没有留下
+
+
 ## License
 
 ```
