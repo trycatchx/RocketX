@@ -26,7 +26,7 @@ Plugin version | Gradle version
 ```
 buildscript {
     dependencies {
-        classpath 'io.github.trycatchx:rocketx:1.0.2'
+        classpath 'io.github.trycatchx:rocketx:1.0.3'
     }
 }
 ```
