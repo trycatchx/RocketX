@@ -19,10 +19,12 @@ import java.io.File
  * data: 2021/10/25
  * copyright TCL+
  */
-class DependenciesHelper(val rocketXBean: RocketXBean?, var mProjectDependenciesList: MutableList<ChildProjectDependencies>) {
+class DependenciesHelper(
+    val rocketXBean: RocketXBean?,
+    var mProjectDependenciesList: MutableList<ChildProjectDependencies>) {
 
     val enableLocalMaven by lazy {
-        rocketXBean?.localMaven ?:false
+        rocketXBean?.localMaven ?: false
     }
 
     //获取第一层 parent 依赖当前 project
@@ -67,7 +69,8 @@ class DependenciesHelper(val rocketXBean: RocketXBean?, var mProjectDependencies
 
             artifactAarList.forEach {
                 // 根据RocketXBean配置，区分使用本地aar还是maven的依赖方式
-                addAarDependencyToProject(it, parentProject.key.configurations.maybeCreate("api").name,
+                addAarDependencyToProject(it,
+                    parentProject.key.configurations.maybeCreate("api").name,
                     parentProject.key)
             }
 
@@ -80,21 +83,23 @@ class DependenciesHelper(val rocketXBean: RocketXBean?, var mProjectDependencies
 
                 // 需要根据RocketXBean配置，区分使用本地aar还是maven的依赖方式
                 if (enableLocalMaven) {
-                   val isAndroidLib = hasAndroidPlugin(projectWapper.project)
-                   val isJavaLib = hasJavaPlugin(projectWapper.project)
+                    val isAndroidLib = hasAndroidPlugin(projectWapper.project)
+                    val isJavaLib = hasJavaPlugin(projectWapper.project)
                     if (isAndroidLib || isJavaLib) {
-                        addMavenDependencyToProject(projectWapper.project, parentConfig.name,
-                            parentProject.key, isAndroidLib)
+                        addMavenDependencyToProject(projectWapper.project,
+                            parentConfig.name,
+                            parentProject.key,
+                            isAndroidLib)
                     }
                 } else {
                     //android  module or artifacts module
                     if (hasAndroidPlugin(projectWapper.project) || artifactAarList.size > 0) {
-                        addAarDependencyToProject(projectWapper.project.name,
+                        addAarDependencyToProject(getFlatAarName(projectWapper.project),
                             parentConfig.name,
                             parentProject.key)
                     } else {
                         //java module
-                        addJarDependencyToProject(projectWapper.project.name,
+                        addJarDependencyToProject(getFlatAarName(projectWapper.project),
                             parentConfig.name,
                             parentProject.key)
                     }
@@ -148,12 +153,15 @@ class DependenciesHelper(val rocketXBean: RocketXBean?, var mProjectDependencies
         project.dependencies.add(configName, map)
     }
 
-    fun addMavenDependencyToProject(child: Project, configName: String, project: Project, isAndroid: Boolean) {
+    fun addMavenDependencyToProject(
+        child: Project, configName: String, project: Project, isAndroid: Boolean) {
         // 改变依赖 这里后面需要修改成maven依赖
         if (isAndroid) {
-            project.dependencies.add(configName, "${child.getMavenGroupId()}:${child.getMavenArtifactId()}:1.0@aar")
+            project.dependencies.add(configName,
+                "${child.getMavenGroupId()}:${child.getMavenArtifactId()}:1.0@aar")
         } else {
-            project.dependencies.add(configName, "${child.getMavenGroupId()}:${child.getMavenArtifactId()}:1.0@jar")
+            project.dependencies.add(configName,
+                "${child.getMavenGroupId()}:${child.getMavenArtifactId()}:1.0@jar")
         }
     }
 
@@ -186,6 +194,8 @@ class DependenciesHelper(val rocketXBean: RocketXBean?, var mProjectDependencies
             filename.substring(0, index)
         }
     }
+
+
 
 
     /**

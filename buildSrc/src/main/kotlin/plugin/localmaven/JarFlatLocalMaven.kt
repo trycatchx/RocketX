@@ -3,6 +3,7 @@ package plugin.localmaven
 import org.gradle.api.Project
 import plugin.RocketXPlugin
 import plugin.utils.FileUtil
+import plugin.utils.getFlatAarName
 import java.io.File
 
 /**
@@ -41,15 +42,17 @@ class JarFlatLocalMaven(
             //通过 flat copy 到cache 目录
             val localMavenTask = childProject.task("uploadLocalMaven") {
                 it.doLast {
+
+                    val flatAarName = getFlatAarName(childProject)
                     val inputPath = FileUtil.findFirstLevelJarPath(childProject)
-                    val outputFile = File(FileUtil.getLocalMavenCacheDir(), childProject.name + ".jar")
+                    val outputFile = File(FileUtil.getLocalMavenCacheDir(), flatAarName + ".jar")
 
                     inputPath?.let {
                         if (outputFile.exists()) {
                             outputFile.delete()
                         }
                         File(it).copyTo(outputFile, true)
-                        putIntoLocalMaven(childProject.name,childProject.name + ".jar")
+                        putIntoLocalMaven(flatAarName,flatAarName + ".jar")
                     }
                 }
             }

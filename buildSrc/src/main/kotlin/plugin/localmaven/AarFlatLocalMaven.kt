@@ -9,6 +9,7 @@ import org.gradle.api.tasks.TaskProvider
 import plugin.RocketXPlugin
 import plugin.utils.FileUtil
 import plugin.utils.LogUtil
+import plugin.utils.getFlatAarName
 import java.io.File
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.ThreadPoolExecutor
@@ -112,7 +113,7 @@ class AarFlatLocalMaven(
                 //copy aar
                 val localMavenTask =
                     childProject.tasks.maybeCreate("uploadLocalMaven" + buildType.capitalize(),
-                        LocalMavenTask::class.java)
+                        FlatTask::class.java)
                 localMavenTask.localMaven = this@AarFlatLocalMaven
                 bundleTask?.finalizedBy(localMavenTask)
             }
@@ -131,7 +132,7 @@ class AarFlatLocalMaven(
     }
 
     //需要构建 local maven
-    open class LocalMavenTask : DefaultTask() {
+    open class FlatTask : DefaultTask() {
         var inputPath: String? = null
         var inputFile: File? = null
         var outputPath: String? = null
@@ -140,19 +141,20 @@ class AarFlatLocalMaven(
 
         @TaskAction
         fun uploadLocalMaven() {
-            this.inputPath = FileUtil.findFirstLevelAarPath(getProject())
+            val flatAarName = getFlatAarName(project)
+            this.inputPath = FileUtil.findFirstLevelAarPath(project)
             this.outputPath = FileUtil.getLocalMavenCacheDir()
             inputFile = inputPath?.let { File(it) }
             outputDir = File(this.outputPath)
 
             inputFile?.let {
-                File(outputDir, getProject().name + ".aar").let { file ->
+                File(outputDir, flatAarName + ".aar").let { file ->
                     if (file.exists()) {
                         file.delete()
                     }
                 }
-                it.copyTo(File(outputDir, getProject().name + ".aar"), true)
-                localMaven.putIntoLocalMaven(getProject().name, getProject().name + ".aar")
+                it.copyTo(File(outputDir, flatAarName + ".aar"), true)
+                localMaven.putIntoLocalMaven(flatAarName, flatAarName + ".aar")
             }
         }
     }

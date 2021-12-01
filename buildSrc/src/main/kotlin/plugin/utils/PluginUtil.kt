@@ -55,3 +55,8 @@ fun getFlavorBuildType(appProject: Project):String {
 
     return flavorBuildType
 }
+
+//不能通过name ，需要通过 path ，有可能有多级目录(: 作为aar名字会有冲突不能用)
+fun getFlatAarName(project: Project): String {
+    return project.path.substring(1).replace(":","-")
+}
