@@ -1,5 +1,6 @@
 package plugin.utils
 
+import getMavenGroupId
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
@@ -65,13 +66,8 @@ class DependenciesHelper(val rocketXBean: RocketXBean?, var mProjectDependencies
 
             artifactAarList.forEach {
                 // 根据RocketXBean配置，区分使用本地aar还是maven的依赖方式
-//                if (enableLocalMaven) {
-//                    addMavenDependencyToProject(it, parentProject.key.configurations.maybeCreate("api").name,
-//                        parentProject.key)
-//                } else {
-                    addAarDependencyToProject(it, parentProject.key.configurations.maybeCreate("api").name,
-                        parentProject.key)
-//                }
+                addAarDependencyToProject(it, parentProject.key.configurations.maybeCreate("api").name,
+                    parentProject.key)
             }
 
             //父依赖的 configuration 添加 当前的 project 对应的aar
@@ -83,8 +79,11 @@ class DependenciesHelper(val rocketXBean: RocketXBean?, var mProjectDependencies
 
                 // 需要根据RocketXBean配置，区分使用本地aar还是maven的依赖方式
                 if (enableLocalMaven) {
-                    if (hasAndroidPlugin(projectWapper.project) || hasJavaPlugin(projectWapper.project)) {
-                        addMavenDependencyToProject(projectWapper.project.name, parentConfig.name, parentProject.key)
+                   val isAndroidLib = hasAndroidPlugin(projectWapper.project)
+                   val isJavaLib = hasJavaPlugin(projectWapper.project)
+                    if (isAndroidLib || isJavaLib) {
+                        addMavenDependencyToProject(projectWapper.project.path, projectWapper.project.name,
+                            parentConfig.name, parentProject.key, isAndroidLib)
                     }
                 } else {
                     //android  module or artifacts module
@@ -148,10 +147,13 @@ class DependenciesHelper(val rocketXBean: RocketXBean?, var mProjectDependencies
         project.dependencies.add(configName, map)
     }
 
-    fun addMavenDependencyToProject(aarName: String, configName: String, project: Project) {
+    fun addMavenDependencyToProject(projectPath: String, projectName: String, configName: String, project: Project, isAndroid: Boolean) {
         // 改变依赖 这里后面需要修改成maven依赖
-        LogUtil.d("lzy addMavenDependencyToProject==>>com.${aarName}:${aarName}:1.0")
-        project.dependencies.add(configName, "com.${aarName}:${aarName}:1.0")
+        if (isAndroid) {
+            project.dependencies.add(configName, "${projectPath.getMavenGroupId()}:${projectName}:1.0@aar")
+        } else {
+            project.dependencies.add(configName, "${projectPath.getMavenGroupId()}:${projectName}:1.0@jar")
+        }
     }
 
     fun getAarByArtifacts(childProject: Project): MutableList<String> {

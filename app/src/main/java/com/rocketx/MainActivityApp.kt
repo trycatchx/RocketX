@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import com.projectb.MainActivityB
+import com.projectc.MainActivityC
 
 class MainActivityApp : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -14,6 +15,7 @@ class MainActivityApp : AppCompatActivity() {
 
     fun test(v: View) {
 //        Log.e("lzy", "test: " )
-        MainActivityB.test()
+//        MainActivityB.test()
+        MainActivityC.test()
     }
 }

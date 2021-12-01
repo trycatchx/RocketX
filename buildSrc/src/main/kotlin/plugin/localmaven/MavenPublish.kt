@@ -3,6 +3,7 @@ package plugin.localmaven
 import MAVEN_LOCAL
 import MAVEN_LOCAL_NAME
 import com.android.build.gradle.LibraryExtension
+import getMavenGroupId
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.RepositoryHandler
@@ -56,7 +57,7 @@ fun Project.mavenPublish(mRocketXBean: RocketXBean?) {
     }
     // 获取 module 中定义的发布信息
     val pomDesc = "library is ${this.name}"
-    val pomGroupId = "com.${this.name}"
+    val pomGroupId = this.path.getMavenGroupId()
     val pomAftId = this.name as String
     val pomVersion = "1.0"
     mavenPublish(mRocketXBean, pomGroupId, pomAftId, pomVersion, pomDesc) {

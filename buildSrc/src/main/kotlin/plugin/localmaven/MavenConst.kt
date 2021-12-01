@@ -9,6 +9,15 @@ import java.net.URI
 val Project.MAVEN_LOCAL: URI
     get() = File(rootDir, "repos").toURI()
 
+fun String.getMavenGroupId(): String {
+    val mavenGroupId = if (this.startsWith(":")) {
+        this.replaceFirst(":", "").replace(":", ".")
+    } else {
+        this.replace(":", ".")
+    }
+    return "com.${mavenGroupId}"
+}
+
 const val MAVEN_LOCAL_NAME: String = "rocketXLocalMaven"
 
 const val POM_LICENCE_NAME = "Apache-2.0 License"

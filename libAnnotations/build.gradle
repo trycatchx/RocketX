@@ -4,6 +4,8 @@ apply plugin: 'java-library'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "com.squareup:javapoet:1.9.0"
+    implementation "com.google.code.gson:gson:2.8.5"
 }
 
 tasks.withType(JavaCompiler) {
