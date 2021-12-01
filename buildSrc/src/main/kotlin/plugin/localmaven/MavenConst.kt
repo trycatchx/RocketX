@@ -9,13 +9,12 @@ import java.net.URI
 val Project.MAVEN_LOCAL: URI
     get() = File(rootDir, "repos").toURI()
 
-fun String.getMavenGroupId(): String {
-    val mavenGroupId = if (this.startsWith(":")) {
-        this.replaceFirst(":", "").replace(":", ".")
-    } else {
-        this.replace(":", ".")
-    }
-    return "com.${mavenGroupId}"
+fun Project.getMavenGroupId(): String {
+    return "com.${this.path.removePrefix(":").replace(":", ".")}"
+}
+
+fun Project.getMavenArtifactId(): String {
+    return this.name
 }
 
 const val MAVEN_LOCAL_NAME: String = "rocketXLocalMaven"

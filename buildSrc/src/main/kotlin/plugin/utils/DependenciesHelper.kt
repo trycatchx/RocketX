@@ -1,5 +1,6 @@
 package plugin.utils
 
+import getMavenArtifactId
 import getMavenGroupId
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
@@ -82,8 +83,8 @@ class DependenciesHelper(val rocketXBean: RocketXBean?, var mProjectDependencies
                    val isAndroidLib = hasAndroidPlugin(projectWapper.project)
                    val isJavaLib = hasJavaPlugin(projectWapper.project)
                     if (isAndroidLib || isJavaLib) {
-                        addMavenDependencyToProject(projectWapper.project.path, projectWapper.project.name,
-                            parentConfig.name, parentProject.key, isAndroidLib)
+                        addMavenDependencyToProject(projectWapper.project, parentConfig.name,
+                            parentProject.key, isAndroidLib)
                     }
                 } else {
                     //android  module or artifacts module
@@ -147,12 +148,12 @@ class DependenciesHelper(val rocketXBean: RocketXBean?, var mProjectDependencies
         project.dependencies.add(configName, map)
     }
 
-    fun addMavenDependencyToProject(projectPath: String, projectName: String, configName: String, project: Project, isAndroid: Boolean) {
+    fun addMavenDependencyToProject(child: Project, configName: String, project: Project, isAndroid: Boolean) {
         // 改变依赖 这里后面需要修改成maven依赖
         if (isAndroid) {
-            project.dependencies.add(configName, "${projectPath.getMavenGroupId()}:${projectName}:1.0@aar")
+            project.dependencies.add(configName, "${child.getMavenGroupId()}:${child.getMavenArtifactId()}:1.0@aar")
         } else {
-            project.dependencies.add(configName, "${projectPath.getMavenGroupId()}:${projectName}:1.0@jar")
+            project.dependencies.add(configName, "${child.getMavenGroupId()}:${child.getMavenArtifactId()}:1.0@jar")
         }
     }
 
