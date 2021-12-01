@@ -12,6 +12,8 @@ import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.bundling.Jar
 import plugin.bean.RocketXBean
+import plugin.utils.MavenIdHelper.getMavenArtifactId
+import plugin.utils.MavenIdHelper.getMavenGroupId
 import plugin.utils.hasAndroidPlugin
 import plugin.utils.hasAppPlugin
 import plugin.utils.hasJavaPlugin
@@ -55,9 +57,9 @@ fun Project.mavenPublish(mRocketXBean: RocketXBean?) {
         }
     }
     // 获取 module 中定义的发布信息
-    val pomDesc = "library is ${this.name}"
-    val pomGroupId = "com.${this.name}"
-    val pomAftId = this.name as String
+    val pomGroupId = getMavenGroupId()
+    val pomAftId = getMavenArtifactId()
+    val pomDesc = "library is $pomGroupId: $pomAftId"
     val pomVersion = "1.0"
     mavenPublish(mRocketXBean, pomGroupId, pomAftId, pomVersion, pomDesc) {
         it.maven { artifactRepository ->
