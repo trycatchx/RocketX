@@ -2,6 +2,7 @@
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
 ![java](https://img.shields.io/badge/language-kotlin-Borange.svg)
 
+[English Document](https://github.com/trycatchx/RocketXPlugin/blob/master/README-EN.md)
 
 ## 描述
 本插件自动识别未改动 module 并在编译流程中替换为 aar ，加速 Android 项目的全量编译速度
@@ -26,7 +27,7 @@ Plugin version | Gradle version
 ```
 buildscript {
     dependencies {
-        classpath 'io.github.trycatchx:rocketx:1.0.3'
+        classpath 'io.github.trycatchx:rocketx:1.0.4'
     }
 }
 ```
