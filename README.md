@@ -5,7 +5,7 @@
 [English Document](https://github.com/trycatchx/RocketXPlugin/blob/master/README-EN.md)
 
 ## 描述
-本插件自动识别未改动 module 并在编译流程中替换为 aar ，加速 Android 项目的全量编译速度
+本插件自动识别未改动 module 并在编译流程中替换为 aar ，只编译改动模块，从而加速 Android 项目的全量编译速度
 
 ## 编译速度对比
 ![编译速度对比.png](https://upload-images.jianshu.io/upload_images/2788235-ee2c3f7b9ca7862f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
