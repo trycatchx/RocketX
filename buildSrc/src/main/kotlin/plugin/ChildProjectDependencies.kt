@@ -3,7 +3,6 @@ package plugin
 import com.android.build.gradle.AppExtension
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
-import plugin.localmaven.AarFlatLocalMaven
 import plugin.utils.DependenciesHelper
 
 /**
@@ -30,9 +29,19 @@ open class ChildProjectDependencies(
 
         android.applicationVariants.forEach {
             ALL_SUFFIX.forEach { suffix ->
-                val configName = it.flavorName + it.buildType.name.capitalize() + suffix.capitalize()
-                val configuration = project.configurations.maybeCreate(configName)
-                allConfigList.add(configuration)
+                //组合的 Config
+                val fullConfigName = it.flavorName + it.buildType.name.capitalize() + suffix.capitalize()
+                val fullConfiguration = project.configurations.maybeCreate(fullConfigName)
+                if(!allConfigList.contains(fullConfiguration)) {
+                    allConfigList.add(fullConfiguration)
+                }
+
+                //单独的 flavorConfig
+                val flavorConfigName = it.flavorName + suffix.capitalize()
+                val flavorConfiguration = project.configurations.maybeCreate(flavorConfigName)
+                if(!allConfigList.contains(flavorConfiguration)) {
+                    allConfigList.add(flavorConfiguration)
+                }
             }
         }
 

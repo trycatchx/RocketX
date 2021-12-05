@@ -31,7 +31,7 @@ open class AppProjectDependencies(
     override fun beforeResolve(p0: ResolvableDependencies) {
         project.gradle.removeListener(this)
         project.rootProject.allprojects.forEach {
-            //剔除 app 和 rootProject
+            //剔除 rootProject 和 有多级目录的 parent folder
             if (it != project.rootProject && it.childProjects.size <= 0) {
                 //每一个 project 的依赖，都在 ProjectDependencies 里面解决
                 val project = ChildProjectDependencies(it, android, mAllChangedProject)

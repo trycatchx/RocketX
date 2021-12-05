@@ -34,7 +34,7 @@ buildscript {
 
 * 依赖 AS 插件 android studio setting->plugins-> marketplace 搜索 RocketX 安装（搜索不到使用本地安装）
 
-#### 方式二：本地依赖
+#### 方式二：本地依赖(实时使用最新的版本，网络依赖需要上传 maven 有所滞后)
 
 下载项目中的 lib 文件夹两个 jar：
 
