@@ -51,14 +51,20 @@ class InstallApkByAdb(val appProject: Project) {
         @TaskAction
         fun installApk() {
           val adb =  android.adbExecutable.absolutePath
-            project.exec {
-                it.commandLine(adb,
-                    "install","-r",FileUtil.getApkLocalPath())
+
+            try {
+                project.exec {
+                    it.commandLine(adb,
+                        "install","-r",FileUtil.getApkLocalPath())
+                }
+                project.exec {
+                    it.commandLine(adb,"shell","monkey","-p",
+                        android.defaultConfig.applicationId,"-c","android.intent.category.LAUNCHER","1")
+                }
+            }catch (e:Exception){
+                LogUtil.d("install fail:"+e.toString())
             }
-            project.exec {
-                it.commandLine(adb,"shell","monkey","-p",
-                    android.defaultConfig.applicationId,"-c","android.intent.category.LAUNCHER","1")
-            }
+
         }
     }
 

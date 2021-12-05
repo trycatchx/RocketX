@@ -46,8 +46,8 @@ open class RocketXPlugin : Plugin<Project> {
         FileUtil.attach(project)
         flatDirs()
         android = project.extensions.getByType(AppExtension::class.java)
-
-
+        //开启一些加速的编译项
+        speedBuildByOption()
         appProject.afterEvaluate {
             LogUtil.init("RocketXPlugin")
             LogUtil.enableLog(mRocketXBean?.openLog ?:false)
@@ -140,6 +140,13 @@ open class RocketXPlugin : Plugin<Project> {
         }
 
         InstallApkByAdb(appProject).maybeInstallApkByAdb()
+    }
+
+
+    private fun speedBuildByOption() {
+        //并行运行task
+        appProject.gradle.startParameter.setParallelProjectExecutionEnabled(true)
+        appProject.gradle.startParameter.maxWorkerCount =  appProject.gradle.startParameter.maxWorkerCount + 4
     }
 
 

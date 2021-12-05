@@ -22,8 +22,13 @@ open class BeforePreBuildJob(
     val mAllChangedProject: MutableMap<String, Project>? = null,
     val mLastChangeProject: MutableSet<String>? = null) {
 
+    val isRunApp by lazy {
+        !isRunAssembleTask(appProject)
+    }
+
     companion object {
         const val TRANSFORMS = "/intermediates/transforms/"
+        const val JAR_HASHES = "/intermediates/dex_archive_input_jar_hashes/"
         const val DATABIND_DENPEDENCY =
             "/intermediates/data_binding_base_class_logs_dependency_artifacts/"
         const val PRE = "pre"
@@ -58,12 +63,16 @@ open class BeforePreBuildJob(
         //清理 jar
         task.configure {
             it.doFirst {
-                CleanDuplicateAction().let {
-                    it.job = this@BeforePreBuildJob
-                    it.flavor = flavor
-                    it.buildType = buildType
-//                    it.clean()
+
+                if(isRunApp) {
+                    CleanDuplicateAction().let {
+                        it.job = this@BeforePreBuildJob
+                        it.flavor = flavor
+                        it.buildType = buildType
+                        it.clean()
+                    }
                 }
+
                 FilePermissionAction().let {
                     it.job = this@BeforePreBuildJob
                     it.flavor = flavor
