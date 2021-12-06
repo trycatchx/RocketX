@@ -63,7 +63,6 @@ android {
 
     //配置插件编译项
     RocketX {
-        localMaven = false
         openLog = true
     }
 
