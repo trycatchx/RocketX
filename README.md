@@ -6,7 +6,7 @@
 
 ## Introduction
 
-This plugin automatically recognizes the unchanged module and replaces it with aar in the compilation process to speed up the full compilation speed of Android projects
+This plugin hooks the compilation process, changes all module dependencies to aar, and then replace the changed modules to source dependencies every time you compile, and upload aar of modified modules after the compilation is completed, so that you can always achieve only the least modules involved Source code compilation to improve Android compilation speed
 
 ## Gradle Build Speed
 ![build-speed.png](https://github.com/trycatchx/RocketXPlugin/blob/master/IMG/build-speed.png)
