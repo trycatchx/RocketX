@@ -2,15 +2,16 @@
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
 ![java](https://img.shields.io/badge/language-kotlin-Borange.svg)
 
-[English Document](https://github.com/trycatchx/RocketXPlugin/blob/master/README-EN.md)
+[中文文档](https://github.com/trycatchx/RocketXPlugin/blob/master/README-ZH.md)
 
-## 描述
-本插件自动识别未改动 module 并在编译流程中替换为 aar ，只编译改动模块，从而加速 Android 项目的全量编译速度
+## Introduction
 
-## 编译速度对比
-![编译速度对比.png](https://upload-images.jianshu.io/upload_images/2788235-ee2c3f7b9ca7862f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+This plugin automatically recognizes the unchanged module and replaces it with aar in the compilation process to speed up the full compilation speed of Android projects
 
-## AGP 版本兼容
+## Gradle Build Speed
+![build-speed.png](https://github.com/trycatchx/RocketXPlugin/blob/master/IMG/build-speed.png)
+
+## AGP Version Compatible
 Plugin version | Gradle version
 ---|---
 4.0.0+ | 6.1.1+
@@ -18,11 +19,11 @@ Plugin version | Gradle version
 4.2.0+ |6.7.1+
 7.0    |7.0+
 
-## 如何使用
+## How to use
 
-#### 方式一：网络依赖
+#### Way 1：Network dependence
 
-* 依赖 gradle 插件
+* add rocketx plugin 
 
 ```
 buildscript {
@@ -32,31 +33,31 @@ buildscript {
 }
 ```
 
-* 依赖 AS 插件 android studio setting->plugins-> marketplace 搜索 RocketX 安装（搜索不到使用本地安装）
+* add android studio plugin by enter android studio setting->plugins-> marketplace,search "RocketX" and install it .
 
-#### 方式二：本地依赖(实时使用最新的版本，网络依赖需要上传 maven 有所滞后)
+#### Way 2：Local dependence
 
-下载项目中的 lib 文件夹两个 jar：
+Download two jars in the lib folder of the project：
 
-* rocketX-studio-plugin.jar 通过 android studio setting->plugins->install plugin from disk 进行安装
-* rocketx.jar 通过在项目工程根目录新建文件夹Plugin，置放进去 Plugin文件夹，在根目录的build.gradle 写入 classpath fileTree(dir: './Plugin', include: ['*.jar'])
+* install “rocketX-studio-plugin.jar” by android studio setting->plugins->install plugin from disk 
+* Create a new folder Plugin in the root directory of the project, and put rocketx.jar into it，add the following code to build.gradle in the root directory : `classpath fileTree(dir: './Plugin', include: ['*.jar'])`
 
-######  使用点击小火箭至喷火icon （enable 状态），选择 Assemble${flavor}${buildType} task , 点击编译器原有的 run 按钮进行编译(指定 task 好处是项目中存在多个 apply plugin: 'com.android.application'  ，也只会编译当前指定的 application module ) :
+######  Use to tap the little rocket to the Spitfire icon，select Assemble${flavor}${buildType} task , Click the original run button of the compiler to compile(The advantage of specifying a task is that there are multiple apply plugin: 'com.android.application'  ，only the currently specified application module will be compiled ) :
 ![assembleDebug](https://github.com/trycatchx/RocketXPlugin/blob/master/IMG/assembleDebug.jpeg)
 
 
 
-## 问题
-* 第一次的加速，是最慢的因为需要全量编译后，打出 aar 上传到 LocalMaven
-* 如果使用了 arouter ，请使用 zPlugin 文件夹中的 本地 arouter 进行替换（查看demo 如何替换），速度更快（后期研究是否有更好的办法解决这个问题）
-* 目前如果编译出错，请重新再 run 一次，出现的问题 欢迎提 issue
+## Problem:
+* The first acceleration is the slowest because it needs to be fully compiled, packaged out aar and uploaded to LocalMaven
+* If you use arouter, please use the local arouter in the zPlugin folder to replace it (see how to replace it in the demo), and it will be faster (the later research is whether there is a better way to solve this problem)
+* At present, if there is a compilation error, please run it again. Any problems are welcome to raise issues.
 
 
-[Blog讲解](https://www.jianshu.com/p/59b95b5a7fab)
+[Blog](https://www.jianshu.com/p/59b95b5a7fab)
 
 
-## 开发维护者
- 名单 | 留言
+## Developer and maintainer
+ github | message
 --- | ---
 [JustAClamber](https://github.com/JustAClamber) | 知者不惑
 [louis](https://github.com/louis-lzt)| louis-lzt
