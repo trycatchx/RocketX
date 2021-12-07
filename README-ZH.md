@@ -5,7 +5,7 @@
 [English Document](https://github.com/trycatchx/RocketXPlugin/blob/master/README.md)
 
 ## 描述
-本插件自动识别未改动 module 并在编译流程中替换为 aar 依赖（不参与编译），只编译改动模块，从而加速 Android 项目的全量编译速度。
+本插件 hook 编译流程，将所有的模块依赖修改为 aar，然后每次编译将变动的模块改成源码依赖，同时编译完成再将修改模块上传为 aar，这样可以始终做到仅有最少的模块参与源码编译，从而提升 Android 编译速度
 
 ## 编译速度对比
 ![编译速度对比.png](https://upload-images.jianshu.io/upload_images/2788235-ee2c3f7b9ca7862f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
