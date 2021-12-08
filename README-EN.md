@@ -49,7 +49,6 @@ Download two jars in the lib folder of the project：
 
 ## Problem:
 * The first acceleration is the slowest because it needs to be fully compiled, packaged out aar and uploaded to LocalMaven
-* If you use arouter, please use the local arouter in the zPlugin folder to replace it (see how to replace it in the demo), and it will be faster (the later research is whether there is a better way to solve this problem)
 * At present, if there is a compilation error, please run it again. Any problems are welcome to raise issues.
 
 

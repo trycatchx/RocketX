@@ -48,7 +48,6 @@ buildscript {
 
 ## 问题
 * 第一次的加速，是最慢的因为需要全量编译后，打出 aar 上传到 LocalMaven
-* 如果使用了 arouter ，请使用 zPlugin 文件夹中的 本地 arouter 进行替换（查看demo 如何替换），速度更快（后期研究是否有更好的办法解决这个问题）
 * 目前如果编译出错，请重新再 run 一次，出现的问题 欢迎提 issue
 
 
