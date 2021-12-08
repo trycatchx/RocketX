@@ -27,6 +27,7 @@ open class BeforePreBuildJob(
     }
 
     companion object {
+        const val AROUTER_TRANSFORMS = "com.alibaba.arouter"
         const val TRANSFORMS = "/intermediates/transforms/"
         const val JAR_HASHES = "/intermediates/dex_archive_input_jar_hashes/"
         const val DATABIND_DENPEDENCY =

@@ -1,6 +1,8 @@
 package plugin
 
+import com.android.build.api.transform.Transform
 import com.android.build.gradle.AppExtension
+import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.*
 import org.gradle.api.execution.TaskExecutionListener
@@ -11,8 +13,11 @@ import plugin.localmaven.JarFlatLocalMaven
 import plugin.localmaven.LocalMaven
 import plugin.localmaven.mavenPublish
 import plugin.utils.*
+import plugin.utils.BeforePreBuildJob.Companion.AROUTER_TRANSFORMS
 import plugin.utils.FileUtil.getLocalMavenCacheDir
 import java.io.File
+import kotlin.reflect.jvm.isAccessible
+
 
 /**
  * description:
@@ -38,11 +43,17 @@ open class RocketXPlugin : Plugin<Project> {
         ChangeModuleUtils.getChangeModuleMap(appProject)
     }
 
+    val mFlavorBuildType by lazy {
+        getFlavorBuildType(appProject)
+    }
+
     override fun apply(project: Project) {
         //应用在 主 project 上，也就是 app module
         mRocketXBean = project.extensions.create("RocketX", RocketXBean::class.java)
         if (!isEnable(project) || hasAndroidPlugin(project)) return
         this.appProject = project
+        //禁止 release 使用加速插件
+        if(mFlavorBuildType.toLowerCase().contains("release")) return
         FileUtil.attach(project)
         flatDirs()
         android = project.extensions.getByType(AppExtension::class.java)
@@ -144,6 +155,15 @@ open class RocketXPlugin : Plugin<Project> {
 
 
     private fun speedBuildByOption() {
+        //禁用 arouter transform,不影响 app 运行
+        val transformsFiled = BaseExtension::class.members.firstOrNull { it.name =="_transforms" }
+        if (transformsFiled != null) {
+            transformsFiled.isAccessible = true
+            val xValue = transformsFiled.call(android) as?  MutableList<Transform>
+            xValue?.removeAll {
+                 it.name.equals(AROUTER_TRANSFORMS)
+            }
+        }
         //并行运行task
         appProject.gradle.startParameter.setParallelProjectExecutionEnabled(true)
         appProject.gradle.startParameter.maxWorkerCount += 4
