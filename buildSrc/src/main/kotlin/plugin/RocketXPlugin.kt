@@ -13,8 +13,10 @@ import plugin.localmaven.JarFlatLocalMaven
 import plugin.localmaven.LocalMaven
 import plugin.localmaven.mavenPublish
 import plugin.utils.*
-import plugin.utils.BeforePreBuildJob.Companion.AROUTER_TRANSFORMS
 import plugin.utils.FileUtil.getLocalMavenCacheDir
+import plugin.utils.TransformsConstans.AROUTER_TRANSFORMS
+import plugin.utils.TransformsConstans.NEWLENS_TRANSFORMS
+import plugin.utils.TransformsConstans.SENSOR_TRANSFORM
 import java.io.File
 import kotlin.reflect.jvm.isAccessible
 
@@ -162,6 +164,17 @@ open class RocketXPlugin : Plugin<Project> {
             val xValue = transformsFiled.call(android) as?  MutableList<Transform>
             xValue?.removeAll {
                  it.name.equals(AROUTER_TRANSFORMS)
+                         || it.name.equals(SENSOR_TRANSFORM)
+                         || it.name.equals(NEWLENS_TRANSFORMS)
+                         || mRocketXBean?.transFormList?.contains(it.name) == true
+            }
+            if(xValue?.size ?:0 > 0) {
+                println("RocketXPlugin : the following transform were detected : ")
+                xValue?.forEach {
+                    println("transform: "+ it.name)
+                }
+                println("RocketXPlugin : you can disable it to speed up by this way：")
+                println( "transFormList = [\""+xValue!![0].name+"\"]")
             }
         }
         //并行运行task

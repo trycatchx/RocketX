@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.alibaba.arouter'
 
+//放在所有的插件最后一行
 if (!Boolean.parseBoolean(uploadMaven)) {
     apply plugin: 'com.rocketx'
 }
@@ -64,6 +65,8 @@ android {
     //配置插件编译项
     RocketX {
         openLog = true
+        //加速模式 禁用可禁用的 transform ，速度更快
+        transFormList = ["sensorsAnalyticsAutoTrack","..xx"]
     }
 
 

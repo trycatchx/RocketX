@@ -6,4 +6,4 @@ package plugin.bean
  * data: 2021/11/10
  * copyright TCL+
  */
-open class RocketXBean(var localMaven:Boolean = false, var openLog:Boolean = false)
+open class RocketXBean(var localMaven:Boolean = false, var openLog:Boolean = false,  var transFormList: Set<String> = HashSet())

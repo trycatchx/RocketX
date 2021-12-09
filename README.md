@@ -27,7 +27,7 @@ Plugin version | Gradle version
 ```
 buildscript {
     dependencies {
-        classpath 'io.github.trycatchx:rocketx:1.0.5'
+        classpath 'io.github.trycatchx:rocketx:1.0.6'
     }
 }
 ```
@@ -45,6 +45,18 @@ buildscript {
 ![assembleDebug](https://github.com/trycatchx/RocketXPlugin/blob/master/IMG/assembleDebug.jpeg)
 
 
+## 配置（可选）
+* openLog ：打开 log
+* transFormList：debug 阶段可以禁用的 transform ，速度更快（可通过build 的 log 搜索关键字 transFormList 查看自己项目引用了哪些 transform，并手动配置）
+
+```
+  //配置插件编译项
+    RocketX {
+        openLog = true
+        //加速模式 禁用可禁用的 transform ，速度更快
+        transFormList = ["sensorsAnalyticsAutoTrack","..xx"]
+    }
+```
 
 ## 问题
 * 第一次的加速，是最慢的因为需要全量编译后，打出 aar 上传到 LocalMaven
