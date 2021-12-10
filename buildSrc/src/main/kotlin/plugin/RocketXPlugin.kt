@@ -52,7 +52,7 @@ open class RocketXPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         //应用在 主 project 上，也就是 app module
         mRocketXBean = project.extensions.create("RocketX", RocketXBean::class.java)
-        if (!isEnable(project) || hasAndroidPlugin(project)) return
+        if (!isEnable(project) || hasAndroidPlugin(project) || !isCurProjectRun(project)) return
         this.appProject = project
         //禁止 release 使用加速插件
         if(mFlavorBuildType.toLowerCase().contains("release")) return
@@ -126,7 +126,7 @@ open class RocketXPlugin : Plugin<Project> {
 
         appProject.rootProject.allprojects.forEach {
             //剔除 app 和 rootProject
-            if (it.name.equals("app") || it == appProject.rootProject || it.childProjects.size > 0) return@forEach
+            if (hasAppPlugin(it) || it == appProject.rootProject || it.childProjects.size > 0) return@forEach
             if (mAllChangedProject?.contains(it.path)?.not() != false) return@forEach
             var mLocalMaven: LocalMaven? = null
             val childProject = it.project

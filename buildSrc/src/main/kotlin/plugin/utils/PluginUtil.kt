@@ -52,11 +52,25 @@ fun getFlavorBuildType(appProject: Project):String {
         flavorBuildType =
             flavorBuildType.substring(0, 1).toLowerCase() + flavorBuildType.substring(1)
     }
-
     return flavorBuildType
 }
 
 //不能通过name ，需要通过 path ，有可能有多级目录(: 作为aar名字会有冲突不能用)
 fun getFlatAarName(project: Project): String {
     return project.path.substring(1).replace(":","-")
+}
+
+fun isCurProjectRun(appProject: Project):Boolean {
+    var ret = false
+    var projectPath = ""
+    val arg = appProject.gradle.startParameter?.taskRequests?.getOrNull(0)?.args?.getOrNull(0)
+    if(!arg.isNullOrEmpty()) {
+        var index = arg.indexOf(RocketXPlugin.ASSEMBLE)
+        index = if(index > 0) index - 1 else 0
+        projectPath = arg.substring(0,index)
+    }
+    if (projectPath.length > 0) {
+       ret = appProject.path.equals(projectPath)
+    }
+    return ret
 }
