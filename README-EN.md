@@ -42,9 +42,10 @@ Download two jars in the lib folder of the project：
 * install “rocketX-studio-plugin.jar” by android studio setting->plugins->install plugin from disk 
 * Create a new folder Plugin in the root directory of the project, and put rocketx.jar into it，add the following code to build.gradle in the root directory : `classpath fileTree(dir: './Plugin', include: ['*.jar'])`
 
-######  Use to tap the little rocket to the Spitfire icon，select Assemble${flavor}${buildType} task , Click the original run button of the compiler to compile(The advantage of specifying a task is that there are multiple apply plugin: 'com.android.application'  ，only the currently specified application module will be compiled ) :
+######  Use to tap the little rocket to the Spitfire icon，, Click the original run button of the compiler to compile :
 ![assembleDebug](https://github.com/trycatchx/RocketXPlugin/blob/master/IMG/assembleDebug.jpeg)
 
+###### If you have multiple app modules, you can also choose Assemble${flavor}${buildType} task to run
 
 
 ## Problem:

@@ -41,8 +41,10 @@ buildscript {
 * rocketX-studio-plugin.jar 通过 android studio setting->plugins->install plugin from disk 进行安装
 * rocketx.jar 通过在项目工程根目录新建文件夹Plugin，置放进去 Plugin文件夹，在根目录的build.gradle 写入 classpath fileTree(dir: './Plugin', include: ['*.jar'])
 
-######  使用点击小火箭至喷火icon （enable 状态），选择 Assemble${flavor}${buildType} task , 点击编译器原有的 run 按钮进行编译(指定 task 好处是项目中存在多个 apply plugin: 'com.android.application'  ，也只会编译当前指定的 application module ) :
+######  使用点击小火箭至喷火icon （enable 状态）,点击编译器 run 按钮 :
 ![assembleDebug](https://github.com/trycatchx/RocketXPlugin/blob/master/IMG/assembleDebug.jpeg)
+
+######  如果你有多个 app module 也可选择 Assemble${flavor}${buildType} task 进行 run
 
 
 ## 配置（可选）
