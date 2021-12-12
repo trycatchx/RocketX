@@ -78,5 +78,9 @@ fun isCurProjectRun(appProject: Project): Boolean {
         ret = true
     }
 
+    if(appProject.gradle.startParameter?.systemPropertiesArgs?.get("idea.sync.active").equals("true")){
+        ret = true
+    }
+
     return ret
 }
