@@ -50,7 +50,7 @@ buildscript {
 
 * 同样在 app module 的 build.gradle 加入：```apply plugin: 'com.rocketx'```
 
-------
+##
 
 ######  使用点击小火箭至喷火icon （enable 状态）,点击编译器 run 按钮 :
 ![assembleDebug](https://github.com/trycatchx/RocketXPlugin/blob/master/IMG/assembleDebug.jpeg)
