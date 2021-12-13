@@ -26,6 +26,9 @@ Plugin version | Gradle version
 * add rocketx plugin 
 
 ```
+// app module build.gradle add code:
+apply plugin: 'com.rocketx'
+// root Project build.gradle add code:
 buildscript {
     dependencies {
         classpath 'io.github.trycatchx:rocketx:1.0.9'

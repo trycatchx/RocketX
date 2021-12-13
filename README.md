@@ -25,12 +25,17 @@ Plugin version | Gradle version
 * 依赖 gradle 插件
 
 ```
+// app module 的 build.gradle 加入
+apply plugin: 'com.rocketx'
+
+// 在根目录的 build.gradle 加入
 buildscript {
     dependencies {
         classpath 'io.github.trycatchx:rocketx:1.0.9'
     }
 }
 ```
+
 
 * 依赖 AS 插件 android studio setting->plugins-> marketplace 搜索 RocketX 安装（搜索不到使用本地安装）
 
@@ -39,7 +44,9 @@ buildscript {
 下载项目中的 lib 文件夹两个 jar：
 
 * rocketX-studio-plugin.jar 通过 android studio setting->plugins->install plugin from disk 进行安装
-* rocketx.jar 通过在项目工程根目录新建文件夹Plugin，置放进去 Plugin文件夹，在根目录的build.gradle 写入 classpath fileTree(dir: './Plugin', include: ['*.jar'])
+* rocketx.jar 通过在项目工程根目录新建文件夹Plugin，置放进去 Plugin文件夹，在根目录的build.gradle 写入 ```classpath fileTree(dir: './Plugin', include: ['*.jar'])```
+
+* 同样在 app module 的 build.gradle 加入：```apply plugin: 'com.rocketx'```
 
 ######  使用点击小火箭至喷火icon （enable 状态）,点击编译器 run 按钮 :
 ![assembleDebug](https://github.com/trycatchx/RocketXPlugin/blob/master/IMG/assembleDebug.jpeg)
