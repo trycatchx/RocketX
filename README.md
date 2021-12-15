@@ -68,6 +68,8 @@ buildscript {
         openLog = true
         //加速模式 禁用可禁用的 transform ，速度更快
         transFormList = ["sensorsAnalyticsAutoTrack","..xx"]
+        //指定哪些模块不打成 aar ，字符串为 module.path
+        excludeModule = [":module_common"]
     }
 ```
 
