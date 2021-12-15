@@ -46,14 +46,14 @@ object FileUtil {
 
 
     internal fun getLocalMavenCacheDir(): String {
-        return sProject.rootProject.rootDir.absolutePath + File.separator + ".gradle" + File.separator + ".rocketxcache" + File.separator
+        val appFolder = "." + getFlatAarName(sProject)
+        return sProject.rootProject.rootDir.absolutePath + File.separator + ".gradle" + File.separator + ".rocketxcache" + File.separator + appFolder + File.separator
     }
 
     internal fun getApkLocalPath(): String {
         var filepath = ""
-        File(sProject.buildDir.absolutePath + File.separator ).walkTopDown()
-            .forEach {
-                if(it.absolutePath.endsWith(".apk")) {
+        File(sProject.buildDir.absolutePath + File.separator).walkTopDown().forEach {
+                if (it.absolutePath.endsWith(".apk")) {
                     filepath = it.absolutePath
                     return@forEach
                 }

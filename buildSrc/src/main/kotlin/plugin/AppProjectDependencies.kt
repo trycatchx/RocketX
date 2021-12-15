@@ -18,18 +18,20 @@ open class AppProjectDependencies(
     var android: AppExtension,
     val rocketXBean: RocketXBean?,
     val mAllChangedProject: MutableMap<String, Project>?= null,
-    var listener: ((finish: Boolean) -> Unit)? = null) : DependencyResolutionListener {
+    var listener: ((finish: Boolean) -> Unit)? = null) {
 
 
     var mAllChildProjectDependenciesList = arrayListOf<ChildProjectDependencies>()
     lateinit var mDependenciesHelper: DependenciesHelper
 
     init {
-        project.gradle.addListener(this)
+        project.gradle.projectsEvaluated {
+            // 调整依赖时机
+            resolveDenpendency()
+        }
     }
 
-    override fun beforeResolve(p0: ResolvableDependencies) {
-        project.gradle.removeListener(this)
+     fun resolveDenpendency() {
         project.rootProject.allprojects.forEach {
             //剔除 rootProject 和 有多级目录的 parent folder
             if (it != project.rootProject && it.childProjects.size <= 0) {
@@ -46,8 +48,6 @@ open class AppProjectDependencies(
         listener?.invoke(true)
     }
 
-    override fun afterResolve(p0: ResolvableDependencies) {
 
-    }
 
 }

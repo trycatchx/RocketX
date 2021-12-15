@@ -65,6 +65,13 @@ open class RocketXPlugin : Plugin<Project> {
             LogUtil.init("RocketXPlugin")
             LogUtil.enableLog(mRocketXBean?.openLog ?:false)
             LogUtil.d("mRocketXBean mavenEnable=${mRocketXBean?.localMaven}")
+            //剔除不打 aar 的 project
+            mRocketXBean?.excludeModule?.forEach {
+                appProject.rootProject.findProject(it)?.run {
+                    mAllChangedProject?.put(it,this)
+                }
+            }
+
             if (mRocketXBean?.localMaven == true) {
                 appProject.rootProject.allprojects.forEach {
                     if (it.name.equals("app") || it == appProject.rootProject || it.childProjects.isNotEmpty()) {
@@ -122,7 +129,7 @@ open class RocketXPlugin : Plugin<Project> {
      */
     fun doAfterEvaluated() {
 
-        BeforePreBuildJob(appProject, mAllChangedProject).runCleanAction()
+        BeforePreBuildJob(appProject).runCleanAction()
 
         appProject.rootProject.allprojects.forEach {
             //剔除 app 和 rootProject

@@ -26,21 +26,28 @@ open class ChildProjectDependencies(
             allConfigList.add(configuration)
         }
 
-
         android.applicationVariants.forEach {
             ALL_SUFFIX.forEach { suffix ->
                 //组合的 Config
-                val fullConfigName = it.flavorName + it.buildType.name.capitalize() + suffix.capitalize()
+                val fullConfigName =
+                    it.flavorName + it.buildType.name.capitalize() + suffix.capitalize()
                 val fullConfiguration = project.configurations.maybeCreate(fullConfigName)
-                if(!allConfigList.contains(fullConfiguration)) {
+                if (!allConfigList.contains(fullConfiguration)) {
                     allConfigList.add(fullConfiguration)
                 }
 
                 //单独的 flavorConfig
                 val flavorConfigName = it.flavorName + suffix.capitalize()
                 val flavorConfiguration = project.configurations.maybeCreate(flavorConfigName)
-                if(!allConfigList.contains(flavorConfiguration)) {
+                if (!allConfigList.contains(flavorConfiguration)) {
                     allConfigList.add(flavorConfiguration)
+                }
+
+                //单独的 buildconfig
+                val buildTypeConfigName = it.buildType.name + suffix.capitalize()
+                val buildTypeConfiguration = project.configurations.maybeCreate(buildTypeConfigName)
+                if (!allConfigList.contains(buildTypeConfiguration)) {
+                    allConfigList.add(buildTypeConfiguration)
                 }
             }
         }
