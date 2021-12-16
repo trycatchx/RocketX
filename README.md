@@ -8,7 +8,7 @@
 <h1 align="center">RocketXPlugin</h1>
 <div align="center">
   
-本插件自动识别未改动 module 并在编译流程中替换为 aar ，只编译改动模块，从而加速 Android 项目的全量编译速度
+本插件自动识别未改动 module 并在编译流程中替换为 aar ，只编译改动模块，加速 Android 项目的编译速度
   
 
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
