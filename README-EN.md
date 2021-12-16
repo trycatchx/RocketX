@@ -1,6 +1,17 @@
-# RocketXPlugin
+
+<p align="center">
+  <a href="https://github.com/trycatchx/RocketXPlugin">
+    <img width="200" src="https://github.com/trycatchx/RocketXPlugin/blob/master/rocketX-studio-plugin/resources/META-INF/pluginIcon.svg">
+  </a>
+</p>
+
+<h1 align="center">RocketXPlugin</h1>
+<div align="center">
+
+
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
 ![java](https://img.shields.io/badge/language-kotlin-Borange.svg)
+</div>
 
 [中文文档](https://github.com/trycatchx/RocketXPlugin/blob/master/README-ZH.md)
 
