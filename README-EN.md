@@ -7,6 +7,9 @@
 
 <h1 align="center">RocketXPlugin</h1>
 <div align="center">
+  
+This plugin automatically recognizes the unchanged module and replaces it with aar in the compilation process to speed up the full compilation speed of Android projects
+
 
 
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
@@ -14,10 +17,6 @@
 </div>
 
 [中文文档](https://github.com/trycatchx/RocketXPlugin/blob/master/README-ZH.md)
-
-## Introduction
-
-This plugin automatically recognizes the unchanged module and replaces it with aar in the compilation process to speed up the full compilation speed of Android projects
 
 ## Gradle Build Speed
 ![build-speed.png](https://github.com/trycatchx/RocketXPlugin/blob/master/IMG/build-speed.png)
