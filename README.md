@@ -19,7 +19,7 @@
 
 
 ## 编译速度对比
-![编译速度对比.png](https://upload-images.jianshu.io/upload_images/2788235-ee2c3f7b9ca7862f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![build-speed.png](https://github.com/trycatchx/RocketXPlugin/blob/master/IMG/build-speed.png)
 
 ## AGP 版本兼容
 Plugin version | Gradle version
