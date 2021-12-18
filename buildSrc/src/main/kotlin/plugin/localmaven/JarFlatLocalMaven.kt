@@ -40,7 +40,7 @@ class JarFlatLocalMaven(
             }
         } else {
             //通过 flat copy 到cache 目录
-            val localMavenTask = childProject.task("uploadLocalMaven") {
+            val localMavenTask = childProject.tasks.maybeCreate("uploadLocalMaven").let {
                 it.doLast {
 
                     val flatAarName = getFlatAarName(childProject)
