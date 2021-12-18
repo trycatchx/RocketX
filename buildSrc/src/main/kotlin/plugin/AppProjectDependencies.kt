@@ -2,8 +2,6 @@ package plugin
 
 import com.android.build.gradle.AppExtension
 import org.gradle.api.Project
-import org.gradle.api.artifacts.DependencyResolutionListener
-import org.gradle.api.artifacts.ResolvableDependencies
 import plugin.bean.RocketXBean
 import plugin.utils.DependenciesHelper
 
@@ -19,7 +17,7 @@ open class AppProjectDependencies(
     val rocketXBean: RocketXBean?,
     val mAllChangedProject: MutableMap<String, Project>?= null,
     var listener: ((finish: Boolean) -> Unit)? = null) {
-
+    var isFirst = true
 
     var mAllChildProjectDependenciesList = arrayListOf<ChildProjectDependencies>()
     lateinit var mDependenciesHelper: DependenciesHelper
@@ -27,7 +25,10 @@ open class AppProjectDependencies(
     init {
         project.gradle.projectsEvaluated {
             // 调整依赖时机
-            resolveDenpendency()
+            if(isFirst) {
+                isFirst = false
+                resolveDenpendency()
+            }
         }
     }
 
