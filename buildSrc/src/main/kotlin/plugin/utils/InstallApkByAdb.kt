@@ -63,11 +63,7 @@ class InstallApkByAdb(val appProject: Project) {
                     }
                 }
 
-                if (firstLocalDeviceSerinum.isNullOrEmpty()) {
-                    project.exec {
-                        it.commandLine(adb, "install", "-r", FileUtil.getApkLocalPath())
-                    }
-                } else {
+                if (firstLocalDeviceSerinum.isNullOrEmpty().not()) {
                     project.exec {
                         it.commandLine(adb,
                             "-s",
@@ -76,17 +72,16 @@ class InstallApkByAdb(val appProject: Project) {
                             "-r",
                             FileUtil.getApkLocalPath())
                     }
-                }
-
-                project.exec {
-                    it.commandLine(adb,
-                        "shell",
-                        "monkey",
-                        "-p",
-                        android.defaultConfig.applicationId,
-                        "-c",
-                        "android.intent.category.LAUNCHER",
-                        "1")
+                    project.exec {
+                        it.commandLine(adb,
+                                "shell",
+                                "monkey",
+                                "-p",
+                                android.defaultConfig.applicationId,
+                                "-c",
+                                "android.intent.category.LAUNCHER",
+                                "1")
+                    }
                 }
             } catch (e: Exception) {
                 LogUtil.d("install fail:" + e.toString())
