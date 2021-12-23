@@ -187,7 +187,6 @@ open class RocketXPlugin : Plugin<Project> {
         //并行运行task
         appProject.gradle.startParameter.setParallelProjectExecutionEnabled(true)
         appProject.gradle.startParameter.maxWorkerCount += 4
-        appProject.gradle.startParameter.isConfigureOnDemand = true
     }
 
 
