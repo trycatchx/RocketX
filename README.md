@@ -72,9 +72,12 @@ buildscript {
 ## 配置（可选）
 * openLog ：打开 log
 * transFormList：debug 阶段可以禁用的 transform ，速度更快（可通过build 的 log 搜索关键字 transFormList 查看自己项目引用了哪些 transform，并手动配置）
+* excludeModule :哪一些模块不需要打成 aar（譬如有些模块使用了 tool:replace="XX" ,打成 aar 后属性会消失，当然也可以移动到 app module 的 AndroidMenifest.xml）
 
 ```
-  //配置插件编译项
+  //app moodule下 配置插件编译项
+  android {
+  //..
     RocketX {
         openLog = true
         //加速模式 禁用可禁用的 transform ，速度更快
@@ -82,6 +85,8 @@ buildscript {
         //指定哪些模块不打成 aar ，字符串为 module.path
         excludeModule = [":module_common"]
     }
+   //..
+   }
 ```
 
 ## 问题
