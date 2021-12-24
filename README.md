@@ -42,7 +42,7 @@ apply plugin: 'com.rocketx'
 // 在根目录的 build.gradle 加入
 buildscript {
     dependencies {
-        classpath 'io.github.trycatchx:rocketx:1.0.13'
+        classpath 'io.github.trycatchx:rocketx:1.0.14'
     }
 }
 ```

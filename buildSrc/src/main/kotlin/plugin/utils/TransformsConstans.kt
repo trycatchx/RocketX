@@ -7,8 +7,5 @@ package plugin.utils
  * copyright TCL+
  */
 object TransformsConstans {
-    const val SENSOR_TRANSFORM = "sensorsAnalyticsAutoTrack"
-    const val AROUTER_TRANSFORMS = "com.alibaba.arouter"
-    const val NEWLENS_TRANSFORMS = "newLensTransform"
-
+    val TRANSFORM = arrayListOf("sensorsAnalyticsAutoTrack", "com.alibaba.arouter", "newLensTransform")
 }

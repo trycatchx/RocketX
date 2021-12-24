@@ -15,7 +15,7 @@ class MainActivityApp : AppCompatActivity() {
 
     fun test(v: View) {
 //        Log.e("lzy", "test: " )
-//        MainActivityB.test()
+        MainActivityB.test()
         MainActivityC.test()
     }
 }
