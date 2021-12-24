@@ -4,6 +4,7 @@ import com.android.build.gradle.AppExtension
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
 import plugin.RocketXPlugin
@@ -133,10 +134,15 @@ class AarFlatLocalMaven(
 
     //需要构建 local maven
     open class FlatTask : DefaultTask() {
+        @Internal
         var inputPath: String? = null
+        @Internal
         var inputFile: File? = null
+        @Internal
         var outputPath: String? = null
+        @Internal
         var outputDir: File? = null
+        @Internal
         lateinit var localMaven: AarFlatLocalMaven
 
         @TaskAction

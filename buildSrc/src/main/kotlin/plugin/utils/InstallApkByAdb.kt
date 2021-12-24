@@ -5,6 +5,7 @@ import com.android.ddmlib.AndroidDebugBridge
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
 import plugin.RocketXPlugin
@@ -45,6 +46,7 @@ class InstallApkByAdb(val appProject: Project) {
 
 
     open class InstallApkTask : DefaultTask() {
+        @Internal
         lateinit var android: AppExtension
 
         @TaskAction

@@ -62,7 +62,7 @@ android {
 
 
 
-    //配置插件编译项
+//    //配置插件编译项
     RocketX {
         openLog = true
         //加速模式 禁用可禁用的 transform ，速度更快
