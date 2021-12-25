@@ -94,7 +94,7 @@ buildscript {
 * 目前如果编译出错，请重新再 run 一次，出现的问题 欢迎提 issue
 
 
-[Blog讲解]https://juejin.cn/post/7038157787976695815)
+[Blog讲解](https://juejin.cn/post/7038157787976695815)
 
 
 ## 开发维护者
