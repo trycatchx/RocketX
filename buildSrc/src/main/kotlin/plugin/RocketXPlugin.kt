@@ -1,6 +1,8 @@
 package plugin
 
+import com.android.build.api.transform.Transform
 import com.android.build.gradle.AppExtension
+import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.*
 import org.gradle.api.execution.TaskExecutionListener
@@ -13,6 +15,7 @@ import plugin.localmaven.mavenPublish
 import plugin.utils.*
 import plugin.utils.FileUtil.getLocalMavenCacheDir
 import java.io.File
+import kotlin.reflect.jvm.isAccessible
 
 
 /**
@@ -65,7 +68,6 @@ open class RocketXPlugin : Plugin<Project> {
                     mAllChangedProject?.put(it, this)
                 }
             }
-            excludeTransfroms()
             if (mRocketXBean?.localMaven == true) {
                 appProject.rootProject.allprojects.forEach {
                     if (it.name.equals("app") || it == appProject.rootProject || it.childProjects.isNotEmpty()) {
@@ -80,9 +82,10 @@ open class RocketXPlugin : Plugin<Project> {
             }
         }
 
-        mAppProjectDependencies = AppProjectDependencies(project, android, mRocketXBean, mAllChangedProject) {
-            pritlnDependencyGraph()
-        }
+        mAppProjectDependencies =
+            AppProjectDependencies(project, android, mRocketXBean, mAllChangedProject) {
+                pritlnDependencyGraph()
+            }
 
         appProject.gradle.taskGraph.addTaskExecutionListener(object : TaskExecutionListener {
             override fun beforeExecute(p0: Task) {
@@ -138,16 +141,14 @@ open class RocketXPlugin : Plugin<Project> {
             }
             //android 子 module
             if (childAndroid != null) {
-                mLocalMaven = AarFlatLocalMaven(
-                        childProject,
-                        this@RocketXPlugin,
-                        appProject,
-                        mAllChangedProject
-                )
+                mLocalMaven = AarFlatLocalMaven(childProject,
+                    this@RocketXPlugin,
+                    appProject,
+                    mAllChangedProject)
             } else if (hasJavaPlugin(childProject)) {
                 //java 子 module
                 mLocalMaven =
-                        JarFlatLocalMaven(childProject, this@RocketXPlugin, mAllChangedProject)
+                    JarFlatLocalMaven(childProject, this@RocketXPlugin, mAllChangedProject)
             }
             //需要上传到 localMaven
             mLocalMaven?.uploadLocalMaven()
@@ -157,29 +158,28 @@ open class RocketXPlugin : Plugin<Project> {
     }
 
 
-    private fun excludeTransfroms() {
-        val flavorBuildType = getFlavorBuildType(appProject)
-        var taskName = ""
-        TransformsConstans.TRANSFORM.forEach {
-            taskName = "transformClassesWith" + it.capitalize() + "For" + flavorBuildType.capitalize()
-            appProject.tasks.findByName(taskName)?.enabled = false
-        }
-        mRocketXBean?.transFormList?.forEach {
-            taskName = "transformClassesWith" + it.capitalize() + "For" + flavorBuildType.capitalize()
-            appProject.tasks.findByName(taskName)?.enabled = false
-        }
-
-        try {
-            LogUtil.d("RocketXPlugin : the following transform were detected : ")
-            android.transforms?.forEach {
-                LogUtil.d("transform:"+it.name)
-            }
-        } catch (ignore: Exception) {
-        }
-    }
-
-
     private fun speedBuildByOption() {
+        //禁用 arouter transform,不影响 app 运行
+        val transformsFiled = BaseExtension::class.members.firstOrNull { it.name == "_transforms" }
+        var property = appProject.property("excludeTransForms") as? String
+        val excludeTransForms = property?.split(" ")
+
+        if (transformsFiled != null) {
+            transformsFiled.isAccessible = true
+            val xValue = transformsFiled.call(android) as? MutableList<Transform>
+            xValue?.removeAll {
+                TransformsConstans.TRANSFORM.equals(it.name) || excludeTransForms?.contains(it.name) ?: false
+            }
+
+            if(xValue?.size ?:0 > 0) {
+                println("RocketXPlugin : the following transform were detected : ")
+                xValue?.forEach {
+                    println("transform: "+ it.name)
+                }
+                println("RocketXPlugin : you can disable it to speed up by this way：")
+                println( "transFormList = [\""+xValue!![0].name+"\"]")
+            }
+        }
         //并行运行task
         appProject.gradle.startParameter.setParallelProjectExecutionEnabled(true)
         appProject.gradle.startParameter.maxWorkerCount += 4

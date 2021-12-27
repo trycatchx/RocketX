@@ -60,15 +60,12 @@ android {
         viewBinding = true
     }
 
-
-
-//    //配置插件编译项
+    //    //配置插件编译项
     RocketX {
         openLog = true
-        //加速模式 禁用可禁用的 transform ，速度更快
-        transFormList = ["sensorsAnalyticsAutoTrack","..xx"]
+        //剔除模块不打成 aar
+        excludeModule = [":xxx"]
     }
-
 
 }
 
@@ -87,3 +84,6 @@ dependencies {
     implementation project(':projectC')
     implementation project(':libAnnotations')
 }
+
+
+
