@@ -161,8 +161,11 @@ open class RocketXPlugin : Plugin<Project> {
     private fun speedBuildByOption() {
         //禁用 arouter transform,不影响 app 运行
         val transformsFiled = BaseExtension::class.members.firstOrNull { it.name == "_transforms" }
-        var property = appProject.property("excludeTransForms") as? String
-        val excludeTransForms = property?.split(" ")
+        var excludeTransForms: List<String>? = null
+        try {
+            excludeTransForms = (appProject.property("excludeTransForms") as? String)?.split(" ")
+        } catch (ignore: Exception) {
+        }
 
         if (transformsFiled != null) {
             transformsFiled.isAccessible = true
@@ -171,13 +174,13 @@ open class RocketXPlugin : Plugin<Project> {
                 TransformsConstans.TRANSFORM.equals(it.name) || excludeTransForms?.contains(it.name) ?: false
             }
 
-            if(xValue?.size ?:0 > 0) {
+            if (xValue?.size ?: 0 > 0) {
                 println("RocketXPlugin : the following transform were detected : ")
                 xValue?.forEach {
-                    println("transform: "+ it.name)
+                    println("transform: " + it.name)
                 }
                 println("RocketXPlugin : you can disable it to speed up by this way：")
-                println( "transFormList = [\""+xValue!![0].name+"\"]")
+                println("transFormList = [\"" + xValue!![0].name + "\"]")
             }
         }
         //并行运行task

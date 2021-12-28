@@ -3,6 +3,7 @@ package com.projectc
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.projectc.databinding.ActivityProjectcBinding
 
 class MainActivityC : AppCompatActivity() {
 
@@ -16,8 +17,8 @@ class MainActivityC : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_main)
-
+        val mBinding = ActivityProjectcBinding.inflate(getLayoutInflater())
+        setContentView(mBinding.getRoot())
         Log.e("lzy", "onCreate: 1111")
         println("sf")
     }

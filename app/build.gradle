@@ -60,12 +60,15 @@ android {
         viewBinding = true
     }
 
-    //    //配置插件编译项
-    RocketX {
-        openLog = true
-        //剔除模块不打成 aar
-        excludeModule = [":xxx"]
+    //配置插件编译项
+    if (!Boolean.parseBoolean(uploadMaven)) {
+        RocketX {
+            openLog = true
+            //剔除模块不打成 aar
+            excludeModule = [":xxx"]
+        }
     }
+
 
 }
 

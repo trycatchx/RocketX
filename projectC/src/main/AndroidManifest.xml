@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RocketX">
         <activity
-            android:name=".MainActivityC"
+            android:name="com.projectc.MainActivityC"
             android:exported="true">
         </activity>
 
