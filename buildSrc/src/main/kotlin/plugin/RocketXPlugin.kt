@@ -171,7 +171,7 @@ open class RocketXPlugin : Plugin<Project> {
             transformsFiled.isAccessible = true
             val xValue = transformsFiled.call(android) as? MutableList<Transform>
             xValue?.removeAll {
-                TransformsConstans.TRANSFORM.equals(it.name) || excludeTransForms?.contains(it.name) ?: false
+                TransformsConstans.TRANSFORM.contains(it.name) || (excludeTransForms?.contains(it.name) ?: false)
             }
 
             if (xValue?.size ?: 0 > 0) {
