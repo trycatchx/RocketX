@@ -64,6 +64,7 @@ Download two jars in the lib folder of the project：
 ## Problem:
 * The first acceleration is the slowest because it needs to be fully compiled, packaged out aar and uploaded to LocalMaven
 * At present, if there is a compilation error, please run it again. Any problems are welcome to raise issues.
+* set org.gradle.configureondemand = false
 
 
 [Blog](https://www.jianshu.com/p/59b95b5a7fab)
