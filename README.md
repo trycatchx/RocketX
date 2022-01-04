@@ -13,6 +13,8 @@
 
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
 ![java](https://img.shields.io/badge/language-kotlin-Borange.svg)
+![AGP](https://img.shields.io/badge/AGP-6.1.1+-brightgreen)
+![Code Size](https://img.shields.io/github/languages/code-size/trycatchx/RocketXPlugin?color=%23CDDC39)
 </div>
 
 [English Document](https://github.com/trycatchx/RocketXPlugin/blob/master/README-EN.md)
