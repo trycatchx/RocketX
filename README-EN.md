@@ -8,7 +8,7 @@
 <h1 align="center">RocketXPlugin</h1>
 <div align="center">
   
-This plugin automatically recognizes the unchanged module and replaces it with aar in the compilation process to speed up the full compilation speed of Android projects
+This plugin automatically recognizes the unchanged module and replaces it with aar in the compilation process to speed up the full compilation speed of Android projects.The speed that you can experience is to build all modules like aar, while keeping all modules for easy modification, perfect!
 
 
 
