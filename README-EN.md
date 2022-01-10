@@ -67,7 +67,7 @@ Download two jars in the lib folder of the project：
 * set org.gradle.configureondemand = false
 
 
-[Blog](https://www.jianshu.com/p/59b95b5a7fab)
+[Blog](https://gist.github.com/trycatchx/f1b108fc659a808777e29fadf112f9ec)
 
 
 ## Developer and maintainer
