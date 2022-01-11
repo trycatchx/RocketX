@@ -17,8 +17,11 @@
 ![Code Size](https://img.shields.io/badge/CodeSize-66.5kb-brightgreen)
 </div>
 
-[English Document](https://github.com/trycatchx/RocketXPlugin/blob/master/README-EN.md)
-
+<div align="center">
+  
+[English Document](https://github.com/trycatchx/RocketXPlugin/blob/master/README-EN.md)  | [Blog讲解](https://juejin.cn/post/7038157787976695815)
+  
+</div>
 
 ## 编译速度对比
 ![build-speed.png](https://github.com/trycatchx/RocketXPlugin/blob/master/IMG/build-speed.png)
@@ -100,8 +103,6 @@ excludeTransForms = com.alibaba.arouter AAA bbb
 * 第一次的加速，是最慢的因为需要全量编译后，打出 aar 上传到 LocalMaven
 * 目前如果编译出错，请重新再 run 一次，出现的问题 欢迎提 issue
 
-
-[Blog讲解](https://juejin.cn/post/7038157787976695815)
 
 
 ## 开发维护者
