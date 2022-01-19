@@ -90,7 +90,7 @@ buildscript {
    //..
    }
 ```
-* excludeTransForms： 阶段可以禁用的 transform ，速度更快（可通过build 的 log 搜索关键字 transFormList 查看自己项目引用了哪些 transform，并手动配置在 gradle.properties 文件下）
+* excludeTransForms： 编译阶段可以禁用的 transform ，编译速度更快（可通过build 的 log 搜索关键字 transFormList 查看自己项目引用了哪些 transform，并手动配置在 gradle.properties 文件下）
 
 ```
 # 使用空格间隔开
