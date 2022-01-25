@@ -99,7 +99,7 @@ excludeTransForms = com.alibaba.arouter AAA bbb
 
 
 ## 问题
-* 对于 gradle.properties 中的配置:如果使用 org.gradle.configureondemand = true ，请删除或者设置为 false
+* 对于 gradle.properties 中的配置:如果使用 org.gradle.configureondemand = true ，请删除或者设置为 false，目前在 window as 上会出现问题，已纳入下期需求
 * 第一次的加速，是最慢的因为需要全量编译后，打出 aar 上传到 LocalMaven
 * 目前如果编译出错，请重新再 run 一次，出现的问题 欢迎提 issue
 
