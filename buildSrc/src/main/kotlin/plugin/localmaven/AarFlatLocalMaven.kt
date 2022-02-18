@@ -46,7 +46,7 @@ class AarFlatLocalMaven(
         val android = appProject.extensions.getByType(AppExtension::class.java)
         android.applicationVariants.forEach {
 //            threadPoolExecutor.execute {
-            LogUtil.d("thread_ ${it.name}  ${Thread.currentThread().id}")
+//            LogUtil.d("thread_ ${it.name}  ${Thread.currentThread().id}")
             getAppAssembleTask(ASSEMBLE + it.flavorName.capitalize() + it.buildType.name.capitalize())?.let { task ->
                     hookBundleAarTask(task, it.buildType.name)
                 }
