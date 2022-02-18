@@ -7,6 +7,10 @@ import plugin.bean.ModuleChangeTime
 import plugin.bean.ModuleChangeTimeList
 import java.io.File
 
+ /**
+     * 获取发生变动的module信息
+     *
+     */
 object ChangeModuleUtils {
 
     var newModuleList: ArrayList<ModuleChangeTime>? = null
