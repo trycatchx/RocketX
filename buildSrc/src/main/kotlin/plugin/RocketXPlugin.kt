@@ -61,7 +61,7 @@ open class RocketXPlugin : Plugin<Project> {
         appProject.afterEvaluate {
             LogUtil.init("RocketXPlugin")
             LogUtil.enableLog(mRocketXBean?.openLog ?: false)
-            LogUtil.d("mRocketXBean mavenEnable=${mRocketXBean?.localMaven}")
+//            LogUtil.d("mRocketXBean mavenEnable=${mRocketXBean?.localMaven}")
             //剔除不打 aar 的 project
             mRocketXBean?.excludeModule?.forEach {
                 appProject.rootProject.findProject(it)?.run {
@@ -92,9 +92,9 @@ open class RocketXPlugin : Plugin<Project> {
             }
 
             override fun afterExecute(task: Task, state: TaskState) {
-                LogUtil.d("task==>${task.name}, state=${state.failure}")
+//                LogUtil.d("task==>${task.name}, state=${state.failure}")
                 if (task.name.startsWith(ASSEMBLE) && state.failure == null) {
-                    LogUtil.d("task==>${task.name}, state=${state.failure}")
+//                    LogUtil.d("task==>${task.name}, state=${state.failure}")
                     ChangeModuleUtils.flushJsonFile()
                 }
             }
@@ -192,18 +192,18 @@ open class RocketXPlugin : Plugin<Project> {
     //打印处理完的整个依赖图
     fun pritlnDependencyGraph() {
         mAppProjectDependencies.mAllChildProjectDependenciesList.forEach {
-            LogUtil.d("======project name: ${it.project.name}==========")
+//            LogUtil.d("======project name: ${it.project.name}==========")
             it.allConfigList.forEach {
                 if (it.dependencies.size > 0) {
-                    LogUtil.d("=====Config name:${it.name} ===== ")
+//                    LogUtil.d("=====Config name:${it.name} ===== ")
                     it.dependencies.forEach {
-                        LogUtil.d("dependency:" + it.hashCode())
-                        LogUtil.d("dependency:$it")
+//                        LogUtil.d("dependency:" + it.hashCode())
+//                        LogUtil.d("dependency:$it")
                     }
                 }
             }
 
-            LogUtil.d("======project name: ========== end")
+//            LogUtil.d("======project name: ========== end")
         }
     }
 

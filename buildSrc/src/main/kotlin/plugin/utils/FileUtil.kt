@@ -1,7 +1,10 @@
 package plugin.utils
 
+import com.google.gson.Gson
+import groovy.io.FileType
 import org.gradle.api.Project
-import org.gradle.internal.impldep.org.apache.ivy.util.FileUtil
+import plugin.bean.ModuleChangeTime
+import plugin.bean.ModuleChangeTimeList
 import java.io.File
 import java.io.FilenameFilter
 
@@ -53,14 +56,57 @@ object FileUtil {
     internal fun getApkLocalPath(): String {
         var filepath = ""
         File(sProject.buildDir.absolutePath + File.separator).walkTopDown().forEach {
-                if (it.absolutePath.endsWith(".apk")) {
-                    filepath = it.absolutePath
-                    return@forEach
-                }
+            if (it.absolutePath.endsWith(".apk")) {
+                filepath = it.absolutePath
+                return@forEach
             }
+        }
         return filepath
     }
 
+    /**
+     * 将有变动的module信息写入文件
+     */
+    fun File.writeFileToModuleJson(moduleChangeList: MutableList<ModuleChangeTime>) {
+        val newJsonTxt = Gson().toJson(ModuleChangeTimeList(moduleChangeList))
+        this.writeText(newJsonTxt)
+        LogUtil.d("writeFileToModuleJson success!")
+    }
+
+    /**
+     * 获取已经存储的module
+     */
+    fun getLocalModuleChange(): File? {
+        val dir = File(getLocalMavenCacheDir())
+        if (!dir.exists()) {
+            dir.mkdirs()
+        }
+        val jsonFile = File(dir, Contants.MODULE_CHANGE_TIME)
+        return if (jsonFile.exists()) {
+            jsonFile
+        } else {
+            null
+        }
+    }
+
+
+    /**
+     * 文件遍历
+     */
+    fun File.eachFileRecurse(fileType: FileType = FileType.ANY, closure: ((File) -> Unit)?) {
+        listFiles()?.let {
+            it.forEach { file ->
+                if (file.isDirectory) {
+                    if (fileType != FileType.FILES) {
+                        closure?.invoke(file)
+                    }
+                    file.eachFileRecurse(fileType, closure)
+                } else if (fileType != FileType.DIRECTORIES) {
+                    closure?.invoke(file)
+                }
+            }
+        }
+    }
 
 }
 

@@ -21,7 +21,7 @@ object LogUtil {
 
     fun d(msg: String) {
         if (!enable) return
-        println("$mTag ： $msg")
+        println("----------------------------------------------------------->>>>  $msg")
     }
 
 }
