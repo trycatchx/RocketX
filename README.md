@@ -23,10 +23,10 @@
   
 </div>
 
-## 编译速度对比
+## ✨ 编译速度对比
 ![build-speed.png](https://github.com/trycatchx/RocketXPlugin/blob/master/IMG/build-speed.png)
 
-## AGP 版本兼容
+## 🧩 AGP 版本兼容
 Plugin version | Gradle version
 ---|---
 4.0.0+ | 6.1.1+
@@ -34,7 +34,7 @@ Plugin version | Gradle version
 4.2.0+ |6.7.1+
 7.0    |7.0+
 
-## 如何使用
+## 📘 如何使用
 
 #### 方式一：网络依赖
 
@@ -74,7 +74,7 @@ buildscript {
 ######  如果你有多个 app module 也可选择 Assemble${flavor}${buildType} task 进行 run
 
 
-## 配置（可选）
+## 🛠️ 配置（可选）
 * openLog ：打开 log
 * excludeModule :哪一些模块不需要打成 aar（譬如有些模块使用了 tool:replace="XX" ,打成 aar 后属性会消失，当然也可以移动到 app module 的 AndroidMenifest.xml）
 
@@ -98,14 +98,14 @@ excludeTransForms = com.alibaba.arouter AAA bbb
 ```
 
 
-## 问题
+## ❓ 问题
 * 对于 gradle.properties 中的配置:如果使用 org.gradle.configureondemand = true ，请删除或者设置为 false，目前在 window 的 as 上会出现问题，已纳入下期需求
 * 第一次的加速，是最慢的因为需要全量编译后，打出 aar 上传到 LocalMaven
 * 目前如果编译出错，请重新再 run 一次，出现的问题 欢迎提 issue
 
 
 
-## 开发维护者
+## 👨🏻‍💻 开发维护者
  名单 | 留言
 --- | ---
 [JustAClamber](https://github.com/JustAClamber) | 知者不惑
