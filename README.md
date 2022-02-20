@@ -119,6 +119,12 @@ excludeTransForms = com.alibaba.arouter AAA bbb
   </tr>
 </table>
 
+## 为爱发电（贡献者）
+
+ 账号 | 留言
+--- | ---
+[XZQ](https://github.com/XZQ) | XZQ
+
 
 ## License
 
