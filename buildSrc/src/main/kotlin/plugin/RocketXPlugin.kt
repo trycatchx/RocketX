@@ -192,18 +192,18 @@ open class RocketXPlugin : Plugin<Project> {
     //打印处理完的整个依赖图
     fun pritlnDependencyGraph() {
         mAppProjectDependencies.mAllChildProjectDependenciesList.forEach {
-//            LogUtil.d("======project name: ${it.project.name}==========")
+            LogUtil.d("======project name: ${it.project.name}==========")
             it.allConfigList.forEach {
                 if (it.dependencies.size > 0) {
-//                    LogUtil.d("=====Config name:${it.name} ===== ")
+                    LogUtil.d("=====Config name:${it.name} ===== ")
                     it.dependencies.forEach {
-//                        LogUtil.d("dependency:" + it.hashCode())
-//                        LogUtil.d("dependency:$it")
+                        LogUtil.d("dependency:" + it.hashCode())
+                        LogUtil.d("dependency:$it")
                     }
                 }
             }
 
-//            LogUtil.d("======project name: ========== end")
+            LogUtil.d("======project name: ========== end")
         }
     }
 

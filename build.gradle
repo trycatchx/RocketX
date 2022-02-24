@@ -5,16 +5,21 @@ apply from: "config.gradle"
 buildscript {
     repositories {
 //        mavenLocal {url "${rootDir.absolutePath}/repos"}
-        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
-        maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
+        maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url 'https://maven.aliyun.com/nexus/content/repositories/jcenter' }
         mavenCentral()
         google()
         maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.2'
+        classpath 'com.android.tools.build:gradle:7.1.1'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.20'
         classpath 'com.alibaba:arouter-register:1.0.2'
+//
+//        def pluginDir = getProjectDir().getAbsolutePath() + File.separator + "libs"
+//        def rockectxFile = new File(pluginDir,"rocketx-1.0.17.jar")
+//        classpath files(rockectxFile)
+
     }
 }
 
@@ -23,11 +28,12 @@ allprojects {
     repositories {
         flatDir {
             dirs project(':projectA').file('libs')
+            dirs project(':projectC').file('libs')
         }
 
 //        mavenLocal { url "${rootDir.absolutePath}/repos" }
-        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
-        maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
+        maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url 'https://maven.aliyun.com/nexus/content/repositories/jcenter' }
         mavenCentral()
         google()
         maven { url "https://plugins.gradle.org/m2/" }

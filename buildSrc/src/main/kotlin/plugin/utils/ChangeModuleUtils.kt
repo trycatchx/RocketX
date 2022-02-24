@@ -1,8 +1,8 @@
 package plugin.utils
 
+import com.android.tools.r8.internal.it
 import com.google.gson.Gson
 import org.gradle.api.Project
-import org.json.JSONException
 import plugin.bean.ModuleChangeTime
 import plugin.bean.ModuleChangeTimeList
 import plugin.utils.FileUtil.eachFileRecurse
@@ -59,9 +59,9 @@ object ChangeModuleUtils {
                         }
                     }
                 }
-            } catch (e: JSONException) {
+            } catch (e: Exception) {
             }
-        }?.let {
+        } ?: run {
             allProjectsChange(project)
         }
 
