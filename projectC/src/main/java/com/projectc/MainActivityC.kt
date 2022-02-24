@@ -19,7 +19,6 @@ class MainActivityC : AppCompatActivity() {
 
         val mBinding = ActivityProjectcBinding.inflate(getLayoutInflater())
         setContentView(mBinding.getRoot())
-        Log.e("lzy", "onCreate: 1111")
         println("sf")
     }
 }
