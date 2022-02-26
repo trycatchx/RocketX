@@ -126,7 +126,7 @@ open class RocketXPlugin : Plugin<Project> {
      */
     fun doAfterEvaluated() {
 
-        BeforePreBuildJob(appProject).runCleanAction()
+//        BeforePreBuildJob(appProject).runCleanAction()
 
         appProject.rootProject.allprojects.forEach {
             //剔除 app 和 rootProject
