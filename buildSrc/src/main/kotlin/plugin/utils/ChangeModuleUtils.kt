@@ -2,7 +2,6 @@ package plugin.utils
 
 import com.google.gson.Gson
 import org.gradle.api.Project
-import org.json.JSONException
 import plugin.bean.ModuleChangeTime
 import plugin.bean.ModuleChangeTimeList
 import plugin.utils.FileUtil.eachFileRecurse
@@ -18,15 +17,14 @@ import java.io.File
  *  module 变动计算
  */
 object ChangeModuleUtils {
-
+    //Gradle 静态变量会被保留
     private val newModuleList: MutableList<ModuleChangeTime> = mutableListOf()
-    private val changeMap: MutableMap<String, Project> = mutableMapOf()
 
     /**
      * 获取发生变动的module信息
      */
     fun getChangeModuleMap(project: Project): MutableMap<String, Project>? {
-
+        val changeMap: MutableMap<String, Project> = mutableMapOf()
         val startTime = System.currentTimeMillis()
 
         getNewModuleList(project)
@@ -40,7 +38,7 @@ object ChangeModuleUtils {
                 if (oldModuleList.list.isNullOrEmpty()) {
                     return null
                 } else {
-                    newModuleList.onEach { newModule ->
+                    newModuleList.forEach { newModule ->
                         oldModuleList.list.firstOrNull { newModule.moduleName == it.moduleName }.also { moduleChange ->
                             // 为null, 代表这个module是新创建的
                             if (moduleChange == null) {
@@ -59,22 +57,22 @@ object ChangeModuleUtils {
                         }
                     }
                 }
-            } catch (e: JSONException) {
+            } catch (e: Exception) {
             }
-        }?.let {
-            allProjectsChange(project)
+        } ?: run {
+            allProjectsChange(project,changeMap)
         }
 
         //最后补一个 app 的 module，app 是认为做了改变，不打成 aar
         changeMap[project.path] = project
-        LogUtil.d("count time====>>>> ${System.currentTimeMillis() - startTime}ms   $project")
+        LogUtil.d("count time====>>>> ${System.currentTimeMillis() - startTime}ms   "+changeMap.toString())
         return changeMap
     }
 
     /**
      * 如果没有这个文件的话，认为整个模块都做了改动
      */
-    private fun allProjectsChange(project: Project) {
+    private fun allProjectsChange(project: Project,changeMap: MutableMap<String, Project>) {
         project.rootProject.allprojects.filter { it != project.rootProject && it.childProjects.isEmpty() }.forEach {
             changeMap[it.path] = it
         }
@@ -84,6 +82,7 @@ object ChangeModuleUtils {
      *  获取当前module和文件时间戳
      */
     private fun getNewModuleList(project: Project) {
+        newModuleList.clear()
         project.rootProject.allprojects.onEach {
             if (it == project.rootProject || it.childProjects.isNotEmpty()) {
                 return@onEach
