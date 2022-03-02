@@ -15,6 +15,7 @@ import plugin.localmaven.mavenPublish
 import plugin.utils.*
 import plugin.utils.FileUtil.getLocalMavenCacheDir
 import java.io.File
+import java.util.*
 import kotlin.reflect.jvm.isAccessible
 
 
@@ -38,21 +39,26 @@ open class RocketXPlugin : Plugin<Project> {
     lateinit var android: AppExtension
     var mRocketXBean: RocketXBean? = null
     lateinit var mAppProjectDependencies: AppProjectDependencies
-    val mAllChangedProject by lazy {
+
+    private val mAllChangedProject by lazy {
         ChangeModuleUtils.getChangeModuleMap(appProject)
     }
 
-    val mFlavorBuildType by lazy {
+    private val mFlavorBuildType by lazy {
         getFlavorBuildType(appProject)
     }
 
     override fun apply(project: Project) {
         //应用在 主 project 上，也就是 app module
         mRocketXBean = project.extensions.create("RocketX", RocketXBean::class.java)
-        if (!isEnable(project) || hasAndroidPlugin(project) || !isCurProjectRun(project)) return
+        if (!isEnable(project) || hasAndroidPlugin(project) || !isCurProjectRun(project)){
+            return
+        }
         this.appProject = project
         //禁止 release 使用加速插件
-        if (mFlavorBuildType.toLowerCase().contains("release")) return
+        if (mFlavorBuildType.toLowerCase(Locale.ROOT).contains("release")) {
+            return
+        }
         FileUtil.attach(project)
         flatDirs()
         android = project.extensions.getByType(AppExtension::class.java)
@@ -82,10 +88,9 @@ open class RocketXPlugin : Plugin<Project> {
             }
         }
 
-        mAppProjectDependencies =
-            AppProjectDependencies(project, android, mRocketXBean, mAllChangedProject) {
-                pritlnDependencyGraph()
-            }
+        mAppProjectDependencies = AppProjectDependencies(project, android, mRocketXBean, mAllChangedProject) {
+            pritlnDependencyGraph()
+        }
 
         appProject.gradle.taskGraph.addTaskExecutionListener(object : TaskExecutionListener {
             override fun beforeExecute(p0: Task) {
@@ -114,7 +119,7 @@ open class RocketXPlugin : Plugin<Project> {
      */
     fun flatDirs() {
         val map = mutableMapOf<String, File>()
-        map.put("dirs", File(getLocalMavenCacheDir()))
+        map["dirs"] = File(getLocalMavenCacheDir())
         appProject.rootProject.allprojects {
             it.repositories.flatDir(map)
         }
@@ -130,8 +135,12 @@ open class RocketXPlugin : Plugin<Project> {
 
         appProject.rootProject.allprojects.forEach {
             //剔除 app 和 rootProject
-            if (hasAppPlugin(it) || it == appProject.rootProject || it.childProjects.size > 0) return@forEach
-            if (mAllChangedProject?.contains(it.path)?.not() != false) return@forEach
+            if (hasAppPlugin(it) || it == appProject.rootProject || it.childProjects.isNotEmpty()) {
+                return@forEach
+            }
+            if (mAllChangedProject?.contains(it.path)?.not() != false) {
+                return@forEach
+            }
             var mLocalMaven: LocalMaven? = null
             val childProject = it.project
             var childAndroid: LibraryExtension? = null
@@ -141,14 +150,10 @@ open class RocketXPlugin : Plugin<Project> {
             }
             //android 子 module
             if (childAndroid != null) {
-                mLocalMaven = AarFlatLocalMaven(childProject,
-                    this@RocketXPlugin,
-                    appProject,
-                    mAllChangedProject)
+                mLocalMaven = AarFlatLocalMaven(childProject, this@RocketXPlugin, appProject, mAllChangedProject)
             } else if (hasJavaPlugin(childProject)) {
                 //java 子 module
-                mLocalMaven =
-                    JarFlatLocalMaven(childProject, this@RocketXPlugin, mAllChangedProject)
+                mLocalMaven = JarFlatLocalMaven(childProject, this@RocketXPlugin, mAllChangedProject)
             }
             //需要上传到 localMaven
             mLocalMaven?.uploadLocalMaven()
@@ -184,29 +189,23 @@ open class RocketXPlugin : Plugin<Project> {
             }
         }
         //并行运行task
-        appProject.gradle.startParameter.setParallelProjectExecutionEnabled(true)
+        appProject.gradle.startParameter.isParallelProjectExecutionEnabled = true
         appProject.gradle.startParameter.maxWorkerCount += 4
     }
 
 
     //打印处理完的整个依赖图
-    fun pritlnDependencyGraph() {
-        mAppProjectDependencies.mAllChildProjectDependenciesList.forEach {
-            LogUtil.d("======project name: ${it.project.name}==========")
-            it.allConfigList.forEach {
-                if (it.dependencies.size > 0) {
-                    LogUtil.d("=====Config name:${it.name} ===== ")
-                    it.dependencies.forEach {
-                        LogUtil.d("dependency:" + it.hashCode())
-                        LogUtil.d("dependency:$it")
-                    }
+    private fun pritlnDependencyGraph() {
+        mAppProjectDependencies.mAllChildProjectDependenciesList.forEach { it ->
+            LogUtil.d("======project name: ${it.project.name}========== start")
+            it.allConfigList.filter { it.dependencies.isNotEmpty() }.forEach { configuration ->
+                LogUtil.d("======Config name:${configuration.name}")
+                configuration.dependencies.forEach {
+                    LogUtil.d("dependency:   $it    ${it.hashCode()}")
                 }
             }
-
-            LogUtil.d("======project name: ========== end")
+            LogUtil.d("======project name: ${it.project.name}========== end \n")
         }
     }
 
 }
-
-

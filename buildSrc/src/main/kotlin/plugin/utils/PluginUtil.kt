@@ -3,6 +3,7 @@ package plugin.utils
 import org.gradle.api.Project
 import plugin.RocketXPlugin
 import java.io.File
+import java.util.*
 
 /**
  * description:
@@ -42,15 +43,15 @@ fun isEnable(curProject: Project): Boolean {
 //通过 startParameter 获取  FlavorBuildType
 fun getFlavorBuildType(appProject: Project): String {
     var flavorBuildType = ""
-    val arg = appProject.gradle.startParameter?.taskRequests?.getOrNull(0)?.args?.getOrNull(0)
+    val arg = appProject.gradle.startParameter.taskRequests.getOrNull(0)?.args?.getOrNull(0)
     if (!arg.isNullOrEmpty()) {
         var index = arg.indexOf(RocketXPlugin.ASSEMBLE)
         index = if (index > -1) index + RocketXPlugin.ASSEMBLE.length else 0
         flavorBuildType = arg.substring(index, arg.length)
     }
-    if (flavorBuildType.length > 0) {
+    if (flavorBuildType.isNotEmpty()) {
         flavorBuildType =
-            flavorBuildType.substring(0, 1).toLowerCase() + flavorBuildType.substring(1)
+            flavorBuildType.substring(0, 1).toLowerCase(Locale.ROOT) + flavorBuildType.substring(1)
     }
     return flavorBuildType
 }
@@ -63,18 +64,18 @@ fun getFlatAarName(project: Project): String {
 fun isCurProjectRun(appProject: Project): Boolean {
     var ret = false
     var projectPath = ""
-    val arg = appProject.gradle.startParameter?.taskRequests?.getOrNull(0)?.args?.getOrNull(0)
+    val arg = appProject.gradle.startParameter.taskRequests.getOrNull(0)?.args?.getOrNull(0)
     if (!arg.isNullOrEmpty()) {
         var index = arg.indexOf(RocketXPlugin.ASSEMBLE)
         index = if (index > 0) index - 1 else 0
         projectPath = arg.substring(0, index)
     }
-    if (projectPath.length > 0) {
+    if (projectPath.isNotEmpty()) {
         //使用 app 直接 run，currentDir 为项目目录没法使用，只能通过 截取 arg
         ret = appProject.path.equals(projectPath)
     }
     // 使用 assembledebug 命令需要这么区分
-    if (appProject.gradle.startParameter?.currentDir?.absolutePath.equals(appProject.projectDir.absolutePath)) {
+    if (appProject.gradle.startParameter.currentDir.absolutePath.equals(appProject.projectDir.absolutePath)) {
         ret = true
     }
 
