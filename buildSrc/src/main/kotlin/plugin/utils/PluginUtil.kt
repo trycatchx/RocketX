@@ -1,5 +1,6 @@
 package plugin.utils
 
+import com.android.build.gradle.AppExtension
 import org.gradle.api.Project
 import plugin.RocketXPlugin
 import java.io.File
@@ -35,8 +36,7 @@ fun isRunAssembleTask(curProject: Project): Boolean {
 
 
 fun isEnable(curProject: Project): Boolean {
-    val enableFile =
-        File(curProject.rootProject.rootDir.absolutePath + File.separator + ".gradle" + File.separator + "rocketXEnable")
+    val enableFile = File(curProject.rootProject.rootDir.absolutePath + File.separator + ".gradle" + File.separator + "rocketXEnable")
     return enableFile.exists()
 }
 
@@ -50,8 +50,7 @@ fun getFlavorBuildType(appProject: Project): String {
         flavorBuildType = arg.substring(index, arg.length)
     }
     if (flavorBuildType.isNotEmpty()) {
-        flavorBuildType =
-            flavorBuildType.substring(0, 1).toLowerCase(Locale.ROOT) + flavorBuildType.substring(1)
+        flavorBuildType = flavorBuildType.substring(0, 1).toLowerCase(Locale.ROOT) + flavorBuildType.substring(1)
     }
     return flavorBuildType
 }
@@ -81,4 +80,57 @@ fun isCurProjectRun(appProject: Project): Boolean {
 
 
     return ret
+}
+
+
+fun boostGradleOption(appProject: Project) {
+    //并行运行task
+
+    if (!appProject.hasProperty("org.gradle.daemon")) {
+        appProject.rootProject.extensions.extraProperties.set("org.gradle.daemon", "true")
+    }
+    if (!appProject.hasProperty("kotlin.incremental")) {
+        appProject.rootProject.extensions.extraProperties.set("kotlin.incremental", true)
+    }
+    if (!appProject.hasProperty("kotlin.incremental.java")) {
+        appProject.rootProject.extensions.extraProperties.set("kotlin.incremental.java", "true")
+    }
+    if (!appProject.hasProperty("kotlin.incremental.js")) {
+        appProject.rootProject.extensions.extraProperties.set("kotlin.incremental.js", "true")
+    }
+    if (!appProject.hasProperty("kotlin.caching.enabled")) {
+        appProject.rootProject.extensions.extraProperties.set("kotlin.caching.enabled", "true")
+    }
+
+    if (!appProject.hasProperty("org.gradle.parallel")) {
+        appProject.rootProject.extensions.extraProperties.set("org.gradle.parallel", "true")
+    }
+    if (!appProject.hasProperty("kotlin.parallel.tasks.in.project")) {
+        appProject.rootProject.extensions.extraProperties.set("kotlin.parallel.tasks.in.project", "true")
+    }
+    if (!appProject.hasProperty("kapt.use.worker.api")) {
+        appProject.rootProject.extensions.extraProperties.set("kapt.use.worker.api", "true")
+    }
+    if (!appProject.hasProperty("kapt.incremental.apt")) {
+        appProject.rootProject.extensions.extraProperties.set("kapt.incremental.apt", "true")
+    }
+    if (!appProject.hasProperty("kapt.classloaders.cache.size")) {
+        appProject.rootProject.extensions.extraProperties.set("kapt.classloaders.cache.size", "5")
+    }
+    if (!appProject.hasProperty("kapt.include.compile.classpath")) {
+        appProject.rootProject.extensions.extraProperties.set("kapt.include.compile.classpath", "false")
+    }
+    if (!appProject.hasProperty("org.gradle.caching")) {
+        appProject.rootProject.extensions.extraProperties.set("org.gradle.caching", "true")
+    }
+    if (!appProject.hasProperty("android.enableBuildCache")) {
+        appProject.rootProject.extensions.extraProperties.set("android.enableBuildCache", "true")
+    }
+
+    appProject.gradle.startParameter.isParallelProjectExecutionEnabled = true
+    appProject.gradle.startParameter.maxWorkerCount += 4
+    var android = appProject.extensions.getByType(AppExtension::class.java)
+    android.aaptOptions.cruncherEnabled = false
+    android.aaptOptions.cruncherProcesses = 0
+
 }

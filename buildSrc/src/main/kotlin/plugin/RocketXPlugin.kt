@@ -93,7 +93,10 @@ open class RocketXPlugin : Plugin<Project> {
         }
 
         appProject.gradle.taskGraph.addTaskExecutionListener(object : TaskExecutionListener {
-            override fun beforeExecute(p0: Task) {
+            override fun beforeExecute(task: Task) {
+                if (task.name.contains("Test") || task.name.contains("Lint")) {
+                    task.enabled = false
+                }
             }
 
             override fun afterExecute(task: Task, state: TaskState) {
@@ -188,9 +191,8 @@ open class RocketXPlugin : Plugin<Project> {
                 println("transFormList = [\"" + xValue!![0].name + "\"]")
             }
         }
-        //并行运行task
-        appProject.gradle.startParameter.isParallelProjectExecutionEnabled = true
-        appProject.gradle.startParameter.maxWorkerCount += 4
+
+        boostGradleOption(appProject)
     }
 
 

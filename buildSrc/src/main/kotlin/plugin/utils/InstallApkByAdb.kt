@@ -22,8 +22,7 @@ class InstallApkByAdb(val appProject: Project) {
     fun maybeInstallApkByAdb() {
         if (isRunAssembleTask(appProject)) {
             val android = appProject.extensions.getByType(AppExtension::class.java)
-            val installTask =
-                appProject.tasks.maybeCreate("rocketxInstallTask", InstallApkTask::class.java)
+            val installTask = appProject.tasks.maybeCreate("rocketxInstallTask", InstallApkTask::class.java)
             installTask.android = android
             android.applicationVariants.forEach {
                 getAppAssembleTask(RocketXPlugin.ASSEMBLE + it.flavorName.capitalize() + it.buildType.name.capitalize())?.let { taskProvider ->
@@ -58,31 +57,23 @@ class InstallApkByAdb(val appProject: Project) {
                 AndroidDebugBridge.initIfNeeded(false)
                 val bridge = AndroidDebugBridge.createBridge(android.adbExecutable.path, false)
                 var firstLocalDeviceSerinum = ""
-                bridge?.devices?.forEach {
-                    if (!it.serialNumber.isNullOrEmpty()) {
-                        firstLocalDeviceSerinum = it.serialNumber
-                        return@forEach
+                run loop@{
+                    bridge?.devices?.forEach {
+                        if (!it.serialNumber.isNullOrEmpty()) {
+                            firstLocalDeviceSerinum = it.serialNumber
+                            return@loop
+                        }
                     }
                 }
-
                 if (firstLocalDeviceSerinum.isNullOrEmpty().not()) {
+
                     project.exec {
-                        it.commandLine(adb,
-                            "-s",
-                            firstLocalDeviceSerinum,
-                            "install",
-                            "-r",
-                            FileUtil.getApkLocalPath())
+                        it.commandLine(adb, "-s", firstLocalDeviceSerinum, "install", "-r", FileUtil.getApkLocalPath())
                     }
+                    // adb -s <ip:port> install -r <app.apk>
+                    // adb -s <ip:port> shell monkey -p <包名> -c android.intent.category.LAUNCHER 1
                     project.exec {
-                        it.commandLine(adb,
-                                "shell",
-                                "monkey",
-                                "-p",
-                                android.defaultConfig.applicationId,
-                                "-c",
-                                "android.intent.category.LAUNCHER",
-                                "1")
+                        it.commandLine(adb, "-s", firstLocalDeviceSerinum, "shell", "monkey", "-p", android.defaultConfig.applicationId, "-c", "android.intent.category.LAUNCHER", "1")
                     }
                 }
             } catch (e: Exception) {
