@@ -19,15 +19,17 @@ import java.util.*
  * copyright TCL+
  */
 open class AppProjectDependencies(
-    var project: Project,
-    var android: AppExtension,
-    val rocketXBean: RocketXBean?,
-    val mAllChangedProject: MutableMap<String, Project>? = null,
-    var listener: ((finish: Boolean) -> Unit)? = null) {
+    private val project: Project,
+    private val android: AppExtension,
+    private val rocketXBean: RocketXBean?,
+    private val mAllChangedProject: MutableMap<String, Project>? = null,
+    private val listener: ((finish: Boolean) -> Unit)? = null) {
+
     var isFirst = true
 
-    var mAllChildProjectDependenciesList = arrayListOf<ChildProjectDependencies>()
-    lateinit var mDependenciesHelper: DependenciesHelper
+    val mAllChildProjectDependenciesList = arrayListOf<ChildProjectDependencies>()
+
+    private lateinit var mDependenciesHelper: DependenciesHelper
 
     init {
         val projectsEvaluatedList = hookProjectsEvaluatedAction()
@@ -95,17 +97,17 @@ open class AppProjectDependencies(
         return removeDispatch
     }
 
-    fun resolveDenpendency() {
-        project.rootProject.allprojects.forEach {
-            //剔除 rootProject 和 有多级目录的 parent folder
-            if (it != project.rootProject && it.childProjects.size <= 0) {
-                //每一个 project 的依赖，都在 ProjectDependencies 里面解决
-                val project = ChildProjectDependencies(it, android, mAllChangedProject)
-                mAllChildProjectDependenciesList.add(project)
-            }
+    private fun resolveDenpendency() {
+        //剔除 rootProject 和 有多级目录的 parent folder
+        project.rootProject.allprojects.filter { it != project.rootProject && it.childProjects.isEmpty() }.forEach {
+            //每一个 project 的依赖，都在 ProjectDependencies 里面解决
+            val project = ChildProjectDependencies(it, android, mAllChangedProject)
+            mAllChildProjectDependenciesList.add(project)
         }
+
         //生成拥有整个依赖图的工具类（只能在此处才能生成）
         mDependenciesHelper = DependenciesHelper(rocketXBean, mAllChildProjectDependenciesList)
+
         mAllChildProjectDependenciesList.forEach {
             it.doDependencies(mDependenciesHelper)
         }

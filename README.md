@@ -68,7 +68,7 @@ buildscript {
 
 ##
 
-######  使用点击小火箭至喷火icon （enable 状态）,点击编译器 run 按钮 :
+######  使用点击小火箭至喷火icon （开启 状态）,点击编译器 run 按钮 :
 ![assembleDebug](https://github.com/trycatchx/RocketXPlugin/blob/master/IMG/assembleDebug.jpeg)
 
 ######  如果你有多个 app module 也可选择 Assemble${flavor}${buildType} task 进行 run
