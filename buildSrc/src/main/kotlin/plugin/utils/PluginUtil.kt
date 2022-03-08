@@ -1,9 +1,13 @@
 package plugin.utils
 
+import com.android.build.api.transform.Transform
+import com.android.build.gradle.AppExtension
+import com.android.build.gradle.BaseExtension
 import org.gradle.api.Project
 import plugin.RocketXPlugin
 import java.io.File
 import java.util.*
+import kotlin.reflect.jvm.isAccessible
 
 /**
  * description:
@@ -81,4 +85,44 @@ fun isCurProjectRun(appProject: Project): Boolean {
 
 
     return ret
+}
+
+fun flatDirs(appProject: Project) {
+    val map = mutableMapOf<String, File>()
+    map["dirs"] = File(FileUtil.getLocalMavenCacheDir())
+    appProject.rootProject.allprojects {
+        it.repositories.flatDir(map)
+    }
+}
+
+
+//开启一些加速的编译项
+fun openSpeedBuildByOption(appProject: Project, appExtension: AppExtension) {
+    //禁用 arouter transform,不影响 app 运行
+    val transformsFiled = BaseExtension::class.members.firstOrNull { it.name == "_transforms" }
+    var excludeTransForms: List<String>? = null
+    try {
+        excludeTransForms = (appProject.property("excludeTransForms") as? String)?.split(" ")
+    } catch (ignore: Exception) {
+    }
+
+    if (transformsFiled != null) {
+        transformsFiled.isAccessible = true
+        val xValue = transformsFiled.call(appExtension) as? MutableList<Transform>
+        xValue?.removeAll {
+            TransformsConstans.TRANSFORM.contains(it.name) || (excludeTransForms?.contains(it.name) ?: false)
+        }
+
+        if (xValue?.size ?: 0 > 0) {
+            println("RocketXPlugin : the following transform were detected : ")
+            xValue?.forEach {
+                println("transform: " + it.name)
+            }
+            println("RocketXPlugin : you can disable it to speed up by this way：")
+            println("transFormList = [\"" + xValue!![0].name + "\"]")
+        }
+    }
+    //并行运行task
+    appProject.gradle.startParameter.isParallelProjectExecutionEnabled = true
+    appProject.gradle.startParameter.maxWorkerCount += 4
 }
