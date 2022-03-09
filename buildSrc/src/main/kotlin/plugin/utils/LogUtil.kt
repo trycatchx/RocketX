@@ -1,5 +1,7 @@
 package plugin.utils
 
+import plugin.AppProjectDependencies
+
 /**
  * description:   Log工具类，为了统一log输出
  * author: Louis
@@ -23,5 +25,17 @@ object LogUtil {
         if (!enable) return
         println(">>>>  $msg")
     }
-
+    //打印处理完的整个依赖图
+    fun pritlnDependencyGraph(mAppProjectDependencies: AppProjectDependencies) {
+        mAppProjectDependencies.mAllChildProjectDependenciesList.forEach { it ->
+            d("======project name: ${it.project.name}========== start")
+            it.allConfigList.filter { it.dependencies.isNotEmpty() }.forEach { configuration ->
+                d("======Config name:${configuration.name}")
+                configuration.dependencies.forEach {
+                    d("dependency:   $it    ${it.hashCode()}")
+                }
+            }
+            d("======project name: ${it.project.name}========== end \n")
+        }
+    }
 }
