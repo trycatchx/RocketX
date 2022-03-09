@@ -1,11 +1,11 @@
 
 <p align="center">
-  <a href="https://github.com/trycatchx/RocketXPlugin">
+  <a href="https://github.com/trycatchx/RocketX">
     <img width="200" src="https://github.com/trycatchx/RocketXPlugin/blob/master/rocketX-studio-plugin/resources/META-INF/pluginIcon.svg">
   </a>
 </p>
 
-<h1 align="center">RocketXPlugin</h1>
+<h1 align="center">RocketX</h1>
 <div align="center">
   
 本插件自动识别未改动 module 并在编译流程中替换为 aar ，只编译改动模块，加速 Android apk 的编译速度。让你体验到所有模块都是 aar 的速度，又能保留所有的 module 便于修改，完美！
