@@ -1,6 +1,6 @@
 
 <p align="center">
-  <a href="https://github.com/trycatchx/RocketX">
+  <a href="https://github.com/trycatchx/RocketXPlugin">
     <img width="200" src="https://github.com/trycatchx/RocketXPlugin/blob/master/rocketX-studio-plugin/resources/META-INF/pluginIcon.svg">
   </a>
 </p>
