@@ -4,6 +4,7 @@ import com.android.build.gradle.AppExtension
 import org.gradle.api.*
 import plugin.bean.RocketXBean
 import plugin.listener.RocketXBuildListener
+import plugin.localmaven.mavenPublish
 import plugin.utils.*
 import java.util.*
 
@@ -59,9 +60,31 @@ open class RocketXPlugin : Plugin<Project> {
 
         flatDirs(mProject)
 
-        mRocketXBean?.let {
-            mProject.gradle.addBuildListener(RocketXBuildListener(this, it, mProject, mAllChangedProject))
+        mProject.afterEvaluate {
+            LogUtil.init("RocketXPlugin")
+            LogUtil.enableLog(mRocketXBean?.openLog ?: false)
+//            LogUtil.d("mRocketXBean mavenEnable=${mRocketXBean?.localMaven}")
+            //剔除不打 aar 的 project
+            mRocketXBean?.excludeModule?.forEach {
+                mProject.rootProject.findProject(it)?.run {
+                    mAllChangedProject?.put(it, this)
+                }
+            }
+            if (mRocketXBean?.localMaven == true) {
+                mProject.rootProject.allprojects.forEach {
+                    if (it.name.equals("app") || it == mProject.rootProject || it.childProjects.isNotEmpty()) {
+                        return@forEach
+                    }
+                    // 配置maven publish
+                    it.mavenPublish(mRocketXBean)
+                }
+            }
+//            mProject.gradle.projectsEvaluated {
+//                doAfterEvaluated()
+//            }
         }
+
+        mProject.gradle.addBuildListener(RocketXBuildListener(this,  mProject, mAllChangedProject))
 
         //开启一些加速的编译项
         speedBuildByOption(mProject, mAppExtension)
