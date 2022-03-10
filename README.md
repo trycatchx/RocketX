@@ -128,7 +128,8 @@ excludeTransForms = com.alibaba.arouter AAA bbb
 
 ## 交流群
 先加微信（备注 RocketX）再拉进群
-![image](https://user-images.githubusercontent.com/6050250/157576056-404374d5-6278-4120-8bf7-526568198088.png)
+
+<img width="388" alt="image" src="https://user-images.githubusercontent.com/6050250/157576321-518fea94-b7ac-4e8a-a864-fe6fbc44c300.png">
 
 
 
