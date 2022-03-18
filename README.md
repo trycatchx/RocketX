@@ -116,6 +116,8 @@ excludeTransForms = com.alibaba.arouter AAA bbb
  </td>  
    <td align="center"><a href="https://github.com/FamilyCYZ"><img src="https://avatars.githubusercontent.com/u/37532300?v=4" style="width:100px; height:100px; border-radius:50%;"/><br /><sub><b>FamilyCYZ</b><br /><b>(什么都没有留下)</b></sub></a>
  </td> 
+   <td align="center"><a href="https://github.com/quan229870530"><img src="https://avatars.githubusercontent.com/u/16531199?v=4" style="width:100px; height:100px; border-radius:50%;"/><br /><sub><b>quan229870530</b><br /><b>(什么都没有留下)</b></sub></a>
+ </td> 
   </tr>
 </table>
 
