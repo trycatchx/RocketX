@@ -112,8 +112,6 @@ class RocketXBuildListener(
      * state. Never null.
      */
     override fun afterExecute(task: Task, state: TaskState) {
-        LogUtil.d("  任务: ${task.name + "  " + task.path + " 耗时=" + (System.currentTimeMillis() - taskStartTime) + "ms"} ")
-
         if (task.name.startsWith(RocketXPlugin.ASSEMBLE) && state.failure == null) {
             LogUtil.d("task==>${task.name}, state=${state.failure}")
             ChangeModuleUtils.flushJsonFile()
