@@ -36,7 +36,7 @@ object ChangeModuleUtils {
                 val oldModuleList = Gson().fromJson(localFile.readText(), ModuleChangeTimeList::class.java)
                 // 返回null, 代表之前没有编译过，要重新编译
                 if (oldModuleList.list.isNullOrEmpty()) {
-                    return null
+                    allProjectsChange(project,changeMap)
                 } else {
                     newModuleList.forEach { newModule ->
                         oldModuleList.list.firstOrNull { newModule.moduleName == it.moduleName }.also { moduleChange ->
@@ -83,6 +83,8 @@ object ChangeModuleUtils {
      */
     private fun getNewModuleList(project: Project) {
         newModuleList.clear()
+        var count = 0
+        var isCodeFile:Boolean
         project.rootProject.allprojects.onEach {
             if (it == project.rootProject || it.childProjects.isNotEmpty()) {
                 return@onEach
@@ -90,12 +92,16 @@ object ChangeModuleUtils {
             var countTime = 0L
             it.projectDir.eachFileRecurse { file ->
                 // 过滤掉build目录及该目录下的所有文件
-                if (!(file.isDirectory && Contants.BUILD == file.name) && !file.absolutePath.contains("build/")) {
+                isCodeFile = !(file.isDirectory && Contants.BUILD == file.name)
+                if (isCodeFile) {
                     countTime += file.lastModified()
+                    count++
                 }
+                return@eachFileRecurse isCodeFile
             }
             newModuleList.add(ModuleChangeTime(it.path, countTime))
         }
+        LogUtil.d("total file num ====>>>> "+ count)
     }
 
 

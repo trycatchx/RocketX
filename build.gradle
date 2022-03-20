@@ -17,7 +17,7 @@ buildscript {
         classpath 'com.alibaba:arouter-register:1.0.2'
 //
 //        def pluginDir = getProjectDir().getAbsolutePath() + File.separator + "libs"
-//        def rockectxFile = new File(pluginDir,"rocketx-1.0.17.jar")
+//        def rockectxFile = new File(pluginDir,"buildSrc.jar")
 //        classpath files(rockectxFile)
 
     }

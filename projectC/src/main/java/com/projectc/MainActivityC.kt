@@ -10,7 +10,6 @@ class MainActivityC : AppCompatActivity() {
     companion object {
         fun test() {
             Log.e("lzy", "test: 1111")
-            Log.e("lzy", "test: 1111")
         }
     }
 

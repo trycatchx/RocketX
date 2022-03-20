@@ -1,7 +1,6 @@
 package plugin.utils
 
 import com.google.gson.Gson
-import groovy.io.FileType
 import org.gradle.api.Project
 import plugin.bean.ModuleChangeTime
 import plugin.bean.ModuleChangeTimeList
@@ -93,15 +92,16 @@ object FileUtil {
     /**
      * 文件遍历
      */
-    fun File.eachFileRecurse(fileType: FileType = FileType.ANY, closure: ((File) -> Unit)?) {
+    fun File.eachFileRecurse(closure: ((File) -> Boolean)?) {
+        var continueRecursion = false
         listFiles()?.let {
             it.forEach { file ->
                 if (file.isDirectory) {
-                    if (fileType != FileType.FILES) {
-                        closure?.invoke(file)
+                    continueRecursion = closure?.invoke(file) ?: true
+                    if (continueRecursion) {
+                        file.eachFileRecurse(closure)
                     }
-                    file.eachFileRecurse(fileType, closure)
-                } else if (fileType != FileType.DIRECTORIES) {
+                } else {
                     closure?.invoke(file)
                 }
             }
