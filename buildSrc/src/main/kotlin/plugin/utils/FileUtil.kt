@@ -95,7 +95,7 @@ object FileUtil {
     fun File.eachFileRecurse(closure: ((File) -> Boolean)?) {
         var continueRecursion = false
         listFiles()?.let {
-            it.forEach { file ->
+            for(file in it) {
                 if (file.isDirectory) {
                     continueRecursion = closure?.invoke(file) ?: true
                     if (continueRecursion) {
