@@ -41,7 +41,7 @@ apply plugin: 'com.rocketx'
 // root Project build.gradle add code:
 buildscript {
     dependencies {
-        classpath 'io.github.trycatchx:rocketx:1.0.21'
+        classpath 'io.github.trycatchx:rocketx:1.1.0'
     }
 }
 ```
