@@ -5,7 +5,7 @@
   </a>
 </p>
 
-<h1 align="center">RocketXPlugin</h1>
+<h1 align="center">RocketX</h1>
 <div align="center">
   
 本插件自动识别未改动 module 并在编译流程中替换为 aar ，只编译改动模块，加速 Android apk 的编译速度。让你体验到所有模块都是 aar 的速度，又能保留所有的 module 便于修改，完美！
@@ -47,7 +47,7 @@ apply plugin: 'com.rocketx'
 // 在根目录的 build.gradle 加入
 buildscript {
     dependencies {
-        classpath 'io.github.trycatchx:rocketx:1.0.19'
+        classpath 'io.github.trycatchx:rocketx:1.0.20'
     }
 }
 ```
@@ -116,6 +116,8 @@ excludeTransForms = com.alibaba.arouter AAA bbb
  </td>  
    <td align="center"><a href="https://github.com/FamilyCYZ"><img src="https://avatars.githubusercontent.com/u/37532300?v=4" style="width:100px; height:100px; border-radius:50%;"/><br /><sub><b>FamilyCYZ</b><br /><b>(什么都没有留下)</b></sub></a>
  </td> 
+   <td align="center"><a href="https://github.com/quan229870530"><img src="https://avatars.githubusercontent.com/u/16531199?v=4" style="width:100px; height:100px; border-radius:50%;"/><br /><sub><b>quan229870530</b><br /><b>(什么都没有留下)</b></sub></a>
+ </td> 
   </tr>
 </table>
 
@@ -124,6 +126,13 @@ excludeTransForms = com.alibaba.arouter AAA bbb
  账号 | 留言
 --- | ---
 [XZQ](https://github.com/XZQ) | XZQ
+
+
+## 交流群
+先加微信（备注 RocketX）再拉进群
+
+<img width="388" alt="image" src="https://user-images.githubusercontent.com/6050250/157576321-518fea94-b7ac-4e8a-a864-fe6fbc44c300.png">
+
 
 
 ## License
