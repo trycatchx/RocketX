@@ -36,8 +36,6 @@ Plugin version | Gradle version
 
 ## 如何使用
 
-#### 方式一：网络依赖
-
 * 依赖 gradle 插件
 
 ```
@@ -53,22 +51,11 @@ buildscript {
 ```
 
 
-* 依赖 AS 插件 android studio setting->plugins-> marketplace 搜索 RocketX 安装（搜索不到使用本地安装）
+* 依赖 AS 插件 android studio setting->plugins-> marketplace 搜索 RocketX 安装
 
 ![assembleDebug](https://github.com/trycatchx/RocketXPlugin/blob/master/IMG/asplugin.png)
 
-#### 方式二：本地依赖(实时使用最新的版本，网络依赖需要上传 maven 有所滞后)
-
-下载项目中的 lib 文件夹两个 jar：
-
-* rocketX-studio-plugin.jar 通过 android studio setting->plugins->install plugin from disk 进行安装
-* rocketx.jar 通过在项目工程根目录新建文件夹Plugin，置放进去 Plugin文件夹，在根目录的build.gradle 写入 ```classpath fileTree(dir: './Plugin', include: ['*.jar'])```
-
-* 同样在 app module 的 build.gradle 加入：```apply plugin: 'com.rocketx'```
-
-##
-
-######  使用点击小火箭至喷火icon （开启 状态）,点击编译器 run 按钮 :
+*  使用点击小火箭至喷火icon （开启 状态）,点击编译器 run 按钮 :
 ![assembleDebug](https://github.com/trycatchx/RocketXPlugin/blob/master/IMG/assembleDebug.jpeg)
 
 ######  如果你有多个 app module 也可选择 Assemble${flavor}${buildType} task 进行 run
