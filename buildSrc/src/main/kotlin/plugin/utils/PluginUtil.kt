@@ -4,6 +4,8 @@ import com.android.build.api.transform.Transform
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.BaseExtension
 import org.gradle.api.Project
+import org.gradle.plugins.ide.idea.IdeaPlugin
+import org.gradle.plugins.ide.idea.model.IdeaModule
 import plugin.RocketXPlugin
 import java.io.File
 import java.util.*
@@ -165,6 +167,19 @@ fun speedBuildByOption(appProject: Project, appExtension: AppExtension) {
     }
 
     boostGradleOption(appProject)
+}
+
+/**
+ * idea 插件不下载源码
+ */
+fun speedSync(appProject: Project){
+    appProject.rootProject.allprojects { p ->
+        val ideaPlugin = p.plugins.findPlugin(IdeaPlugin::class.java)
+        if (ideaPlugin != null) {
+            val ideaModule: IdeaModule? = ideaPlugin.model?.module
+            ideaModule?.setDownloadSources(false)
+        }
+    }
 }
 
 fun flatDirs(appProject: Project) {

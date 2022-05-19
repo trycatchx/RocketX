@@ -42,18 +42,17 @@ open class RocketXPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         //应用在 主 project 上，也就是 app module
         this.mRocketXBean = project.extensions.create("RocketX", RocketXBean::class.java)
+        speedSync(project)
 
         if (!isEnable(project) || hasAndroidPlugin(project) || !isCurProjectRun(project)) {
             return
         }
-
         this.mProject = project
 
         //禁止 release 使用加速插件
         if (mFlavorBuildType.toLowerCase(Locale.ROOT).contains("release")) {
             return
         }
-
         this.mAppExtension = project.extensions.getByType(AppExtension::class.java)
 
         FileUtil.attach(project)
