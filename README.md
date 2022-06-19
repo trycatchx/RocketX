@@ -72,8 +72,8 @@ buildscript {
   //..
     RocketX {
         openLog = true
-        //指定哪些模块不打成 aar ，字符串为 module.path
-        excludeModule = [":module_common"]
+        //指定哪些模块不打成 aar ，字符串为 module.path,以下 moduleB 不是一级目录，需要带上父文件夹
+        excludeModule = [":moduleA",":module_common:moduleB"]
     }
    //..
    }
