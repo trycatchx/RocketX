@@ -7,7 +7,7 @@ apply plugin: 'signing'
 def artifact = 'rocketx'
 def libraryName = 'videoprogressview-sdk'
 def libraryDescription = 'speed build plugin'
-def libraryVersion = '1.1.0'
+def libraryVersion = '1.1.1'
 
 def publishedGroupId='io.github.trycatchx'
 def siteUrl='https://github.com/trycatchx/RocketXPlugin'
