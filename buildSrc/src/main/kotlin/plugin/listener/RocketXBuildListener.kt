@@ -22,7 +22,8 @@ import java.util.*
 class RocketXBuildListener(
     private val rocketXPlugin: RocketXPlugin,
     private val appProject: Project,
-    private val mAllChangedProject: MutableMap<String, Project>?
+    private val mAllChangedProject: MutableMap<String, Project>?,
+    private val dexMergeIncremental: Boolean
 ) : BuildListener, TaskExecutionListener {
 
     private var taskStartTime: Long = 0
@@ -50,7 +51,9 @@ class RocketXBuildListener(
     }
 
     override fun projectsEvaluated(gradle: Gradle) {
-//        BeforePreBuildJob(appProject).runCleanAction()
+        if (!dexMergeIncremental) {
+            BeforePreBuildJob(appProject).runCleanAction()
+        }
         appProject.rootProject.allprojects.forEach {
             //剔除 app 和 rootProject
             if (hasAppPlugin(it) || it == appProject.rootProject || it.childProjects.isNotEmpty()) {
@@ -68,7 +71,8 @@ class RocketXBuildListener(
             }
             //android 子 module
             if (childAndroid != null) {
-                mLocalMaven = AarFlatLocalMaven(childProject, rocketXPlugin, appProject, mAllChangedProject)
+                mLocalMaven =
+                    AarFlatLocalMaven(childProject, rocketXPlugin, appProject, mAllChangedProject)
             } else if (hasJavaPlugin(childProject)) {
                 //java 子 module
                 mLocalMaven = JarFlatLocalMaven(childProject, rocketXPlugin, mAllChangedProject)

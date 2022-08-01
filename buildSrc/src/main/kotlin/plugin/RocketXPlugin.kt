@@ -83,7 +83,7 @@ open class RocketXPlugin : Plugin<Project> {
 //            }
         }
 
-        mProject.gradle.addBuildListener(RocketXBuildListener(this,  mProject, mAllChangedProject))
+        mProject.gradle.addBuildListener(RocketXBuildListener(this,  mProject, mAllChangedProject,mRocketXBean?.dexMergeIncremental?:true))
 
         //开启一些加速的编译项
         speedBuildByOption(mProject, mAppExtension)
