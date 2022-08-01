@@ -45,7 +45,7 @@ apply plugin: 'com.rocketx'
 // 在根目录的 build.gradle 加入
 buildscript {
     dependencies {
-        classpath 'io.github.trycatchx:rocketx:1.1.0'
+        classpath 'io.github.trycatchx:rocketx:1.1.1'
     }
 }
 ```
@@ -74,6 +74,8 @@ buildscript {
         openLog = true
         //指定哪些模块不打成 aar ，字符串为 module.path,以下 moduleB 不是一级目录，需要带上父文件夹
         excludeModule = [":moduleA",":module_common:moduleB"]
+        //默认为true，表示走增量编译，由于有过多的 tranform 使用不当情况，可使用 false 使其编译通过（编译速度会变慢）
+        dexMergeIncremental = true 
     }
    //..
    }
