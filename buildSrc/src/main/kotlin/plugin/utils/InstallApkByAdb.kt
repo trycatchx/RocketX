@@ -1,5 +1,6 @@
 package plugin.utils
 
+
 import com.android.build.gradle.AppExtension
 import com.android.ddmlib.AndroidDebugBridge
 import org.gradle.api.DefaultTask
@@ -9,6 +10,7 @@ import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskProvider
 import plugin.RocketXPlugin
+import java.util.concurrent.TimeUnit
 
 /**
  * description:
@@ -53,9 +55,10 @@ class InstallApkByAdb(val appProject: Project) {
             val adb = android.adbExecutable.absolutePath
 
             try {
-
                 AndroidDebugBridge.initIfNeeded(false)
-                val bridge = AndroidDebugBridge.createBridge(android.adbExecutable.path, false)
+                val bridge = AndroidDebugBridge.createBridge(android.adbExecutable.path, false,
+                    Long.MAX_VALUE,
+                    TimeUnit.MILLISECONDS)
                 var firstLocalDeviceSerinum = ""
                 run loop@{
                     bridge?.devices?.forEach {
@@ -73,13 +76,23 @@ class InstallApkByAdb(val appProject: Project) {
                     // adb -s <ip:port> install -r <app.apk>
                     // adb -s <ip:port> shell monkey -p <包名> -c android.intent.category.LAUNCHER 1
                     project.exec {
-                        it.commandLine(adb, "-s", firstLocalDeviceSerinum, "shell", "monkey", "-p", android.defaultConfig.applicationId, "-c", "android.intent.category.LAUNCHER", "1")
+                        it.commandLine(
+                            adb,
+                            "-s",
+                            firstLocalDeviceSerinum,
+                            "shell",
+                            "monkey",
+                            "-p",
+                            android.defaultConfig.applicationId,
+                            "-c",
+                            "android.intent.category.LAUNCHER",
+                            "1"
+                        )
                     }
                 }
             } catch (e: Exception) {
                 LogUtil.d("install fail:" + e.toString())
             }
-
         }
     }
 

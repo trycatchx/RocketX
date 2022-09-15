@@ -66,6 +66,7 @@ android {
             openLog = true
             //剔除模块不打成 aar
             excludeModule = [":xxx"]
+            dexMergeIncremental = true
         }
     }
 
