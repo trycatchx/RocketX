@@ -8,7 +8,7 @@
 <h1 align="center">RocketX</h1>
 <div align="center">
   
-本插件自动识别未改动 module 并在编译流程中替换为 aar ，做到只编译当前改动的 module，加速 Android apk 的编译速度。让你体验到所有模块都是 aar 的速度，又能保留所有的 module 便于修改，完美！
+本插件自动识别未改动 module 并在编译流程中替换为 aar ，做到只编译当前改动的 module，加速 Android apk 的编译速度。让你体验到所有模块都是 aar 的速度，又能保留所有的 module 便于修改，完美！（开源不易，希望朋友小手一抖，右上角来个star，感谢🙏）
   
 
 ![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
