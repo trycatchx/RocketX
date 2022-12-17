@@ -98,11 +98,11 @@ excludeTransForms = com.alibaba.arouter AAA bbb
 ## 开发维护者
 <table>
   <tr>
+    <td align="center"><a href="https://github.com/trycatchx"><img src="https://avatars.githubusercontent.com/u/6050250?s=400&u=61b9ec2b9255ea464605a60fa810ceef80ccb740&v=4" style="width:100px; height:100px; border-radius:50%;"/><br /><sub><b>trycatchx</b><br /><b>(日落西来,月向东)</b></sub></a>
+ </td> 
  <td align="center"><a href="https://github.com/JustAClamber"><img src="https://avatars.githubusercontent.com/u/18254533?v=4" style="width:100px; height:100px; border-radius:50%;"/><br /><sub><b>JustAClamber</b><br /><b>(知者不惑)</b></sub></a>
  </td>
   <td align="center"><a href="https://github.com/louis-lzt"><img src="https://avatars.githubusercontent.com/u/62166780?v=4" style="width:100px; height:100px; border-radius:50%;"/><br /><sub><b>louis</b><br /><b>(louis-lzt)</b></sub></a>
- </td>  
-  <td align="center"><a href="https://github.com/trycatchx"><img src="https://avatars.githubusercontent.com/u/6050250?s=400&u=61b9ec2b9255ea464605a60fa810ceef80ccb740&v=4" style="width:100px; height:100px; border-radius:50%;"/><br /><sub><b>trycatchx</b><br /><b>(日落西来,月向东)</b></sub></a>
  </td>  
    <td align="center"><a href="https://github.com/FamilyCYZ"><img src="https://avatars.githubusercontent.com/u/37532300?v=4" style="width:100px; height:100px; border-radius:50%;"/><br /><sub><b>FamilyCYZ</b><br /><b>(什么都没有留下)</b></sub></a>
  </td> 
