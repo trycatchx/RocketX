@@ -7,24 +7,24 @@
 
 <h1 align="center">RocketX</h1>
 <div align="center">
-  
-本插件自动识别未改动 module 并在编译流程中替换为 aar ，做到只编译当前改动的 module，加速 Android apk 的编译速度。让你体验到所有模块都是 aar 的速度，又能保留所有的 module 便于修改，完美！（开源不易，希望朋友小手一抖，右上角来个star，感谢🙏）
-  
 
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
-![java](https://img.shields.io/badge/language-kotlin-Borange.svg)
-![AGP](https://img.shields.io/badge/AGP-6.1.1+-brightgreen)
-![Code Size](https://img.shields.io/badge/CodeSize-66.5kb-brightgreen)
+本插件自动识别未改动 module 并在编译流程中替换为 aar ，做到只编译当前改动的 module，加速 Android apk 的编译速度。让你体验到所有模块都是 aar 的速度，又能保留所有的 module 便于修改，完美！（开源不易，希望朋友小手一抖，右上角来个star，感谢🙏）
+
+
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-G1xStet8-1677676239356)(null)]
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-QrlDLkW6-1677676239212)(null)]
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-wRUvSTRp-1677676239530)(null)]
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-Su5dbss5-1677676239363)(null)]
 </div>
 
 <div align="center">
-  
+
 [English Document](https://github.com/trycatchx/RocketXPlugin/blob/master/README-EN.md)  | [Blog讲解](https://juejin.cn/post/7038157787976695815)
-  
+
 </div>
 
 ## 编译速度对比
-![build-speed.png](https://github.com/trycatchx/RocketXPlugin/blob/master/IMG/build-speed.png)
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-eUQhzJkc-1677676240368)(null)]
 
 ## AGP 版本兼容
 Plugin version | Gradle version
@@ -53,11 +53,11 @@ buildscript {
 
 * 依赖 AS 插件 android studio setting->plugins-> marketplace 搜索 RocketX 安装
 
-![assembleDebug](https://github.com/trycatchx/RocketXPlugin/blob/master/IMG/asplugin.png)
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-udVIL2Qi-1677676240397)(null)]
 
 *  使用点击小火箭至喷火icon （开启 状态）,点击编译器 run 按钮 :
 
-![assembleDebug](https://github.com/trycatchx/RocketXPlugin/blob/master/IMG/assembleDebug.jpeg)
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-UYK0l4mU-1677676240410)(null)]
 
 ######  如果你有多个 app module 也可选择 Assemble${flavor}${buildType} task 进行 run
 
@@ -113,11 +113,11 @@ excludeTransForms = com.alibaba.arouter AAA bbb
 
 ## 为爱发电（贡献者）
 
- 账号 | 留言
+账号 | 留言
 --- | ---
 [XZQ](https://github.com/XZQ) | XZQ
 
-
+## 为爱发电[文档](https://docs.qq.com/sheet/DVExXTENVRUtTdnBl?tab=BB08J2)
 ## 交流群
 先加微信（备注 RocketX）再拉进群
 
