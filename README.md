@@ -10,8 +10,6 @@
 
 本插件自动识别未改动 module 并在编译流程中替换为 aar ，做到只编译当前改动的 module，加速 Android apk 的编译速度。让你体验到所有模块都是 aar 的速度，又能保留所有的 module 便于修改，完美！（开源不易，希望朋友小手一抖，右上角来个star，感谢🙏）
 
-
-![image](https://user-images.githubusercontent.com/6050250/222662558-f1081f0d-24fd-4b11-bbf6-9928c5deb5ec.png)
 </div>
 
 <div align="center">
@@ -21,7 +19,8 @@
 </div>
 
 ## 编译速度对比
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-eUQhzJkc-1677676240368)(null)]
+
+![2788235-0f027965fefc94f7](https://user-images.githubusercontent.com/6050250/222663410-12d0ffcc-4b80-445f-98d0-472e2b7f05c6.png)
 
 ## AGP 版本兼容
 Plugin version | Gradle version
@@ -50,11 +49,11 @@ buildscript {
 
 * 依赖 AS 插件 android studio setting->plugins-> marketplace 搜索 RocketX 安装
 
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-udVIL2Qi-1677676240397)(null)]
+<img width="1117" alt="image" src="https://user-images.githubusercontent.com/6050250/222663819-b3ad8aa0-6eef-4d3d-9535-e375b3b2457c.png">
+
 
 *  使用点击小火箭至喷火icon （开启 状态）,点击编译器 run 按钮 :
-
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-UYK0l4mU-1677676240410)(null)]
+<img width="650" alt="image" src="https://user-images.githubusercontent.com/6050250/222664144-6205298e-aa22-4c11-b5d7-45933f0be5f9.png">
 
 ######  如果你有多个 app module 也可选择 Assemble${flavor}${buildType} task 进行 run
 
