@@ -53,7 +53,8 @@ buildscript {
 
 
 *  使用点击小火箭至喷火icon （开启 状态）,点击编译器 run 按钮 :
-<img width="650" alt="image" src="https://user-images.githubusercontent.com/6050250/222664144-6205298e-aa22-4c11-b5d7-45933f0be5f9.png">
+<img width="658" alt="image" src="https://user-images.githubusercontent.com/6050250/222664442-49621460-e3e3-412f-9fc5-789e3e169195.png">
+
 
 ######  如果你有多个 app module 也可选择 Assemble${flavor}${buildType} task 进行 run
 
