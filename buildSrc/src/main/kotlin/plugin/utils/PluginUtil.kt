@@ -134,7 +134,7 @@ fun boostGradleOption(appProject: Project) {
 
     appProject.gradle.startParameter.isParallelProjectExecutionEnabled = true
     appProject.gradle.startParameter.maxWorkerCount += 4
-    var android = appProject.extensions.getByType(AppExtension::class.java)
+    val android = appProject.extensions.getByType(AppExtension::class.java)
     android.aaptOptions.cruncherEnabled = false
     android.aaptOptions.cruncherProcesses = 0
 
@@ -153,10 +153,10 @@ fun speedBuildByOption(appProject: Project, appExtension: AppExtension) {
         transformsFiled.isAccessible = true
         val xValue = transformsFiled.call(appExtension) as? MutableList<Transform>
         xValue?.removeAll {
-            TransformsConstans.TRANSFORM.contains(it.name) || (excludeTransForms?.contains(it.name) ?: false)
+            TransformsConstants.TRANSFORM.contains(it.name) || (excludeTransForms?.contains(it.name) ?: false)
         }
 
-        if (xValue?.size ?: 0 > 0) {
+        if ((xValue?.size ?: 0) > 0) {
             println("RocketXPlugin : the following transform were detected : ")
             xValue?.forEach {
                 println("transform: " + it.name)
@@ -177,7 +177,7 @@ fun speedSync(appProject: Project){
         val ideaPlugin = p.plugins.findPlugin(IdeaPlugin::class.java)
         if (ideaPlugin != null) {
             val ideaModule: IdeaModule? = ideaPlugin.model?.module
-            ideaModule?.setDownloadSources(false)
+            ideaModule?.isDownloadSources = false
         }
     }
 }

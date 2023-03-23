@@ -6,6 +6,6 @@ package plugin.utils
  * data: 2021/12/9
  * copyright TCL+
  */
-object TransformsConstans {
+object TransformsConstants {
     val TRANSFORM = arrayListOf("sensorsAnalyticsAutoTrack", "com.alibaba.arouter", "newLensTransform")
 }

@@ -36,7 +36,7 @@ class InstallApkByAdb(val appProject: Project) {
         }
     }
 
-    fun getAppAssembleTask(name: String): TaskProvider<Task>? {
+    private fun getAppAssembleTask(name: String): TaskProvider<Task>? {
         var taskProvider: TaskProvider<Task>? = null
         try {
             taskProvider = appProject.tasks.named(name)
@@ -59,19 +59,19 @@ class InstallApkByAdb(val appProject: Project) {
                 val bridge = AndroidDebugBridge.createBridge(android.adbExecutable.path, false,
                     Long.MAX_VALUE,
                     TimeUnit.MILLISECONDS)
-                var firstLocalDeviceSerinum = ""
+                var firstLocalDeviceSerialNum = ""
                 run loop@{
                     bridge?.devices?.forEach {
                         if (!it.serialNumber.isNullOrEmpty()) {
-                            firstLocalDeviceSerinum = it.serialNumber
+                            firstLocalDeviceSerialNum = it.serialNumber
                             return@loop
                         }
                     }
                 }
-                if (firstLocalDeviceSerinum.isNullOrEmpty().not()) {
+                if (firstLocalDeviceSerialNum.isEmpty().not()) {
 
                     project.exec {
-                        it.commandLine(adb, "-s", firstLocalDeviceSerinum, "install", "-r", FileUtil.getApkLocalPath())
+                        it.commandLine(adb, "-s", firstLocalDeviceSerialNum, "install", "-r", FileUtil.getApkLocalPath())
                     }
                     // adb -s <ip:port> install -r <app.apk>
                     // adb -s <ip:port> shell monkey -p <包名> -c android.intent.category.LAUNCHER 1
@@ -79,7 +79,7 @@ class InstallApkByAdb(val appProject: Project) {
                         it.commandLine(
                             adb,
                             "-s",
-                            firstLocalDeviceSerinum,
+                            firstLocalDeviceSerialNum,
                             "shell",
                             "monkey",
                             "-p",

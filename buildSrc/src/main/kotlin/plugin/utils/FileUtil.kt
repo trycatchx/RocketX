@@ -28,7 +28,7 @@ object FileUtil {
                     return name?.endsWith(".aar") ?: false
                 }
             })
-            return if (files.size > 0) files[0].absolutePath else null
+            return if (!files.isNullOrEmpty()) files[0].absolutePath else null
         }
         return null
     }
@@ -41,7 +41,7 @@ object FileUtil {
                     return name?.endsWith(".jar") ?: false
                 }
             })
-            return if (files.size > 0) files[0].absolutePath else null
+            return if (!files.isNullOrEmpty()) files[0].absolutePath else null
         }
         return null
     }
@@ -93,11 +93,10 @@ object FileUtil {
      * 文件遍历
      */
     fun File.eachFileRecurse(closure: ((File) -> Boolean)?) {
-        var continueRecursion = false
         listFiles()?.let {
             for(file in it) {
                 if (file.isDirectory) {
-                    continueRecursion = closure?.invoke(file) ?: true
+                    val continueRecursion = closure?.invoke(file) ?: true
                     if (continueRecursion) {
                         file.eachFileRecurse(closure)
                     }

@@ -38,7 +38,7 @@ open class AppProjectDependencies(
             if (isFirst) {
                 isFirst = false
                 //先执行重依赖
-                resolveDenpendency()
+                resolveDependency()
                 //后执行移除的监听（主要调整执行顺序，重依赖才能生效和不报错，可能有AGP 版本兼容问题）
                 val clazz = Class.forName("org.gradle.api.invocation.Gradle")
                 val method = clazz.getDeclaredMethod("projectsEvaluated", Action::class.java)
@@ -53,7 +53,7 @@ open class AppProjectDependencies(
 
     //把所有 监听了 projectsEvaluated 的匿名内部类移除
     fun hookProjectsEvaluatedAction(): List<BroadcastDispatch<BuildListener>> {
-        var removeDispatch = mutableListOf<BroadcastDispatch<BuildListener>>()
+        val removeDispatch = mutableListOf<BroadcastDispatch<BuildListener>>()
         try {
             var buildListenerBroadcast: ListenerBroadcast<BuildListener>? = null
             val fBuildListenerBroadcast =
@@ -97,7 +97,7 @@ open class AppProjectDependencies(
         return removeDispatch
     }
 
-    private fun resolveDenpendency() {
+    private fun resolveDependency() {
         //剔除 rootProject 和 有多级目录的 parent folder
         project.rootProject.allprojects.filter { it != project.rootProject && it.childProjects.isEmpty() }.forEach {
             //每一个 project 的依赖，都在 ProjectDependencies 里面解决

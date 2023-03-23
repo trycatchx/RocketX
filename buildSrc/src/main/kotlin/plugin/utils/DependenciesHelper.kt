@@ -20,18 +20,18 @@ import java.io.File
  * copyright TCL+
  */
 class DependenciesHelper(
-    val rocketXBean: RocketXBean?,
+    private val rocketXBean: RocketXBean?,
     var mProjectDependenciesList: MutableList<ChildProjectDependencies>) {
 
-    val enableLocalMaven by lazy {
+    private val enableLocalMaven by lazy {
         rocketXBean?.localMaven ?: false
     }
 
     //获取第一层 parent 依赖当前 project
-    fun getFirstLevelParentDependencies(project: Project): MutableMap<Project, MutableList<Configuration>> {
-        var parentProjectList = mutableMapOf<Project, MutableList<Configuration>>()
+    private fun getFirstLevelParentDependencies(project: Project): MutableMap<Project, MutableList<Configuration>> {
+        val parentProjectList = mutableMapOf<Project, MutableList<Configuration>>()
         mProjectDependenciesList.forEach {
-            var parentProject = it.project
+            val parentProject = it.project
             //子project 所有的 config
             it.allConfigList.forEach { config ->
                 //每一个config 所有依赖
@@ -135,7 +135,7 @@ class DependenciesHelper(
     }
 
 
-    fun addAarDependencyToProject(aarName: String, configName: String, project: Project) {
+    private fun addAarDependencyToProject(aarName: String, configName: String, project: Project) {
         //添加 aar 依赖 以下代码等同于 api/implementation/xxx (name: 'libaccount-2.0.0', ext: 'aar'),源码使用 linkedMap
         if (!File(FileUtil.getLocalMavenCacheDir() + aarName + ".aar").exists()) return
         val map = linkedMapOf<String, String>()
@@ -144,7 +144,7 @@ class DependenciesHelper(
         project.dependencies.add(configName, map)
     }
 
-    fun addJarDependencyToProject(aarName: String, configName: String, project: Project) {
+    private fun addJarDependencyToProject(aarName: String, configName: String, project: Project) {
         //添加 jar 依赖
         if (!File(FileUtil.getLocalMavenCacheDir() + aarName + ".jar").exists()) return
         val map = linkedMapOf<String, String>()
@@ -153,7 +153,7 @@ class DependenciesHelper(
         project.dependencies.add(configName, map)
     }
 
-    fun addMavenDependencyToProject(
+    private fun addMavenDependencyToProject(
         child: Project, configName: String, project: Project, isAndroid: Boolean) {
         // 改变依赖 这里后面需要修改成maven依赖
         if (isAndroid) {
@@ -165,10 +165,10 @@ class DependenciesHelper(
         }
     }
 
-    fun getAarByArtifacts(childProject: Project): MutableList<String> {
+    private fun getAarByArtifacts(childProject: Project): MutableList<String> {
         //找到当前所有通过 artifacts.add("default", file('xxx.aar')) 依赖进来的 aar
-        var listArtifact = mutableListOf<DefaultPublishArtifact>()
-        var aarList = mutableListOf<String>()
+        val listArtifact = mutableListOf<DefaultPublishArtifact>()
+        val aarList = mutableListOf<String>()
         childProject.configurations.maybeCreate("default").artifacts?.forEach {
             if (it is DefaultPublishArtifact && "aar".equals(it.type)) {
                 listArtifact.add(it)
@@ -186,7 +186,7 @@ class DependenciesHelper(
     }
 
 
-    fun removeExtension(filename: String): String {
+    private fun removeExtension(filename: String): String {
         val index = filename.lastIndexOf(".")
         return if (index == -1) {
             filename

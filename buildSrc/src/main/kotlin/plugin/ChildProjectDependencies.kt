@@ -16,7 +16,7 @@ open class ChildProjectDependencies(
     var android: AppExtension,
     var mAllChangedProject: MutableMap<String, Project>?) {
 
-    var ALL_SUFFIX = arrayOf("implementation", "api", "compileOnly")
+    private var ALL_SUFFIX = arrayOf("implementation", "api", "compileOnly")
     var allConfigList = arrayListOf<Configuration>()
 
     init {
@@ -57,8 +57,8 @@ open class ChildProjectDependencies(
     // 开始处理依赖关系
     open fun doDependencies(dependenciesHelper: DependenciesHelper) {
         //当前的 project 是否为改变的
-        var isCurProjectChanged: Boolean =
-            if (mAllChangedProject?.get(project.path) != null) true else false
+        val isCurProjectChanged: Boolean =
+            mAllChangedProject?.get(project.path) != null
         //如果当前project 没有做改动，需要把自身变成 aar 给到 parent project
         if (!isCurProjectChanged) {
             dependenciesHelper.modifyDependencies(this)

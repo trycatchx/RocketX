@@ -1,7 +1,5 @@
 package plugin.localmaven
 
-import org.gradle.api.Project
-
 /**
  * description:
  * author chaojiong.zhang
